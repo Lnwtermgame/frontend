@@ -16,6 +16,12 @@ export interface OrderDetail {
     productId?: string;
     productTypeId?: string;
     product?: Product | null;
+    productType?: {
+      id: string;
+      name: string;
+      parValue: number;
+      currency: string;
+    } | null;
     quantity: number;
     priceAtPurchase?: number;
     playerInfo?: Record<string, unknown> | null;

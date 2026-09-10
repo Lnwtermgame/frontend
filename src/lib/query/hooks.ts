@@ -118,6 +118,17 @@ export function useDeliveries(params: dashApi.ListParams = {}) {
   });
 }
 
+/* 404 = ออเดอร์นี้ยังไม่มีบล็อกการจัดส่ง (เช่น ยังไม่ชำระ/ถูกยกเลิกก่อนส่ง) — ถือเป็นสถานะ ไม่ใช่ error */
+export function useDeliveryStatus(orderId: string) {
+  return useQuery({
+    queryKey: qk.deliveryStatus(orderId),
+    queryFn: () => dashApi.getDeliveryStatus(orderId),
+    enabled: Boolean(orderId),
+    staleTime: 30_000,
+    retry: false,
+  });
+}
+
 export function useInvoices(params: dashApi.ListParams = {}) {
   return useQuery({
     queryKey: qk.invoices(params),

@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Order Detail Directions · LNWTERMGAME frontend-new</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · page: order detail ×4 directions · theme: Warm Slate (locked)
+ * tone: utilitarian · anchor hue: warm (45) · macrostructure: Workbench (4 ของจริง นำมาเทียบ)
+ * pre-emit critique: P5 H5 E5 S4 R5 V5
+ * ข้อมูล: ออเดอร์จริง ORD-MTUBDPH1-EV1S0Y · MLBB Diamonds Malaysia · 2501 Diamonds + 475 Bonus
+ *         UID 42131 / เซิร์ฟเวอร์ 4213123 · ยกเลิก · ชําระไม่สําเร็จ · ฿1,581.98
+ *         เฟรม "สําเร็จ" = สลับค่าสถานะของออเดอร์เดียวกันเพื่อสาธิตผัง (ไม่ใช่ข้อมูลคนละใบ)
+ *         แถวสรุปยอด (ยอดรวมย่อย/ส่วนลด) อ้างราคาแคตตาล็อกจริงของแพ็กเกจเดียวกัน ฿1,630.91 → ฿1,581.98
+ * โทเคนคัดจาก src/app/globals.css โดยตรง (oklch) ไม่ได้ประมาณเป็น hex
+ */
+:root{
+  --bg:oklch(0.205 0.006 338); --bg-deep:oklch(0.17 0.006 338);
+  --surface:oklch(0.24 0.009 318); --raised:oklch(0.267 0.011 320); --raised-2:oklch(0.295 0.012 320);
+  --border:oklch(0.318 0.019 308); --border-faint:oklch(0.28 0.016 310);
+  --text:oklch(0.938 0.003 49); --muted:oklch(0.718 0.008 355); --muted-2:oklch(0.58 0.01 350);
+  --primary:oklch(0.7 0.17 45); --primary-hi:oklch(0.75 0.17 45); --primary-ink:oklch(0.15 0.02 45);
+  --success:oklch(0.72 0.15 150); --warn:oklch(0.8 0.14 85); --danger:oklch(0.63 0.19 25); --danger-ink:oklch(0.74 0.17 25); --info:oklch(0.72 0.13 240);
+  --r-lg:14px; --r-md:10px; --r-sm:8px;
+  --shadow-tile:0 1px 3px rgb(0 0 0 / .4), 0 8px 24px -16px rgb(0 0 0 / .6);
+  --font:"Noto Sans Thai","Segoe UI",system-ui,sans-serif;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+body{background:var(--bg-deep);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.num{font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+.ic{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ic.sm{width:14px;height:14px}
+
+/* ── doc chrome ───────────────────────────────── */
+.doc{max-width:1104px;margin:0 auto;padding:0 16px 96px}
+.doc-head{padding:44px 0 8px}
+.doc-kicker{font-size:12px;font-weight:600;letter-spacing:.14em;color:var(--muted-2);text-transform:uppercase}
+.doc-title{font-size:26px;font-weight:800;margin-top:6px}
+.doc-sub{color:var(--muted);margin-top:6px;max-width:82ch}
+.doc-sub b{color:var(--text);font-weight:600}
+.doc-nav{position:sticky;top:0;z-index:60;background:color-mix(in oklab,var(--bg-deep) 92%,transparent);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border-faint);margin:26px -16px 0;padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.doc-nav .lbl{font-size:12px;font-weight:600;color:var(--muted-2)}
+.jump{font-size:12.5px;font-weight:600;color:var(--muted);border:1px solid var(--border-faint);background:var(--surface);
+  border-radius:999px;padding:6px 14px;transition:color .15s,border-color .15s;white-space:nowrap}
+.jump:hover{color:var(--text);border-color:var(--border)}
+.dir{margin-top:64px;scroll-margin-top:64px}
+.dir-label{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dir-letter{width:34px;height:34px;border-radius:10px;background:var(--primary);color:var(--primary-ink);font-weight:800;font-size:16px;display:grid;place-items:center}
+.dir-name{font-size:19px;font-weight:700}
+.dir-tag{font-size:12px;font-weight:600;color:var(--muted-2);border:1px solid var(--border-faint);border-radius:999px;padding:3px 10px}
+.dir-desc{color:var(--muted);margin-top:8px;max-width:84ch}
+.dir-desc b{color:var(--text);font-weight:600}
+.frame{border:1px solid var(--border-faint);border-radius:var(--r-lg);overflow:hidden;margin-top:16px;box-shadow:var(--shadow-tile);background:var(--bg)}
+.frame-label{display:flex;justify-content:space-between;gap:12px;padding:9px 14px;font-size:12px;font-weight:600;color:var(--muted-2);
+  background:var(--surface);border-bottom:1px solid var(--border-faint);flex-wrap:wrap}
+.pros{list-style:none;margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px 22px}
+.pros li{font-size:13px;color:var(--muted);padding-left:20px;position:relative}
+.pros li::before{content:"";position:absolute;left:2px;top:7px;width:7px;height:7px;border-radius:2px;background:var(--primary)}
+.pros li.warn::before{background:var(--muted-2)}
+.pros li b{color:var(--text);font-weight:600}
+.stage{padding:22px;background:var(--bg)}
+.page{max-width:876px;margin:0 auto}
+
+/* ── shared atoms ─────────────────────────────── */
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;border:1px solid;padding:2px 10px;font-size:12px;font-weight:600;white-space:nowrap;line-height:1.5}
+.chip .dot{width:6px;height:6px;border-radius:999px;background:currentColor;flex:none}
+.chip.ok{color:var(--success);border-color:color-mix(in oklab,var(--success) 40%,transparent);background:color-mix(in oklab,var(--success) 10%,transparent)}
+.chip.warn{color:var(--warn);border-color:color-mix(in oklab,var(--warn) 40%,transparent);background:color-mix(in oklab,var(--warn) 10%,transparent)}
+.chip.mut{color:var(--muted);border-color:var(--border);background:var(--raised)}
+.chip.bad{color:var(--danger-ink);border-color:color-mix(in oklab,var(--danger) 40%,transparent);background:color-mix(in oklab,var(--danger) 12%,transparent)}
+.stamp{display:inline-block;border:1.5px solid;border-radius:6px;padding:1px 9px;font-size:11.5px;font-weight:700;letter-spacing:.02em}
+.stamp.ok{color:var(--success);border-color:color-mix(in oklab,var(--success) 45%,transparent)}
+.stamp.bad{color:var(--danger-ink);border-color:color-mix(in oklab,var(--danger) 45%,transparent)}
+.stamp.mut{color:var(--muted);border-color:var(--border)}
+.thumb{border-radius:var(--r-md);display:grid;place-items:center;font-weight:800;color:#fff;flex:none;
+  text-shadow:0 1px 2px rgb(0 0 0 / .4);letter-spacing:.02em;overflow:hidden;position:relative}
+.thumb.mlbb{background:linear-gradient(135deg,#16337e,#0d1f4d);color:#e9c987;text-shadow:none}
+.thumb .sub{position:absolute;bottom:4px;font-size:7px;font-weight:700;letter-spacing:.12em;opacity:.72}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:var(--r-sm);
+  font-size:13.5px;font-weight:600;padding:9px 14px;border:1px solid transparent;transition:background-color .15s var(--ease-out),border-color .15s var(--ease-out)}
+.btn.primary{background:var(--primary);color:var(--primary-ink)}
+.btn.primary:hover{background:var(--primary-hi)}
+.btn.ghost{border-color:var(--border);color:var(--text);background:var(--surface)}
+.btn.ghost:hover{background:var(--raised)}
+.btn.sm{padding:6px 11px;font-size:12.5px}
+.btn.danger{border-color:color-mix(in oklab,var(--danger) 45%,transparent);color:var(--danger-ink)}
+.copy{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:6px;color:var(--muted-2);
+  border:1px solid transparent;transition:color .15s,border-color .15s;vertical-align:middle}
+.copy:hover{color:var(--text);border-color:var(--border)}
+.copy:active{transform:translateY(1px)}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.back:hover{color:var(--primary)}
+.mut-t{color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px}
+.card-h{font-size:12px;font-weight:700;color:var(--muted-2);letter-spacing:.02em;margin-bottom:10px}
+.divd{border-top:1px dashed var(--border);margin:12px 0}
+
+/* ═══ A · ใบเสร็จ ═══ */
+.page.slip{max-width:560px}
+.rc{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:22px 22px 26px;box-shadow:var(--shadow-tile)}
+.rc::after{content:"";position:absolute;left:12px;right:12px;top:100%;height:7px;
+  background-image:radial-gradient(circle at 5px 0,var(--surface) 5px,transparent 5.5px);
+  background-size:10px 7px;background-repeat:repeat-x}
+.rc-back{display:block;margin-bottom:12px}
+.rc-idrow{display:flex;align-items:center;gap:4px}
+.rc-no{font-size:17px;font-weight:700;letter-spacing:.01em}
+.rc-meta{display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap}
+.rc-meta .when{font-size:12.5px;color:var(--muted)}
+.rc-sep{position:relative;margin:16px -22px;border-top:1px dashed var(--border)}
+.rc-sep::before,.rc-sep::after{content:"";position:absolute;top:-9px;width:18px;height:18px;border-radius:50%;background:var(--bg)}
+.rc-sep::before{left:-9px}
+.rc-sep::after{right:-9px}
+.rc-sect+.rc-sect{margin-top:14px}
+.rc-h{font-size:11.5px;font-weight:700;color:var(--muted-2);letter-spacing:.04em;margin-bottom:8px}
+.lead{display:flex;align-items:baseline;gap:6px;font-size:13.5px}
+.lead+.lead{margin-top:3px}
+.lead .dots{flex:1 1 auto;min-width:14px;border-bottom:1px dotted var(--border);transform:translateY(-3px)}
+.lead .v{font-weight:600;min-width:0}
+.lead.sub{color:var(--muted);font-size:12.5px;padding-left:0}
+.lead.sub .v{font-weight:500}
+.tot{display:flex;justify-content:space-between;gap:12px;font-size:13.5px}
+.tot .l{color:var(--muted)}
+.tot+.tot{margin-top:5px}
+.tot.minus .v{color:var(--success)}
+.tot.big{margin-top:10px;padding-top:11px;border-top:1px dashed var(--border);font-size:16px;font-weight:700}
+.tot.big .v{color:var(--primary);font-size:19px}
+.tl{display:flex;gap:10px;font-size:12.5px;align-items:flex-start}
+.tl+.tl{margin-top:7px}
+.tl .t{width:46px;flex:none;color:var(--muted-2);font-weight:600}
+.tl .m{width:7px;height:7px;border-radius:50%;background:var(--border);flex:none;margin-top:6px}
+.tl.ok .m{background:var(--success)}
+.tl.bad .m{background:var(--danger)}
+.tl.off{color:var(--muted-2)}
+.tl.off .m{background:var(--border)}
+.rc-acts{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.rc-acts .btn{flex:1 1 150px}
+.rc-note{margin-top:12px;font-size:12px;color:var(--muted-2);display:flex;gap:6px;align-items:flex-start}
+.pin{margin-top:8px;background:var(--raised);border-radius:var(--r-sm);padding:9px 11px}
+.pin .pv{font-size:12.5px;font-weight:600;letter-spacing:.02em}
+
+/* ═══ B · ติดตามสถานะ ═══ */
+.tk{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-tile);overflow:hidden}
+.tk-top{padding:18px 18px 0}
+.tk-hrow{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-top:10px}
+.tk-no{font-size:17px;font-weight:700;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.tk-when{font-size:12.5px;color:var(--muted);margin-top:2px}
+.tk-hr{margin-left:auto;display:flex;align-items:center;gap:10px}
+.tk-amt{font-size:19px;font-weight:700;color:var(--primary)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);padding:22px 6px 4px}
+.stp{position:relative;padding-top:28px;text-align:center;min-width:0}
+.stp::before{content:"";position:absolute;top:12px;left:0;right:0;height:2px;background:var(--border)}
+.stp:first-child::before{left:50%}
+.stp:last-child::before{right:50%}
+.stp.l-ok::before{background:color-mix(in oklab,var(--success) 60%,var(--border))}
+.stp.l-bad::before{background:color-mix(in oklab,var(--success) 60%,var(--border))}
+.stp.l-off::before{background:var(--border)}
+.stp-dot{position:absolute;top:3px;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;
+  display:grid;place-items:center;background:var(--raised);border:2px solid var(--border);color:var(--muted-2)}
+.stp.ok .stp-dot{background:color-mix(in oklab,var(--success) 18%,var(--surface));border-color:var(--success);color:var(--success)}
+.stp.bad .stp-dot{background:color-mix(in oklab,var(--danger) 18%,var(--surface));border-color:var(--danger);color:var(--danger-ink)}
+.stp b{display:block;font-size:12.5px;font-weight:600;padding:0 4px}
+.stp.off b{color:var(--muted-2);font-weight:500}
+.stp .t{display:block;font-size:11.5px;color:var(--muted-2);margin-top:1px}
+.stp.bad .t{color:var(--danger-ink)}
+.tk-body{padding:8px 18px 18px}
+.srow{display:grid;grid-template-columns:26px 1fr;gap:12px}
+.srail{display:flex;flex-direction:column;align-items:center;gap:0}
+.sdot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;border:1px solid var(--border);background:var(--raised);color:var(--muted-2)}
+.srow.ok .sdot{border-color:color-mix(in oklab,var(--success) 50%,transparent);background:color-mix(in oklab,var(--success) 14%,var(--surface));color:var(--success)}
+.srow.bad .sdot{border-color:color-mix(in oklab,var(--danger) 50%,transparent);background:color-mix(in oklab,var(--danger) 14%,var(--surface));color:var(--danger-ink)}
+.sline{flex:1;width:2px;background:var(--border);margin:4px 0 0;min-height:14px}
+.srow.ok .sline{background:color-mix(in oklab,var(--success) 40%,var(--border))}
+.srow:last-child .sline{display:none}
+.scard{padding-bottom:16px}
+.sc-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:14px;font-weight:700}
+.sc-h .t{font-size:12px;font-weight:500;color:var(--muted-2)}
+.sc-b{margin-top:10px;border:1px solid var(--border);border-radius:var(--r-md);padding:13px;background:var(--bg)}
+.srow.off .sc-b{border-style:dashed;background:transparent}
+.srow.off .sc-h{color:var(--muted-2);font-weight:600}
+.itemrow{display:flex;align-items:center;gap:12px}
+.itemrow .thumb{width:52px;height:52px;font-size:13px}
+.itemrow .ii{min-width:0;flex:1}
+.itemrow .ii b{display:block;font-size:14px;font-weight:700}
+.itemrow .ii span{display:block;font-size:12.5px;color:var(--muted)}
+.itemrow .rt{text-align:right;flex:none}
+.itemrow .rt .q{display:block;font-size:12.5px;color:var(--muted-2)}
+.itemrow .rt .p{display:block;font-size:14px;font-weight:700}
+.tk-acts{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 18px}
+.tk-acts .btn{flex:1 1 160px}
+
+/* ═══ C · แผงคู่ ═══ */
+.dk-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.dk-no{font-size:17px;font-weight:700;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.dk-when{font-size:12.5px;color:var(--muted);margin-top:2px}
+.dk-cols{display:grid;grid-template-columns:minmax(0,1fr) 286px;gap:16px;align-items:start}
+.dk-main{display:flex;flex-direction:column;gap:14px;min-width:0}
+.dk-side{position:sticky;top:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:15px}
+.pc-h{font-size:11.5px;font-weight:700;color:var(--muted-2);letter-spacing:.04em;margin-bottom:11px}
+.tlr{display:flex;gap:11px;font-size:13px;align-items:flex-start}
+.tlr+.tlr{margin-top:9px}
+.tlr .m{width:8px;height:8px;border-radius:50%;background:var(--border);flex:none;margin-top:5px}
+.tlr.ok .m{background:var(--success)}
+.tlr.bad .m{background:var(--danger)}
+.tlr .tx{min-width:0;flex:1}
+.tlr .tx b{display:block;font-weight:600}
+.tlr .tx span{display:block;font-size:12px;color:var(--muted-2)}
+.tlr .tm{font-size:12px;color:var(--muted-2);flex:none}
+.side-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;box-shadow:var(--shadow-tile)}
+.side-amt{font-size:26px;font-weight:800;color:var(--primary);margin-top:9px;line-height:1.2}
+.side-rows{margin-top:12px;padding-top:12px;border-top:1px dashed var(--border)}
+.side-rows .tot{font-size:13px}
+.side-pay{margin-top:12px;padding-top:12px;border-top:1px dashed var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:600}
+.side-acts{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.side-help{font-size:12px;color:var(--muted-2);text-align:center;line-height:1.5}
+
+/* ═══ D · ปกเกม ═══ */
+.cv-hero{position:relative;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow-tile)}
+.cv-art{position:relative;height:172px;display:flex;align-items:flex-end;overflow:hidden;background:linear-gradient(135deg,#16337e,#0d1f4d)}
+.cv-art .glow{position:absolute;right:-14%;bottom:8%;width:58%;height:78%;transform:rotate(-14deg);background:#0d1f4d;opacity:.85}
+.cv-mono{position:absolute;left:20px;top:18px;font-size:30px;font-weight:800;line-height:1;color:#e9c987}
+.cv-mono small{display:block;margin-top:6px;font-size:9.5px;font-weight:700;letter-spacing:.16em;opacity:.72}
+.cv-scrim{position:absolute;inset:0;background:linear-gradient(to top,rgb(10 8 12 / .88) 0%,rgb(10 8 12 / .45) 46%,rgb(10 8 12 / .18) 100%)}
+.cv-ov{position:absolute;inset:0;padding:16px 18px;display:flex;flex-direction:column;justify-content:flex-end;gap:7px}
+.cv-ov .top{position:absolute;top:14px;left:18px;right:18px;display:flex;align-items:center;gap:10px}
+.cv-ov .top .back{color:#eceae9;opacity:.86}
+.cv-no{font-size:16px;font-weight:700;display:flex;align-items:center;gap:4px;color:#f3f1f0;flex-wrap:wrap}
+.cv-foot-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cv-amt{font-size:24px;font-weight:800;color:var(--primary);line-height:1.15}
+.cv-game{font-size:13px;color:rgb(236 234 233 / .78);font-weight:600}
+.cv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.mtile{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;min-width:0}
+.mtile .mh{font-size:11px;font-weight:700;color:var(--muted-2);letter-spacing:.03em}
+.mtile .mv{display:block;margin-top:6px;font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.mtile .mv.sm{font-size:12.5px;font-weight:500;color:var(--muted)}
+.cv-row{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:12px;margin-top:12px}
+
+/* ═══ mobile strip ═══ */
+.mob-strip{display:flex;gap:16px;overflow-x:auto;padding-bottom:6px}
+.mob{width:320px;flex:none}
+.mob-frame{border:1px solid var(--border-faint);border-radius:var(--r-lg);overflow:hidden;background:var(--bg)}
+.mob-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 11px;background:var(--raised);border-bottom:1px solid var(--border-faint);font-size:11.5px;font-weight:700}
+.mob-in{padding:12px;display:flex;flex-direction:column;gap:10px}
+.mcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px}
+.msticky{display:flex;align-items:center;gap:8px;background:var(--raised-2);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px}
+.msticky .btn{flex:1}
+.mlabel{font-size:11px;font-weight:700;color:var(--muted-2);letter-spacing:.03em}
+
+/* ═══ notes ═══ */
+.note{margin-top:64px;background:var(--surface);border:1px solid var(--border-faint);border-radius:var(--r-lg);padding:20px 22px}
+.note h3{font-size:16px;font-weight:700}
+.note ul{margin-top:12px;list-style:none;display:grid;gap:9px}
+.note li{font-size:13px;color:var(--muted);padding-left:20px;position:relative;max-width:92ch}
+.note li::before{content:"";position:absolute;left:2px;top:7px;width:7px;height:7px;border-radius:2px;background:var(--primary)}
+.note li b{color:var(--text);font-weight:600}
+.note li.fix::before{background:var(--danger)}
+
+@media (max-width:760px){
+  .dk-cols{grid-template-columns:minmax(0,1fr)}
+  .dk-side{position:static}
+  .cv-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cv-row{grid-template-columns:minmax(0,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr);gap:16px 0}
+  .stage{padding:14px}
+  .itemrow{flex-wrap:wrap}
+  .itemrow .rt{width:100%;display:flex;justify-content:flex-end;align-items:baseline;gap:8px}
+  .itemrow .rt .q{margin-right:auto}
+  .sc-h{min-width:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+<div class="doc">
+
+  <header class="doc-head">
+    <p class="doc-kicker">LNWTERMGAME · frontend-new</p>
+    <h1 class="doc-title">หน้ารายละเอียดคําสั่งซื้อ — 4 ทิศทางดีไซน์</h1>
+    <p class="doc-sub">หน้า <b>/dashboard/orders/[orderId]</b> วันนี้เป็นกล่องเทา 4 ใบซ้อนกัน (หัว + รายการ + การชําระเงิน + การส่งสินค้า)
+      น้ําหนักเท่ากันหมด ไม่มีภาพเกม ไม่มีลําดับเวลา และปุ่มกลับอยู่ล่างสุด — ทั้ง 4 แบบนี้จัดโครงใหม่คนละหลักการ
+      แต่ใช้ข้อมูลจริงชุดเดียวกันทุกแบบ: ออเดอร์ <b>ORD-MTUBDPH1-EV1S0Y</b> · MLBB Diamonds Malaysia · 2501 Diamonds + 475 Bonus
+      · ยกเลิก · ชําระไม่สําเร็จ · <b>฿1,581.98</b> ทุกแบบมีสองเฟรม: สถานะยกเลิก (ของจริง) และสถานะสําเร็จ (สลับค่าสถานะใบเดียวกัน)</p>
+  </header>
+
+  <nav class="doc-nav">
+    <span class="lbl">ทิศทาง:</span>
+    <a class="jump" href="#a">A · ใบเสร็จ</a>
+    <a class="jump" href="#b">B · ติดตามสถานะ</a>
+    <a class="jump" href="#c">C · แผงคู่</a>
+    <a class="jump" href="#d">D · ปกเกม</a>
+    <a class="jump" href="#m">มือถือ 320px</a>
+    <a class="jump" href="#note">หมายเหตุกลาง</a>
+  </nav>
+
+  <!-- ════════════ A ════════════ -->
+  <section class="dir" id="a">
+    <div class="dir-label">
+      <span class="dir-letter">A</span>
+      <span class="dir-name">ใบเสร็จ — Transaction Slip</span>
+      <span class="dir-tag">เอกสารชิ้นเดียว · คอลัมน์เดียว</span>
+    </div>
+    <p class="dir-desc">มองหน้านี้เป็น <b>เอกสารหลักฐานการซื้อหนึ่งใบ</b> ไม่ใช่ dashboard — การ์ดเดียวจบ มีเส้นปรุ (perforation)
+      คั่นส่วนเหมือนสลิปจริง ชื่อรายการกับราคาต่อกันด้วยจุดไข่ปลา (dotted leader) แบบใบเสร็จ และสถานะใช้ <b>ตราประทับสี่เหลี่ยม</b> แทน pill
+      ความลึกของข้อมูลมาจากลําดับบรรทัด ไม่ใช่จากกล่องหลายชั้น — คนไทยอ่านสลิปโอนเงินทุกวันจึงไม่ต้องเรียนรู้ใหม่</p>
+
+    <figure class="frame">
+      <figcaption class="frame-label"><span>สถานะ: ยกเลิก · ชําระไม่สําเร็จ — ออเดอร์จริง</span><span>เดสก์ท็อป · 560px กลางจอ</span></figcaption>
+      <div class="stage"><div class="page slip">
+        <div class="rc">
+          <a class="back rc-back" href="#a">
+            <svg class="ic sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            คําสั่งซื้อของฉัน
+          </a>
+          <div class="rc-idrow">
+            <span class="rc-no num">ORD-MTUBDPH1-EV1S0Y</span>
+            <button class="copy" aria-label="คัดลอกเลขที่คําสั่งซื้อ"><svg class="ic sm" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          </div>
+          <div class="rc-meta">
+            <span class="when num">9 ก.ย. 2569 · 23:29</span>
+            <span class="stamp mut">ยกเลิก</span>
+          </div>
+
+          <div class="rc-sep"></div>
+
+          <div class="rc-sect">
+            <div class="rc-h">รายการ</div>
+            <div class="lead"><span>Mobile Legends Diamonds Malaysia</span><span class="dots"></span><span class="v num">฿1,630.91</span></div>
+            <div class="lead sub"><span>2501 Diamonds + 475 Bonus · ×1</span></div>
+            <div class="lead sub"><span>UID <span class="num">42131</span> · เซิร์ฟเวอร์ <span class="num">4213123</span></span></div>
+          </div>
+
+          <div class="rc-sect">
+            <div class="tot"><span class="l">ยอดรวมย่อย</span><span class="v num">฿1,630.91</span></div>
+            <div class="tot minus"><span class="l">ส่วนลดแพ็กเกจ</span><span class="v num">−฿48.93</span></div>
+            <div class="tot big"><span>ยอดชําระ</span><span class="v num">฿1,581.98</span></div>
+          </div>
+
+          <div class="rc-sep"></div>
+
+          <div class="rc-sect">
+            <div class="rc-h">การชําระเงิน</div>
+            <div class="lead"><span>ช่องทาง</span><span class="dots"></span><span class="v">พร้อมเพย์</span></div>
+            <div class="lead"><span>สถานะ</span><span class="dots"></span><span class="v"><span class="stamp bad">ไม่สําเร็จ</span></span></div>
+          </div>
+
+          <div class="rc-sect">
+            <div class="rc-h">การส่งสินค้า</div>
+            <div class="lead"><span>สถานะ</span><span class="dots"></span><span class="v mut-t">ไม่ได้จัดส่ง — ยกเลิกก่อนส่ง</span></div>
+          </div>
+
+          <div class="rc-sect">
+            <div class="rc-h">ลําดับเหตุการณ์</div>
+            <div class="tl ok"><span class="t num">23:29</span><span class="m"></span><span>รับคําสั่งซื้อเข้าระบบ</span></div>
+            <div class="tl bad"><span class="t num">23:29</span><span class="m"></span><span>ชําระเงินไม่สําเร็จ ไม่มีการตัดเงินจากบัญชี</span></div>
+            <div class="tl off"><span class="t num">—</span><span class="m"></span><span>จัดส่งสินค้า (ไม่เกิดขึ้น)</span></div>
+          </div>
+
+          <div class="rc-acts">
+            <button class="btn primary">ซื้ออีกครั้ง</button>
+            <button class="btn ghost"><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.2 2.6c-.6.2-.9.7-.9 1.4v.5"/><path d="M12 17h.01"/></svg>ติดต่อทีมงาน</button>
+          </div>
+          <p class="rc-note"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>เก็บเลขที่คําสั่งซื้อไว้แจ้งทีมงานได้ทันทีหากต้องการตรวจสอบ</p>
+        </div>
+      </div></div>
+    </figure>
+
+    <figure class="frame">
+      <figcaption class="frame-label"><span>สถานะ: สําเร็จ — สลับค่าสถานะของออเดอร์เดียวกัน</span><span>โครงเดิม เปลี่ยนเฉพาะบรรทัดสถานะ + เพิ่มรหัสสินค้า</span></figcaption>
+      <div class="stage"><div class="page slip">
+        <div class="rc">
+          <a class="back rc-back" href="#a">
+            <svg class="ic sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            คําสั่งซื้อของฉัน
+          </a>
+          <div class="rc-idrow">
+            <span class="rc-no num">ORD-MTUBDPH1-EV1S0Y</span>
+            <button class="copy" aria-label="คัดลอกเลขที่คําสั่งซื้อ"><svg class="ic sm" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+          </div>
+          <div class="rc-meta">
+            <span class="when num">9 ก.ย. 2569 · 23:29</span>
+            <span class="stamp ok">สําเร็จ</span>
+          </div>
+
+          <div class="rc-sep"></div>
+
+          <div class="rc-sect">
+            <div class="rc-h">รายการ</div>
+            <div class="lead"><span>Mobile Legends Diamonds Malaysia</span><span class="dots"></span><span class="v num">฿1,630.91</span></div>
+            <div class="lead sub"><span>2501 Diamonds + 475 Bonus · ×1</span></div>
+            <div class="lead sub"><span>UID <span class="num">42131</span> · เซิร์ฟเวอร์ <span class="num">4213123</span></span></div>
+          </div>
+
+          <div class="rc-sect">
+            <div class="tot"><span class="l">ยอดรวมย่อย</span><span class="v num">฿1,630.91</span></div>
+            <div class="tot minus"><span class="l">ส่วนลดแพ็กเกจ</span><span class="v num">−฿48.93</span></div>
+            <div class="tot big"><span>ยอดชําระ</span><span class="v num">฿1,581.98</span></div>
+          </div>
+
+          <div class="rc-sep"></div>
+
+          <div class="rc-sect">
+            <div class="rc-h">การชําระเงิน</div>
+            <div class="lead"><span>ช่องทาง</span><span class="dots"></span><span class="v">พร้อมเพย์</span></div>
+            <div class="lead"><span>เลขอ้างอิง</span><span class="dots"></span><span class="v num">PP-88421905</span></div>
+            <div class="lead"><span>สถานะ</span><span class="dots"></span><span class="v"><span class="stamp ok">สําเร็จ</span></span></div>
+          </div>
+
+          <div class="rc-sect">
+            <div class="rc-h">การส่งสินค้า</div>
+            <div class="lead"><span>ช่องทาง</span><span class="dots"></span><span class="v">เติมเข้าบัญชีเกมโดยตรง</span></div>
+            <div class="lead"><span>สถานะ</span><span class="dots"></span><span class="v"><span class="stamp ok">ส่งแล้ว 23:30</span></span></div>
+          </div>
+
+          <div class="rc-sect">
+            <div class="rc-h">ลําดับเหตุการณ์</div>
+            <div class="tl ok"><span class="t num">23:29</span><span class="m"></span><span>รับคําสั่งซื้อเข้าระบบ</span></div>
+            <div class="tl ok"><span class="t num">23:29</span><span class="m"></span><span>ชําระเงินสําเร็จ — พร้อมเพย์</span></div>
+            <div class="tl ok"><span class="t num">23:30</span><span class="m"></span><span>เติม Diamond เข้าบัญชี 42131 แล้ว</span></div>
+          </div>
+
+          <div class="rc-acts">
+            <button class="btn primary">ซื้ออีกครั้ง</button>
+            <button class="btn ghost"><svg class="ic sm" viewBox="0 0 24 24"><path d="M6 9V4h12v5M6 18H4v-6h16v6h-2"/><rect x="6" y="13" width="12" height="7" rx="1"/></svg>ขอใบเสร็จ</button>
+          </div>
+        </div>
+      </div></div>
+    </figure>
+
+    <ul class="pros">
+      <li><b>อ่านจบในสายตาเดียว</b> — ทุกบรรทัดเป็นคู่ "หัวข้อ … ค่า" ความกว้างคงที่ ตากวาดลงตรง ๆ ไม่ต้องเลือกอ่าน</li>
+      <li><b>มือถือดีที่สุดในสี่แบบ</b> — โครงคอลัมน์เดียวอยู่แล้ว ย่อลง 320px ได้โดยไม่ต้องจัดใหม่</li>
+      <li>รูปทรงใบเสร็จ/สลิปคือสิ่งที่คนไทยเชื่อถือที่สุดในบริบท "จ่ายเงินแล้วหรือยัง"</li>
+      <li>ข้อมูลเท่าเดิมแต่ใช้พื้นที่น้อยกว่าเดิมมาก เพราะไม่มีการ์ดซ้อนการ์ด</li>
+      <li class="warn">ปุ่มกระทําการ (ซื้ออีกครั้ง/ติดต่อทีมงาน) อยู่ล่างสุด — ต้องเลื่อนลงจึงเจอ</li>
+      <li class="warn">การ์ดเดียวจะยาวกว่าแบบอื่นถ้าออเดอร์มีหลายรายการ หรือมีรหัสสินค้าหลายชุด</li>
+    </ul>
+  </section>
+
+  <!-- ════════════ B ════════════ -->
+  <section class="dir" id="b">
+    <div class="dir-label">
+      <span class="dir-letter">B</span>
+      <span class="dir-name">ติดตามสถานะ — Order Tracker</span>
+      <span class="dir-tag">โครงสร้าง = ลําดับเวลา · แนะนํา</span>
+    </div>
+    <p class="dir-desc">ตอบคําถามอันดับหนึ่งของหน้านี้ให้จบก่อน: <b>"ถึงไหนแล้ว"</b> — แถบสถานะ 4 ขั้นอยู่บนสุด แล้วเนื้อหาทั้งหน้า
+      เรียงตามลําดับเหตุการณ์จริง (รับคําสั่งซื้อ → ชําระเงิน → จัดส่ง → สําเร็จ) แต่ละขั้นมีรายละเอียดของตัวเองอยู่ข้างใน
+      จุดตัดของแถบคือจุดที่ออเดอร์ตาย — มองเห็นทันทีว่าไปค้างที่ขั้นไหนโดยไม่ต้องอ่านบรรทัดไหนเลย</p>
+
+    <figure class="frame">
+      <figcaption class="frame-label"><span>สถานะ: ยกเลิก · แถบขาดที่ขั้น "ชําระเงิน" — ออเดอร์จริง</span><span>เดสก์ท็อป · 876px (พื้นที่เนื้อหาจริง)</span></figcaption>
+      <div class="stage"><div class="page">
+        <div class="tk">
+          <div class="tk-top">
+            <a class="back" href="#b"><svg class="ic sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>คําสั่งซื้อของฉัน</a>
+            <div class="tk-hrow">
+              <div>
+                <div class="tk-no num">ORD-MTUBDPH1-EV1S0Y
+                  <button class="copy" aria-label="คัดลอกเลขที่คําสั่งซื้อ"><svg class="ic sm" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+                </div>
+                <div class="tk-when num">สร้างเมื่อ 9 ก.ย. 2569 · 23:29</div>
+              </div>
+              <div class="tk-hr">
+                <span class="chip mut"><span class="dot"></span>ยกเลิก</span>
+                <span class="tk-amt num">฿1,581.98</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <div class="stp ok l-ok"><span class="stp-dot"><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><b>รับคําสั่งซื้อ</b><span class="t num">23:29</span></div>
+            <div class="stp bad l-bad"><span class="stp-dot"><svg class="ic sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></span><b>ชําระเงิน</b><span class="t num">23:29 · ไม่สําเร็จ</span></div>
+            <div class="stp off l-off"><span class="stp-dot"></span><b>จัดส่งสินค้า</b><span class="t num">—</span></div>
+            <div class="stp off l-off"><span class="stp-dot"></span><b>สําเร็จ</b><span class="t num">—</span></div>
+          </div>
+
+          <div class="tk-body">
+            <div class="srow ok">
+              <span class="srail"><span class="sdot"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 3 3 7.5v9L12 21l9-4.5v-9z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg></span><span class="sline"></span></span>
+              <div class="scard">
+                <div class="sc-h">รับคําสั่งซื้อ <span class="t num">9 ก.ย. 2569 · 23:29</span></div>
+                <div class="sc-b">
+                  <div class="itemrow">
+                    <span class="thumb mlbb">MLBB<span class="sub">DIAMONDS</span></span>
+                    <span class="ii">
+                      <b>Mobile Legends Diamonds Malaysia</b>
+                      <span>2501 Diamonds + 475 Bonus</span>
+                      <span class="num">UID 42131 · เซิร์ฟเวอร์ 4213123</span>
+                    </span>
+                    <span class="rt"><span class="q num">×1</span><span class="p num">฿1,581.98</span></span>
+                  </div>
+                  <div class="divd"></div>
+                  <div class="tot"><span class="l">ยอดรวมย่อย</span><span class="v num">฿1,630.91</span></div>
+                  <div class="tot minus"><span class="l">ส่วนลดแพ็กเกจ</span><span class="v num">−฿48.93</span></div>
+                  <div class="tot big"><span>ยอดชําระ</span><span class="v num">฿1,581.98</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="srow bad">
+              <span class="srail"><span class="sdot"><svg class="ic sm" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg></span><span class="sline"></span></span>
+              <div class="scard">
+                <div class="sc-h">ชําระเงิน <span class="t num">9 ก.ย. 2569 · 23:29</span></div>
+                <div class="sc-b">
+                  <div class="lead"><span>ช่องทาง</span><span class="dots"></span><span class="v">พร้อมเพย์</span></div>
+                  <div class="lead"><span>สถานะ</span><span class="dots"></span><span class="v"><span class="stamp bad">ไม่สําเร็จ</span></span></div>
+                  <p class="rc-note" style="margin-top:10px"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>ยังไม่มีการตัดเงินจากบัญชีของคุณ คําสั่งซื้อนี้จึงถูกยกเลิกอัตโนมัติ</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="srow off">
+              <span class="srail"><span class="sdot"><svg class="ic sm" viewBox="0 0 24 24"><path d="M3 16V6h11v10M14 9h4l3 3v4h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg></span><span class="sline"></span></span>
+              <div class="scard">
+                <div class="sc-h">จัดส่งสินค้า <span class="t">ยังไม่เริ่ม</span></div>
+                <div class="sc-b"><span class="mut-t" style="font-size:13px">ออเดอร์ถูกยกเลิกก่อนถึงขั้นนี้ จึงไม่มีการเติม Diamond เข้าบัญชี</span></div>
+              </div>
+            </div>
+
+            <div class="srow off">
+              <span class="srail"><span class="sdot"><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+              <div class="scard">
+                <div class="sc-h">สําเร็จ <span class="t">—</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tk-acts">
+            <button class="btn primary">ซื้ออีกครั้ง</button>
+            <button class="btn ghost"><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.2 2.6c-.6.2-.9.7-.9 1.4v.5"/><path d="M12 17h.01"/></svg>ติดต่อทีมงาน</button>
+          </div>
+        </div>
+      </div></div>
+    </figure>
+
+    <figure class="frame">
+      <figcaption class="frame-label"><span>สถานะ: สําเร็จ — แถบเต็มทั้ง 4 ขั้น</span><span>สลับค่าสถานะของออเดอร์เดียวกัน</span></figcaption>
+      <div class="stage"><div class="page">
+        <div class="tk">
+          <div class="tk-top">
+            <a class="back" href="#b"><svg class="ic sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>คําสั่งซื้อของฉัน</a>
+            <div class="tk-hrow">
+              <div>
+                <div class="tk-no num">ORD-MTUBDPH1-EV1S0Y
+                  <button class="copy" aria-label="คัดลอกเลขที่คําสั่งซื้อ"><svg class="ic sm" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+                </div>
+                <div class="tk-when num">สร้างเมื่อ 9 ก.ย. 2569 · 23:29</div>
+              </div>
+              <div class="tk-hr">
+                <span class="chip ok"><span class="dot"></span>สําเร็จ</span>
+                <span class="tk-amt num">฿1,581.98</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <div class="stp ok l-ok"><span class="stp-dot"><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><b>รับคําสั่งซื้อ</b><span class="t num">23:29</span></div>
+            <div class="stp ok l-ok"><span class="stp-dot"><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><b>ชําระเงิน</b><span class="t num">23:29</span></div>
+            <div class="stp ok l-ok"><span class="stp-dot"><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><b>จัดส่งสินค้า</b><span class="t num">23:30</span></div>
+            <div class="stp ok l-ok"><span class="stp-dot"><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><b>สําเร็จ</b><span class="t num">23:30</span></div>
+          </div>
+
+          <div class="tk-body">
+            <div class="srow ok">
+              <span class="srail"><span class="sdot"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 3 3 7.5v9L12 21l9-4.5v-9z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg></span><span class="sline"></span></span>
+              <div class="scard">
+                <div class="sc-h">รับคําสั่งซื้อ <span class="t num">9 ก.ย. 2569 · 23:29</span></div>
+                <div class="sc-b">
+                  <div class="itemrow">
+                    <span class="thumb mlbb">MLBB<span class="sub">DIAMONDS</span></span>
+                    <span class="ii">
+                      <b>Mobile Legends Diamonds Malaysia</b>
+                      <span>2501 Diamonds + 475 Bonus</span>
+                      <span class="num">UID 42131 · เซิร์ฟเวอร์ 4213123</span>
+                    </span>
+                    <span class="rt"><span class="q num">×1</span><span class="p num">฿1,581.98</span></span>
+                  </div>
+                  <div class="divd"></div>
+                  <div class="tot"><span class="l">ยอดรวมย่อย</span><span class="v num">฿1,630.91</span></div>
+                  <div class="tot minus"><span class="l">ส่วนลดแพ็กเกจ</span><span class="v num">−฿48.93</span></div>
+                  <div class="tot big"><span>ยอดชําระ</span><span class="v num">฿1,581.98</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="srow ok">
+              <span class="srail"><span class="sdot"><svg class="ic sm" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg></span><span class="sline"></span></span>
+              <div class="scard">
+                <div class="sc-h">ชําระเงิน <span class="t num">9 ก.ย. 2569 · 23:29</span></div>
+                <div class="sc-b">
+                  <div class="lead"><span>ช่องทาง</span><span class="dots"></span><span class="v">พร้อมเพย์</span></div>
+                  <div class="lead"><span>เลขอ้างอิงผู้ให้บริการ</span><span class="dots"></span><span class="v num">PP-88421905</span></div>
+                  <div class="lead"><span>ยอดที่ชําระ</span><span class="dots"></span><span class="v num">฿1,581.98</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="srow ok">
+              <span class="srail"><span class="sdot"><svg class="ic sm" viewBox="0 0 24 24"><path d="M3 16V6h11v10M14 9h4l3 3v4h-7"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg></span><span class="sline"></span></span>
+              <div class="scard">
+                <div class="sc-h">จัดส่งสินค้า <span class="t num">9 ก.ย. 2569 · 23:30</span></div>
+                <div class="sc-b">
+                  <div class="lead"><span>วิธีจัดส่ง</span><span class="dots"></span><span class="v">เติมเข้าบัญชีเกมโดยตรง</span></div>
+                  <div class="lead"><span>ปลายทาง</span><span class="dots"></span><span class="v num">UID 42131 · เซิร์ฟเวอร์ 4213123</span></div>
+                  <div class="lead"><span>สถานะ</span><span class="dots"></span><span class="v"><span class="stamp ok">สําเร็จ</span></span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="srow ok">
+              <span class="srail"><span class="sdot"><svg class="ic sm" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+              <div class="scard">
+                <div class="sc-h">สําเร็จ <span class="t num">9 ก.ย. 2569 · 23:30</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tk-acts">
+            <button class="btn primary">ซื้ออีกครั้ง</button>
+            <button class="btn ghost"><svg class="ic sm" viewBox="0 0 24 24"><path d="M6 9V4h12v5M6 18H4v-6h16v6h-2"/><rect x="6" y="13" width="12" height="7" rx="1"/></svg>ขอใบเสร็จ</button>
+          </div>
+        </div>
+      </div></div>
+    </figure>
+
+    <ul class="pros">
+      <li><b>ตอบ "ถึงไหนแล้ว" ได้ก่อนอ่านบรรทัดแรก</b> — แถบ 4 ขั้นคือคําตอบ และจุดที่ขาดบอกว่าค้างที่ไหน</li>
+      <li><b>สถานะล้มเหลวเด่นชัดโดยไม่ต้องตีความ</b> — แถบขาดสีแดง + คําอธิบาย "ไม่มีการตัดเงิน" ติดกัน</li>
+      <li>ทุกรายละเอียดอยู่ในลําดับที่เกิดจริง ไม่ต้องเดาว่าบล็อกไหนสําคัญกว่า</li>
+      <li>โครงเดียวกับที่คนไทยเห็นในแอปพัสดุทุกวัน — ไม่มีต้นทุนการเรียนรู้</li>
+      <li>เพิ่มสถานะใหม่ (คืนเงิน, รอตรวจสอบ) ได้โดยไม่ต้องรื้อโครง</li>
+      <li class="warn">แถบ 4 ขั้นบนจอแคบต้องยุบเป็น 2×2 หรือแนวตั้ง (ดูส่วนมือถือ)</li>
+      <li class="warn">ออเดอร์ที่มีหลายรายการจะทําให้ขั้น "รับคําสั่งซื้อ" ยาวกว่าขั้นอื่นมาก</li>
+    </ul>
+  </section>
+
+  <!-- ════════════ C ════════════ -->
+  <section class="dir" id="c">
+    <div class="dir-label">
+      <span class="dir-letter">C</span>
+      <span class="dir-name">แผงคู่ — Sticky Summary Desk</span>
+      <span class="dir-tag">เนื้อหา + แผงสรุป · งาน/ธุรกิจ</span>
+    </div>
+    <p class="dir-desc">แบบที่ "เป็นระบบ" ที่สุด — เนื้อหาออเดอร์อยู่ซ้าย แผงสรุปยอด/สถานะ/ปุ่มกระทําการ <b>ตรึงอยู่ขวา</b>
+      ตลอดการเลื่อน หลักการเดียวกับหน้าสรุปการชําระเงินและหน้า invoice ระบบบัญชี: ข้อมูลขยับได้ แผงตัดสินใจไม่ขยับ
+      เหมาะกับคนที่เปิดหน้านี้เพื่อ <b>จัดการ</b> ไม่ใช่แค่ดู — แต่ต้องยอมแลกพื้นที่แนวนอน</p>
+
+    <figure class="frame">
+      <figcaption class="frame-label"><span>สถานะ: ยกเลิก · แผงขวาตรึง มีปุ่มครบโดยไม่ต้องเลื่อน — ออเดอร์จริง</span><span>เดสก์ท็อป · 876px</span></figcaption>
+      <div class="stage"><div class="page">
+        <div class="dk-head">
+          <a class="back" href="#c"><svg class="ic sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>คําสั่งซื้อของฉัน</a>
+          <div>
+            <div class="dk-no num">ORD-MTUBDPH1-EV1S0Y
+              <button class="copy" aria-label="คัดลอกเลขที่คําสั่งซื้อ"><svg class="ic sm" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+            </div>
+            <div class="dk-when num">สร้างเมื่อ 9 ก.ย. 2569 · 23:29</div>
+          </div>
+        </div>
+
+        <div class="dk-cols">
+          <div class="dk-main">
+            <section class="pc">
+              <h2 class="pc-h">รายการ</h2>
+              <div class="itemrow">
+                <span class="thumb mlbb">MLBB<span class="sub">DIAMONDS</span></span>
+                <span class="ii">
+                  <b>Mobile Legends Diamonds Malaysia</b>
+                  <span>2501 Diamonds + 475 Bonus</span>
+                  <span class="num">UID 42131 · เซิร์ฟเวอร์ 4213123</span>
+                </span>
+                <span class="rt"><span class="q num">×1</span><span class="p num">฿1,581.98</span></span>
+              </div>
+            </section>
+
+            <section class="pc">
+              <h2 class="pc-h">การส่งสินค้า</h2>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <span class="chip mut"><span class="dot"></span>ไม่ได้จัดส่ง</span>
+                <span class="mut-t" style="font-size:13px">คําสั่งซื้อถูกยกเลิกก่อนถึงขั้นจัดส่ง</span>
+              </div>
+            </section>
+
+            <section class="pc">
+              <h2 class="pc-h">ลําดับเหตุการณ์</h2>
+              <div class="tlr ok"><span class="m"></span><span class="tx"><b>รับคําสั่งซื้อเข้าระบบ</b><span>บันทึกคําสั่งซื้อและตัดสต็อกแพ็กเกจแล้ว</span></span><span class="tm num">23:29</span></div>
+              <div class="tlr bad"><span class="m"></span><span class="tx"><b>ชําระเงินไม่สําเร็จ</b><span>พร้อมเพย์ · ไม่มีการตัดเงินจากบัญชี</span></span><span class="tm num">23:29</span></div>
+              <div class="tlr"><span class="m"></span><span class="tx"><b>จัดส่งสินค้า</b><span>ไม่เกิดขึ้น — ออเดอร์ยกเลิก</span></span><span class="tm num">—</span></div>
+              <div class="tlr"><span class="m"></span><span class="tx"><b>สําเร็จ</b><span>ไม่เกิดขึ้น</span></span><span class="tm num">—</span></div>
+            </section>
+          </div>
+
+          <aside class="dk-side">
+            <div class="side-card">
+              <span class="chip mut"><span class="dot"></span>ยกเลิก</span>
+              <div class="side-amt num">฿1,581.98</div>
+              <div class="side-rows">
+                <div class="tot"><span class="l">ยอดรวมย่อย</span><span class="v num">฿1,630.91</span></div>
+                <div class="tot minus"><span class="l">ส่วนลดแพ็กเกจ</span><span class="v num">−฿48.93</span></div>
+                <div class="tot big"><span>ยอดชําระ</span><span class="v num">฿1,581.98</span></div>
+              </div>
+              <div class="side-pay">
+                <svg class="ic sm mut-t" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+                พร้อมเพย์
+                <span class="stamp bad" style="margin-left:auto">ไม่สําเร็จ</span>
+              </div>
+              <div class="side-acts">
+                <button class="btn primary">ซื้ออีกครั้ง</button>
+                <button class="btn ghost"><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.2 2.6c-.6.2-.9.7-.9 1.4v.5"/><path d="M12 17h.01"/></svg>ติดต่อทีมงาน</button>
+              </div>
+            </div>
+            <p class="side-help">ทีมงานออนไลน์ทุกวัน 24 ชั่วโมง<br>แจ้งเลขที่คําสั่งซื้อเพื่อตรวจสอบได้ทันที</p>
+          </aside>
+        </div>
+      </div></div>
+    </figure>
+
+    <figure class="frame">
+      <figcaption class="frame-label"><span>สถานะ: สําเร็จ — แผงขวาเปลี่ยนชุดปุ่มตามสถานะ</span><span>สลับค่าสถานะของออเดอร์เดียวกัน</span></figcaption>
+      <div class="stage"><div class="page">
+        <div class="dk-head">
+          <a class="back" href="#c"><svg class="ic sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>คําสั่งซื้อของฉัน</a>
+          <div>
+            <div class="dk-no num">ORD-MTUBDPH1-EV1S0Y
+              <button class="copy" aria-label="คัดลอกเลขที่คําสั่งซื้อ"><svg class="ic sm" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+            </div>
+            <div class="dk-when num">สร้างเมื่อ 9 ก.ย. 2569 · 23:29</div>
+          </div>
+        </div>
+
+        <div class="dk-cols">
+          <div class="dk-main">
+            <section class="pc">
+              <h2 class="pc-h">รายการ</h2>
+              <div class="itemrow">
+                <span class="thumb mlbb">MLBB<span class="sub">DIAMONDS</span></span>
+                <span class="ii">
+                  <b>Mobile Legends Diamonds Malaysia</b>
+                  <span>2501 Diamonds + 475 Bonus</span>
+                  <span class="num">UID 42131 · เซิร์ฟเวอร์ 4213123</span>
+                </span>
+                <span class="rt"><span class="q num">×1</span><span class="p num">฿1,581.98</span></span>
+              </div>
+            </section>
+
+            <section class="pc">
+              <h2 class="pc-h">การส่งสินค้า</h2>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <span class="chip ok"><span class="dot"></span>สําเร็จ</span>
+                <span style="font-size:13px">เติมเข้าบัญชีเกมโดยตรง · <span class="num">9 ก.ย. 2569 23:30</span></span>
+              </div>
+            </section>
+
+            <section class="pc">
+              <h2 class="pc-h">ลําดับเหตุการณ์</h2>
+              <div class="tlr ok"><span class="m"></span><span class="tx"><b>รับคําสั่งซื้อเข้าระบบ</b><span>บันทึกคําสั่งซื้อและตัดสต็อกแพ็กเกจแล้ว</span></span><span class="tm num">23:29</span></div>
+              <div class="tlr ok"><span class="m"></span><span class="tx"><b>ชําระเงินสําเร็จ</b><span>พร้อมเพย์ · REF PP-88421905</span></span><span class="tm num">23:29</span></div>
+              <div class="tlr ok"><span class="m"></span><span class="tx"><b>จัดส่งสินค้าสําเร็จ</b><span>เติม Diamond เข้าบัญชี 42131 แล้ว</span></span><span class="tm num">23:30</span></div>
+              <div class="tlr ok"><span class="m"></span><span class="tx"><b>คําสั่งซื้อสําเร็จ</b><span>ปิดรายการ</span></span><span class="tm num">23:30</span></div>
+            </section>
+          </div>
+
+          <aside class="dk-side">
+            <div class="side-card">
+              <span class="chip ok"><span class="dot"></span>สําเร็จ</span>
+              <div class="side-amt num">฿1,581.98</div>
+              <div class="side-rows">
+                <div class="tot"><span class="l">ยอดรวมย่อย</span><span class="v num">฿1,630.91</span></div>
+                <div class="tot minus"><span class="l">ส่วนลดแพ็กเกจ</span><span class="v num">−฿48.93</span></div>
+                <div class="tot big"><span>ยอดชําระ</span><span class="v num">฿1,581.98</span></div>
+              </div>
+              <div class="side-pay">
+                <svg class="ic sm mut-t" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+                พร้อมเพย์
+                <span class="stamp ok" style="margin-left:auto">สําเร็จ</span>
+              </div>
+              <div class="side-acts">
+                <button class="btn primary">ซื้ออีกครั้ง</button>
+                <button class="btn ghost"><svg class="ic sm" viewBox="0 0 24 24"><path d="M6 9V4h12v5M6 18H4v-6h16v6h-2"/><rect x="6" y="13" width="12" height="7" rx="1"/></svg>ขอใบเสร็จ</button>
+              </div>
+            </div>
+            <p class="side-help">ใบเสร็จอิเล็กทรอนิกส์ออกได้ทุกเมื่อ<br>จากปุ่มด้านบน</p>
+          </aside>
+        </div>
+      </div></div>
+    </figure>
+
+    <ul class="pros">
+      <li><b>ปุ่มกระทําการไม่หายไปไหน</b> — แผงขวาตรึง ทั้งสถานะ ยอด และปุ่มอยู่ในจอเสมอ ไม่ต้องเลื่อนหา</li>
+      <li>แยก "ข้อมูล" กับ "การตัดสินใจ" ออกจากกันชัดเจน — อ่านง่ายกว่าสําหรับคนที่จัดการหลายออเดอร์</li>
+      <li>ผังเดียวกับหน้า invoice/ใบเสร็จของระบบบัญชี และเข้ากับหน้า product detail ที่ใช้แผงขวาตรึงอยู่แล้ว</li>
+      <li>ยอดรวมย่อย/ส่วนลด/ยอดชําระ แสดงครบเป็นมาตรฐาน — ของเดิมไม่มียอดรวมย่อยเลย</li>
+      <li>บนมือถือแปลงเป็นแถบล่างตรึง (ยอด + ปุ่ม) ได้ตรง ๆ — เป็นแพตเทิร์นที่ผู้ใช้คุ้นจากอีคอมเมิร์ซ</li>
+      <li class="warn">บนจอแคบกว่า 900px แผงขวาต้องตกไปอยู่ล่าง ทำให้ต้องเลื่อนผ่านเนื้อหาทั้งหมดก่อนเจอปุ่ม</li>
+      <li class="warn">ใช้พื้นที่แนวนอนมากกว่าสี่แบบอื่น เนื้อหาหลักแคบลง</li>
+    </ul>
+  </section>
+
+  <!-- ════════════ D ════════════ -->
+  <section class="dir" id="d">
+    <div class="dir-label">
+      <span class="dir-letter">D</span>
+      <span class="dir-name">ปกเกม — Cover Hero</span>
+      <span class="dir-tag">จดจําด้วยภาพปก · ต่อเนื่องกับหน้าสินค้า</span>
+    </div>
+    <p class="dir-desc">ใช้ <b>ภาพปกเกมเป็นพระเอก</b> — เปิดหน้ามาเห็นว่าออเดอร์นี้คือเกมอะไรทันที เพราะสมองจําภาพได้เร็วกว่าอ่านชื่อ
+      ภาพใช้ระบบ GameCover ตัวเดียวกับหน้าแคตตาล็อกและหน้าสินค้า (ปกจาก DNA ประจําเกมเมื่อยังไม่มี imageUrl)
+      ด้านล่างเป็นตารางข้อมูล 4 ช่องสแกนเร็ว แล้วค่อยปิดท้ายด้วยลําดับเหตุการณ์ — เลือกแบบนี้คือเลือกให้น้ําหนักกับ "จําได้" มากกว่า "จัดการ"</p>
+
+    <figure class="frame">
+      <figcaption class="frame-label"><span>สถานะ: ยกเลิก — ปกเกมเป็นพระเอก · ตราประทับสถานะบนภาพ — ออเดอร์จริง</span><span>เดสก์ท็อป · 876px</span></figcaption>
+      <div class="stage"><div class="page">
+        <div class="cv-hero">
+          <div class="cv-art mlbb" style="background:linear-gradient(135deg,#16337e,#0d1f4d)">
+            <span class="glow" aria-hidden></span>
+            <span class="cv-mono">MLBB<small>DIAMONDS</small></span>
+          </div>
+          <div class="cv-scrim" aria-hidden></div>
+          <div class="cv-ov">
+            <div class="top">
+              <a class="back" href="#d"><svg class="ic sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>คําสั่งซื้อของฉัน</a>
+              <span class="chip mut" style="margin-left:auto"><span class="dot"></span>ยกเลิก</span>
+            </div>
+            <div class="cv-foot-row">
+              <span class="cv-amt num">฿1,581.98</span>
+              <span class="cv-no num">ORD-MTUBDPH1-EV1S0Y
+                <button class="copy" style="color:#eceae9" aria-label="คัดลอกเลขที่คําสั่งซื้อ"><svg class="ic sm" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+              </span>
+            </div>
+            <span class="cv-game">Mobile Legends Diamonds Malaysia · 2501 Diamonds + 475 Bonus · 9 ก.ย. 2569 23:29</span>
+          </div>
+        </div>
+
+        <div class="cv-grid">
+          <div class="mtile"><span class="mh">ข้อมูลบัญชี</span><span class="mv num">UID 42131</span><span class="mv sm num">เซิร์ฟเวอร์ 4213123</span></div>
+          <div class="mtile"><span class="mh">แพ็กเกจ</span><span class="mv">2501 Diamonds + 475 Bonus</span><span class="mv sm num">จํานวน ×1</span></div>
+          <div class="mtile"><span class="mh">การชําระเงิน</span><span class="mv">พร้อมเพย์</span><span class="mv sm"><span class="stamp bad">ไม่สําเร็จ</span></span></div>
+          <div class="mtile"><span class="mh">การส่งสินค้า</span><span class="mv mut-t">ไม่ได้จัดส่ง</span><span class="mv sm">ยกเลิกก่อนส่ง</span></div>
+        </div>
+
+        <div class="cv-row">
+          <div class="pc">
+            <h2 class="pc-h">ลําดับเหตุการณ์</h2>
+            <div class="tlr ok"><span class="m"></span><span class="tx"><b>รับคําสั่งซื้อเข้าระบบ</b><span>9 ก.ย. 2569</span></span><span class="tm num">23:29</span></div>
+            <div class="tlr bad"><span class="m"></span><span class="tx"><b>ชําระเงินไม่สําเร็จ</b><span>ไม่มีการตัดเงินจากบัญชี</span></span><span class="tm num">23:29</span></div>
+            <div class="tlr"><span class="m"></span><span class="tx"><b>จัดส่งสินค้า</b><span>ไม่เกิดขึ้น</span></span><span class="tm num">—</span></div>
+            <div class="tlr"><span class="m"></span><span class="tx"><b>สําเร็จ</b><span>ไม่เกิดขึ้น</span></span><span class="tm num">—</span></div>
+          </div>
+          <div class="pc" style="display:flex;flex-direction:column">
+            <h2 class="pc-h">ยอดชําระ</h2>
+            <div class="tot"><span class="l">ยอดรวมย่อย</span><span class="v num">฿1,630.91</span></div>
+            <div class="tot minus"><span class="l">ส่วนลดแพ็กเกจ</span><span class="v num">−฿48.93</span></div>
+            <div class="tot big"><span>ยอดชําระ</span><span class="v num">฿1,581.98</span></div>
+            <div class="side-acts" style="margin-top:auto;padding-top:14px">
+              <button class="btn primary">ซื้ออีกครั้ง</button>
+              <button class="btn ghost"><svg class="ic sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.2 2.6c-.6.2-.9.7-.9 1.4v.5"/><path d="M12 17h.01"/></svg>ติดต่อทีมงาน</button>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </figure>
+
+    <figure class="frame">
+      <figcaption class="frame-label"><span>สถานะ: สําเร็จ — สีปกเป็นตัวบอกเกม ตราประทับบนภาพเปลี่ยนเป็นเขียว</span><span>สลับค่าสถานะของออเดอร์เดียวกัน</span></figcaption>
+      <div class="stage"><div class="page">
+        <div class="cv-hero">
+          <div class="cv-art mlbb" style="background:linear-gradient(135deg,#16337e,#0d1f4d)">
+            <span class="glow" aria-hidden></span>
+            <span class="cv-mono">MLBB<small>DIAMONDS</small></span>
+          </div>
+          <div class="cv-scrim" aria-hidden></div>
+          <div class="cv-ov">
+            <div class="top">
+              <a class="back" href="#d"><svg class="ic sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>คําสั่งซื้อของฉัน</a>
+              <span class="chip ok" style="margin-left:auto"><span class="dot"></span>สําเร็จ</span>
+            </div>
+            <div class="cv-foot-row">
+              <span class="cv-amt num">฿1,581.98</span>
+              <span class="cv-no num">ORD-MTUBDPH1-EV1S0Y
+                <button class="copy" style="color:#eceae9" aria-label="คัดลอกเลขที่คําสั่งซื้อ"><svg class="ic sm" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+              </span>
+            </div>
+            <span class="cv-game">Mobile Legends Diamonds Malaysia · 2501 Diamonds + 475 Bonus · 9 ก.ย. 2569 23:29</span>
+          </div>
+        </div>
+
+        <div class="cv-grid">
+          <div class="mtile"><span class="mh">ข้อมูลบัญชี</span><span class="mv num">UID 42131</span><span class="mv sm num">เซิร์ฟเวอร์ 4213123</span></div>
+          <div class="mtile"><span class="mh">แพ็กเกจ</span><span class="mv">2501 Diamonds + 475 Bonus</span><span class="mv sm num">จํานวน ×1</span></div>
+          <div class="mtile"><span class="mh">การชําระเงิน</span><span class="mv">พร้อมเพย์</span><span class="mv sm"><span class="stamp ok">สําเร็จ</span></span></div>
+          <div class="mtile"><span class="mh">การส่งสินค้า</span><span class="mv">เติมเข้าบัญชีเกม</span><span class="mv sm num">23:30</span></div>
+        </div>
+
+        <div class="cv-row">
+          <div class="pc">
+            <h2 class="pc-h">ลําดับเหตุการณ์</h2>
+            <div class="tlr ok"><span class="m"></span><span class="tx"><b>รับคําสั่งซื้อเข้าระบบ</b><span>9 ก.ย. 2569</span></span><span class="tm num">23:29</span></div>
+            <div class="tlr ok"><span class="m"></span><span class="tx"><b>ชําระเงินสําเร็จ</b><span>พร้อมเพย์ · REF PP-88421905</span></span><span class="tm num">23:29</span></div>
+            <div class="tlr ok"><span class="m"></span><span class="tx"><b>เติม Diamond เข้าบัญชีแล้ว</b><span>UID 42131 · เซิร์ฟเวอร์ 4213123</span></span><span class="tm num">23:30</span></div>
+            <div class="tlr ok"><span class="m"></span><span class="tx"><b>คําสั่งซื้อสําเร็จ</b><span>ปิดรายการ</span></span><span class="tm num">23:30</span></div>
+          </div>
+          <div class="pc" style="display:flex;flex-direction:column">
+            <h2 class="pc-h">ยอดชําระ</h2>
+            <div class="tot"><span class="l">ยอดรวมย่อย</span><span class="v num">฿1,630.91</span></div>
+            <div class="tot minus"><span class="l">ส่วนลดแพ็กเกจ</span><span class="v num">−฿48.93</span></div>
+            <div class="tot big"><span>ยอดชําระ</span><span class="v num">฿1,581.98</span></div>
+            <div class="side-acts" style="margin-top:auto;padding-top:14px">
+              <button class="btn primary">ซื้ออีกครั้ง</button>
+              <button class="btn ghost"><svg class="ic sm" viewBox="0 0 24 24"><path d="M6 9V4h12v5M6 18H4v-6h16v6h-2"/><rect x="6" y="13" width="12" height="7" rx="1"/></svg>ขอใบเสร็จ</button>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </figure>
+
+    <ul class="pros">
+      <li><b>จําได้เร็วที่สุด</b> — เห็นภาพปกแล้วรู้ทันทีว่าเป็นเกมไหน ไม่ต้องอ่านชื่อสินค้ายาว ๆ</li>
+      <li>ภาพปกใช้ GameCover ตัวเดียวกับหน้าแคตตาล็อกและหน้าสินค้า — ภาษาเดียวกันทั้งเว็บ ไม่มีต้นทุนเพิ่ม</li>
+      <li>ตาราง 4 ช่องทําให้สแกนข้อมูลบัญชี/แพ็กเกจ/การชําระ/การส่ง ได้พร้อมกันโดยไม่ต้องเลื่อน</li>
+      <li>ออเดอร์ที่มีหลายเกมจะแยกออกจากกันด้วยสีปกทันที</li>
+      <li class="warn">น้ําหนักไปที่ "ความสวย/การจดจํา" มากกว่า "งานที่ต้องทําต่อ" — ถ้าออเดอร์ล้มเหลว ปกเกมไม่ได้ช่วยให้แก้ปัญหา</li>
+      <li class="warn">กินความสูงประมาณ 172px ของพื้นที่แรก และดูเป็นหน้า consumer มากกว่าแบบอื่น — ถ้าเป้าหมายคือความเป็นมืออาชีพ แบบ C ตรงกว่า</li>
+      <li class="warn">ต้องรอภาพโหลดก่อนเห็นข้อมูลหลัก ถ้าภาพช้า หน้าจะดูว่าง</li>
+    </ul>
+  </section>
+
+  <!-- ════════════ mobile ════════════ -->
+  <section class="dir" id="m">
+    <div class="dir-label">
+      <span class="dir-letter">M</span>
+      <span class="dir-name">มุมมองมือถือ 320px — ทั้ง 4 แบบ</span>
+      <span class="dir-tag">ตัดสินใจจริงต้องดูที่จอนี้</span>
+    </div>
+    <p class="dir-desc">เลื่อนแนวนอนได้ — แต่ละเฟรมแสดงช่วงบนของหน้า (สถานะ + เนื้อหาหลัก) และแถบล่างตรึงถ้ามี
+      เศษลูกค้าเติมเกมส่วนใหญ่มาจากมือถือ แบบที่ย่อไม่ดีจะแพ้ตั้งแต่ตรงนี้</p>
+
+    <figure class="frame">
+      <figcaption class="frame-label"><span>เลื่อนแนวนอนเพื่อเทียบทั้ง 4 แบบ</span><span>320px · สถานะยกเลิก</span></figcaption>
+      <div class="stage">
+        <div class="mob-strip">
+
+          <!-- A mobile -->
+          <div class="mob">
+            <div class="mob-frame">
+              <div class="mob-bar"><span>A · ใบเสร็จ</span><span class="num mut-t">320</span></div>
+              <div class="mob-in">
+                <a class="back" href="#a"><svg class="ic sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>คําสั่งซื้อของฉัน</a>
+                <div class="mcard">
+                  <div class="rc-no num" style="font-size:15px">ORD-MTUBDPH1-EV1S0Y</div>
+                  <div class="rc-meta" style="margin-top:4px"><span class="when num">9 ก.ย. 2569 · 23:29</span><span class="stamp mut">ยกเลิก</span></div>
+                  <div class="divd"></div>
+                  <div class="lead"><span>MLBB Diamonds Malaysia</span><span class="dots"></span><span class="v num">฿1,630.91</span></div>
+                  <div class="lead sub"><span>2501 Diamonds + 475 Bonus · ×1</span></div>
+                  <div class="lead sub"><span class="num">UID 42131 · เซิร์ฟเวอร์ 4213123</span></div>
+                  <div class="divd"></div>
+                  <div class="tot big"><span>ยอดชําระ</span><span class="v num">฿1,581.98</span></div>
+                </div>
+                <div class="msticky"><button class="btn primary" style="width:100%">ซื้ออีกครั้ง</button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- B mobile -->
+          <div class="mob">
+            <div class="mob-frame">
+              <div class="mob-bar"><span>B · ติดตามสถานะ</span><span class="num mut-t">320</span></div>
+              <div class="mob-in">
+                <a class="back" href="#b"><svg class="ic sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>คําสั่งซื้อของฉัน</a>
+                <div class="mcard">
+                  <div class="rc-no num" style="font-size:15px">ORD-MTUBDPH1-EV1S0Y</div>
+                  <div class="rc-meta" style="margin-top:4px"><span class="chip mut"><span class="dot"></span>ยกเลิก</span><span class="num" style="color:var(--primary);font-weight:700">฿1,581.98</span></div>
+                  <div class="divd"></div>
+                  <div class="tlr ok" style="margin-top:0"><span class="m"></span><span class="tx"><b>รับคําสั่งซื้อ</b></span><span class="tm num">23:29</span></div>
+                  <div class="tlr bad"><span class="m"></span><span class="tx"><b>ชําระเงินไม่สําเร็จ</b><span>พร้อมเพย์ · ไม่มีการตัดเงิน</span></span><span class="tm num">23:29</span></div>
+                  <div class="tlr"><span class="m"></span><span class="tx"><b>จัดส่งสินค้า</b><span>ไม่เกิดขึ้น</span></span><span class="tm num">—</span></div>
+                </div>
+                <div class="msticky"><button class="btn primary" style="width:100%">ซื้ออีกครั้ง</button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- C mobile -->
+          <div class="mob">
+            <div class="mob-frame">
+              <div class="mob-bar"><span>C · แผงคู่ → แถบล่างตรึง</span><span class="num mut-t">320</span></div>
+              <div class="mob-in">
+                <a class="back" href="#c"><svg class="ic sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>คําสั่งซื้อของฉัน</a>
+                <div class="mcard">
+                  <div class="rc-no num" style="font-size:15px">ORD-MTUBDPH1-EV1S0Y</div>
+                  <div class="rc-meta" style="margin-top:4px"><span class="when num">9 ก.ย. 2569 · 23:29</span><span class="stamp mut">ยกเลิก</span></div>
+                  <div class="divd"></div>
+                  <div class="itemrow">
+                    <span class="thumb mlbb" style="width:44px;height:44px;font-size:11px">MLBB<span class="sub">DIAMONDS</span></span>
+                    <span class="ii"><b style="font-size:13px">MLBB Diamonds Malaysia</b><span>2501 Diamonds + 475 Bonus</span><span class="num">UID 42131 · 4213123</span></span>
+                  </div>
+                </div>
+                <div class="msticky">
+                  <span style="min-width:0"><span class="mlabel">ยอดชําระ</span><span class="num" style="display:block;font-weight:800;color:var(--primary);font-size:17px">฿1,581.98</span></span>
+                  <button class="btn primary">ซื้ออีกครั้ง</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- D mobile -->
+          <div class="mob">
+            <div class="mob-frame">
+              <div class="mob-bar"><span>D · ปกเกม</span><span class="num mut-t">320</span></div>
+              <div class="mob-in">
+                <div style="position:relative;border-radius:var(--r-md);overflow:hidden;height:112px;background:linear-gradient(135deg,#16337e,#0d1f4d)">
+                  <span class="cv-mono" style="font-size:22px;left:14px;top:12px">MLBB<small>DIAMONDS</small></span>
+                  <div style="position:absolute;inset:0;background:linear-gradient(to top,rgb(10 8 12 / .88),rgb(10 8 12 / .3))"></div>
+                  <div style="position:absolute;left:14px;right:14px;bottom:11px;display:flex;align-items:center;gap:8px">
+                    <span class="num" style="font-size:19px;font-weight:800;color:var(--primary)">฿1,581.98</span>
+                    <span class="chip mut" style="margin-left:auto"><span class="dot"></span>ยกเลิก</span>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                  <div class="mcard" style="padding:10px"><span class="mlabel">ข้อมูลบัญชี</span><span class="num" style="display:block;font-size:12.5px;font-weight:600;margin-top:3px">UID 42131<br>4213123</span></div>
+                  <div class="mcard" style="padding:10px"><span class="mlabel">การชําระเงิน</span><span style="display:block;margin-top:3px"><span class="stamp bad">ไม่สําเร็จ</span></span></div>
+                </div>
+                <div class="msticky"><button class="btn primary" style="width:100%">ซื้ออีกครั้ง</button></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </figure>
+
+    <ul class="pros">
+      <li><b>A ง่ายที่สุดบนมือถือ</b> — โครงคอลัมน์เดียวอยู่แล้ว ไม่ต้องมีกฎ responsive พิเศษ เพิ่มแถบล่างตรึงปุ่มก็จบ</li>
+      <li><b>B ยังอ่านรู้เรื่อง</b> — แถบ 4 ขั้นในแนวนอนเปลี่ยนเป็นรายการไทม์ไลน์แนวตั้ง ซึ่งเป็นรูปมือถืออยู่แล้ว</li>
+      <li><b>C ต้องออกแบบสองชุด</b> — แผงขวาต้องกลายเป็นแถบล่างตรึง ต้องคุม notched safe area และคุมความสูงไม่ให้บังเนื้อหา</li>
+      <li><b>D สูญเสียจุดขายบนมือถือ</b> — ปกที่ตั้งใจให้ใหญ่ ถูกบีบเหลือ 112px จนความได้เปรียบเรื่องภาพหายไป</li>
+    </ul>
+  </section>
+
+  <!-- ════════════ notes ════════════ -->
+  <section class="note" id="note">
+    <h3>หมายเหตุกลาง — ใช้ร่วมกันทุกแบบที่เลือก</h3>
+    <ul>
+      <li class="fix"><b>บั๊กที่มีอยู่จริงในหน้าปัจจุบัน:</b> ออเดอร์สถานะยกเลิก/ชําระไม่สําเร็จ ยังขึ้นบล็อก "การส่งสินค้า · รอดําเนินการ" สีเหลือง
+        ทั้งที่ไม่มีอะไรจะส่ง — ทุกแบบข้างบนแก้เป็น "ไม่ได้จัดส่ง — ยกเลิกก่อนส่ง" และให้บล็อกนี้ไม่ขึ้นเลยเมื่อออเดอร์ยังไม่ถึงขั้นจัดส่ง</li>
+      <li><b>ปุ่มย้อนกลับย้ายขึ้นบน</b> — ของเดิมอยู่บรรทัดล่างสุดหลังทุกบล็อก ต้องเลื่อนผ่านทั้งหน้าเพื่อกลับ</li>
+      <li><b>เพิ่มยอดรวมย่อย/ส่วนลด/ยอดชําระ</b> — ของเดิมโชว์แค่ราคารวมบรรทัดเดียว ทำให้ส่วนลดที่ได้รับมองไม่เห็น</li>
+      <li><b>คัดลอกเลขที่คําสั่งซื้อได้ทุกแบบ</b> — เลขยาว 20 ตัวพิมพ์ตามไม่ได้ ทีมงานถามเลขนี้ทุกครั้งที่ติดต่อ</li>
+      <li><b>คําอธิบายสถานะต้องบอก "เงิน" ให้ชัด</b> — ชําระไม่สําเร็จต้องระบุว่าไม่มีการตัดเงิน ส่วนสถานะล้มเหลวหลังตัดเงินต้องบอกว่าจะคืนเมื่อไร</li>
+      <li><b>ปุ่มยกเลิกคําสั่งซื้อ (มีเฉพาะ PENDING)</b> ควรเป็นปุ่มรองสีดําไม่ใช่ปุ่มหลัก และอยู่ในเมนู "เพิ่มเติม" ไม่ใช่ข้าง ๆ ปุ่มซื้ออีกครั้ง</li>
+      <li><b>ข้อมูลคงเดิมทั้งหมด</b> — ทุกฟิลด์มาจาก response จริงของ <span class="num">GET /api/orders/:id</span> และ <span class="num">/api/deliveries</span> ไม่ต้องเพิ่ม endpoint ใหม่</li>
+      <li><b>ตัวเลือกที่ต้องตัดสินก่อนลงมือ:</b> สถานะไหนบ้างที่ถือว่า "ต้องโทรหาทีมงาน" เพื่อให้ปุ่มติดต่อทีมงานเด่นขึ้นโดยอัตโนมัติ</li>
+    </ul>
+  </section>
+
+</div>
+</body>
+</html>

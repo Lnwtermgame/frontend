@@ -11,6 +11,7 @@ export const qk = {
   orders: (params: ListParams) => ["orders", params] as const,
   order: (id: string) => ["order", id] as const,
   deliveries: (params: ListParams) => ["deliveries", params] as const,
+  deliveryStatus: (orderId: string) => ["delivery-status", orderId] as const,
   invoices: (params: ListParams) => ["invoices", params] as const,
   invoice: (id: string) => ["invoice", id] as const,
   coupons: (params: ListParams) => ["coupons", params] as const,

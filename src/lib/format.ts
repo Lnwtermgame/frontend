@@ -4,3 +4,7 @@ export function formatDateTime(iso: string): string {
     timeStyle: "short",
   }).format(new Date(iso));
 }
+
+export function formatTime(iso: string): string {
+  return new Intl.DateTimeFormat("th-TH", { timeStyle: "short" }).format(new Date(iso));
+}

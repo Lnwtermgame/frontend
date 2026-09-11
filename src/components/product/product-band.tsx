@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { GameCover, coverDnaFor } from "@/components/product/game-cover";
 import { extractDominantColor, shadeDarker } from "@/lib/color-extract";
+import { assetUrl } from "@/lib/asset-url";
 import type { Product } from "@/lib/api/products";
 
 const FALLBACK_SUB: Record<Product["productType"], string> = {
@@ -42,7 +43,7 @@ export function ProductBand({
     setAccent(null);
     if (!product.imageUrl) return;
     let alive = true;
-    extractDominantColor(product.imageUrl)
+    extractDominantColor(assetUrl(product.imageUrl))
       .then((hex) => {
         if (alive) setAccent(hex);
       })

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { assetUrl } from "@/lib/asset-url";
 
 export type CoverDna = {
   c1: string;
@@ -57,7 +58,7 @@ export function GameCover({
   if (imageUrl) {
     return (
       <div className="relative aspect-square overflow-hidden rounded-xl">
-        <Image src={imageUrl} alt={name} fill sizes={sizes} className="object-cover" />
+        <Image src={assetUrl(imageUrl)} alt={name} fill sizes={sizes} className="object-cover" />
       </div>
     );
   }

@@ -140,6 +140,9 @@
   html {
     @apply font-sans;
     overflow-x: clip;
+    /* scrollbar ต้อง render ตลอด — ตอน Radix Select/dialog lock (body overflow:hidden)
+       scrollbar จะกระพริบที่ขอบขวาทุกครั้งที่เปิด-ปิด และ div ขยายก็ทำหน้าเลื่อนซ้าย */
+    overflow-y: scroll;
   }
   body {
     @apply bg-background text-foreground;

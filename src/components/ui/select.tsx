@@ -59,7 +59,9 @@ function SelectTrigger({
 function SelectContent({
   className,
   children,
-  position = "item-aligned",
+  // popper = popup โผล่ใต้ trigger แบบ popover มาตรฐาน (item-aligned ทับ trigger
+  // และเนียนแบบ native select — ดูไม่เนี้ยบในธีมเรา)
+  position = "popper",
   align = "center",
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Content>) {

@@ -18,6 +18,7 @@ import { verifyPlayer, verifyMobileRecharge } from "@/lib/api/products";
 import type { Product, ProductTypePublic, SeagmField } from "@/lib/api/products";
 import { formatTHB, lineTotal } from "@/lib/pricing";
 import { ApiError } from "@/lib/api/client";
+import { resolveVerifyFailure, resolveVerifyOutcome } from "@/lib/verify-outcome";
 import { useAuthStore } from "@/stores/auth";
 
 export interface BuyPayload {
@@ -68,7 +69,10 @@ export function OrderSummary({
   const [values, setValues] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [qty, setQty] = useState(1);
-  const [verifyState, setVerifyState] = useState<"idle" | "checking" | "ok" | "fail">("idle");
+  const [verifyState, setVerifyState] = useState<
+    "idle" | "checking" | "ok" | "fail" | "skipped" | "unavailable"
+  >("idle");
+  const [revealVerify, setRevealVerify] = useState(false);
   const [verifyMessage, setVerifyMessage] = useState<string | null>(null);
   const [optionCode, setOptionCode] = useState<string | null>(null);
 
@@ -81,6 +85,7 @@ export function OrderSummary({
     setErrors({});
     setVerifyState("idle");
     setVerifyMessage(null);
+    setRevealVerify(false);
     setQty(selectedType ? Math.max(selectedType.minAmount, 1) : 1);
   }, [selectedType?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -88,8 +93,24 @@ export function OrderSummary({
   const isMobileRecharge = product.productType === "MOBILE_RECHARGE";
 
   const verified = verifyState === "ok";
-  const requiresVerify = Boolean(selectedType && fields.length > 0);
+  // The backend only blocks an order when the provider answers "supported but
+  // invalid". Mirror that here: an unavailable check must not gate the buy.
+  const requiresVerifyInputs = Boolean(selectedType && fields.length > 0);
+  const verifyUnavailable = verifyState === "unavailable";
   const accountLocked = verified; // ล็อกฟิลด์หลังตรวจสอบผ่าน กันแก้ไอดีพลาดโดยไม่รู้ตัว
+
+  // ยังไม่ตรวจสอบ = ปุ่มซื้อเป็นขั้น "ไปตรวจสอบก่อน" (ไม่บล็อกการซื้อ)
+  // ตรวจสอบไม่ได้ = เตือน แต่ยอมให้ซื้อ (backend ตรวจซ้ำตอนสร้างออเดอร์อยู่แล้ว)
+  // ผู้ใช้ที่ยังไม่ล็อกอินให้ไปหน้า login ตรง ๆ — ตรวจสอบก่อนไม่มีประโยชน์
+  const showBuyHint =
+    isAuthenticated && requiresVerifyInputs && !verified && !revealVerify;
+  const handleBuyAttempt = () => {
+    if (showBuyHint) {
+      setRevealVerify(true);
+      return;
+    }
+    handleBuy();
+  };
 
   const handleVerify = async () => {
     if (!selectedType) return;
@@ -106,22 +127,26 @@ export function OrderSummary({
             undefined,
           )
         : await verifyPlayer(product.id, values, selectedType.id);
-      if (result.valid) {
+      const outcome = resolveVerifyOutcome(result);
+      if (outcome.state === "ok") {
         setVerifyState("ok");
-        setVerifyMessage(result.message || t("verified"));
-      } else {
-        setVerifyState("fail");
-        setVerifyMessage(t("verifyFailed"));
+        setVerifyMessage(
+          outcome.accountName
+            ? t("verifiedAs", { name: outcome.accountName })
+            : t("verified"),
+        );
+        return;
       }
+      setVerifyState(outcome.state);
+      setVerifyMessage(t(outcome.messageKey));
     } catch (err) {
-      setVerifyState("fail");
-      const info = err instanceof ApiError ? err.infoCode : undefined;
+      // The request itself failed (network, server) — not the player's fault.
+      const outcome = resolveVerifyFailure(
+        err instanceof ApiError ? err.infoCode : undefined,
+      );
+      setVerifyState(outcome.state);
       setVerifyMessage(
-        info === "20133" || info === "20093"
-          ? t("playerInvalid")
-          : info === "20114"
-            ? t("phoneRegionMismatch")
-            : t("verifyFailed"),
+        outcome.state === "ok" ? t("verified") : t(outcome.messageKey),
       );
     }
   };
@@ -130,6 +155,7 @@ export function OrderSummary({
     // ปลดล็อก = ต้องตรวจสอบใหม่เสมอ (กันแก้ไอดีแล้วลืมว่ายังไม่ได้เช็ค)
     setVerifyState("idle");
     setVerifyMessage(null);
+    setRevealVerify(false);
   };
 
   const handleBuy = () => {
@@ -152,10 +178,10 @@ export function OrderSummary({
 
   const qtyMax = selectedType?.maxAmount ?? 1;
   const qtyMin = selectedType?.minAmount ?? 1;
-  const buyDisabled = !selectedType || buying || (requiresVerify && !verified);
+  const buyDisabled = !selectedType || buying;
   const buyLabel = buying
     ? t("buying")
-    : requiresVerify && !verified
+    : !verified && !revealVerify
       ? t("needVerify")
       : t("buy");
 
@@ -218,7 +244,13 @@ export function OrderSummary({
             {verifyMessage ? (
               <p
                 role="alert"
-                className={`mt-1.5 text-xs ${verifyState === "ok" ? "text-status-success" : "text-destructive"}`}
+                className={`mt-1.5 text-xs ${
+                  verifyState === "ok"
+                    ? "text-status-success"
+                    : verifyState === "unavailable"
+                      ? "text-muted-foreground"
+                      : "text-destructive"
+                }`}
               >
                 {verifyState === "ok" ? "✓ " : ""}
                 {verifyMessage}
@@ -287,10 +319,15 @@ export function OrderSummary({
           className="mt-3.5 w-full"
           size="lg"
           disabled={buyDisabled}
-          onClick={handleBuy}
+          onClick={handleBuyAttempt}
         >
           {buyLabel}
         </Button>
+        {verifyUnavailable && !verified ? (
+          <p className="mt-2 text-center text-[11px] text-muted-foreground">
+            {t("buyAnywayHint")}
+          </p>
+        ) : null}
         {!isAuthenticated ? (
           <p className="mt-2 text-center text-xs text-muted-foreground">{ta("loginRequired")}</p>
         ) : null}

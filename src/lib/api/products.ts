@@ -83,6 +83,12 @@ export interface VerifyPlayerResult {
   message: string;
   accountInfo?: { username?: string; server?: string; region?: string };
   errorCode?: number;
+  /**
+   * Backend signal that verification could not run for an infrastructure
+   * reason (provider unreachable, IP not allowlisted, rate limit) — as opposed
+   * to the player's account being wrong.
+   */
+  infraError?: boolean;
 }
 
 export interface ListProductsParams {

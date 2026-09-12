@@ -38,12 +38,12 @@ export function ProductShelf({
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-2 gap-x-3.5 gap-y-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex flex-col gap-2">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex flex-col gap-1.5">
               <Skeleton className="aspect-square rounded-xl" />
-              <Skeleton className="h-4 w-3/4 rounded-md" />
-              <Skeleton className="h-3.5 w-1/2 rounded-md" />
+              <Skeleton className="h-3.5 w-3/4 rounded-md" />
+              <Skeleton className="h-3 w-1/2 rounded-md" />
             </div>
           ))}
         </div>
@@ -57,7 +57,7 @@ export function ProductShelf({
       ) : !products?.length ? (
         <p className="py-12 text-center text-sm text-muted-foreground">{tc("emptyTitle")}</p>
       ) : (
-        <div className="grid grid-cols-2 gap-x-3.5 gap-y-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {products.map((p) => (
             <ShelfTile key={p.id} product={p} />
           ))}

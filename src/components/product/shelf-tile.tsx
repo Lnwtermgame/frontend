@@ -35,23 +35,23 @@ export function ShelfTile({ product }: { product: Product }) {
   return (
     <Link
       href={`${BASE_BY_TYPE[product.productType]}/${product.slug}`}
-      className="group flex min-w-0 flex-col gap-2"
+      className="group flex min-w-0 flex-col gap-1.5"
     >
       <div className="transition-transform duration-150 group-hover:-translate-y-1">
         <GameCover
           name={product.name}
           imageUrl={product.imageUrl}
           fallbackSub={FALLBACK_SUB[product.productType]}
-          sizes="(max-width: 640px) 30vw, (max-width: 1024px) 25vw, 180px"
+          sizes="(max-width: 640px) 30vw, (max-width: 1024px) 25vw, 160px"
         />
       </div>
       <div className="min-w-0">
-        <p className="truncate text-[13px] font-semibold">{product.name}</p>
-        <p className="truncate text-xs text-muted-foreground">
+        <p className="truncate text-xs font-semibold">{product.name}</p>
+        <p className="truncate text-[11px] text-muted-foreground">
           {product.category?.name ?? FALLBACK_SUB[product.productType]}
         </p>
         {cheapest && (
-          <p className="num mt-1 text-[13.5px] font-bold text-primary">
+          <p className="num mt-0.5 text-[12.5px] font-bold text-primary">
             {THB.format(cheapest.displayPrice)}
             {cheapest.originPrice &&
               Math.round(cheapest.originPrice) > Math.round(cheapest.displayPrice) && (

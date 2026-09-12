@@ -144,11 +144,17 @@
        scrollbar จะกระพริบที่ขอบขวาทุกครั้งที่เปิด-ปิด และ div ขยายก็ทำหน้าเลื่อนซ้าย */
     overflow-y: scroll;
   }
-  /* react-remove-scroll ฉีด body[data-scroll-locked]{margin-right:10px} ชดเชย
-     scrollbar ที่มันคิดว่าจะหาย — แต่ scrollbar ของเราถาวร margin จึงกลายเป็น
-     ช่องว่างด้านขวาตอน dropdown/dialog active (specificity 0-1-2 ชนะกฎที่ฉีด 0-1-1) */
+  /* react-remove-scroll (Radix Select/dialog lock) ฉีด body[data-scroll-locked]
+     { margin-right:10px; overflow:hidden; position:relative }:
+     - margin-right 10px = ชดเชย scrollbar ที่คิดว่าจะหาย แต่ scrollbar เราถาวร → กลายเป็น gap ขวา
+     - overflow:hidden ทำ body เป็น scroll container → header sticky เสียการ stick
+       และหายไปตอน scroll ลงแล้วเปิด dropdown/dialog
+     ยกเลิกทั้งสองอย่าง — ตัว lock กัน scroll ด้วย event interception อยู่แล้ว
+     (wheel/touch/key) ส่วน scrollbar อยู่ที่ html ไม่ใช่ body อยู่แล้ว
+     (specificity 0-1-2 ชนะกฎที่ฉีด 0-1-1) */
   html body[data-scroll-locked] {
     margin-right: 0 !important;
+    overflow: visible !important;
   }
   body {
     @apply bg-background text-foreground;

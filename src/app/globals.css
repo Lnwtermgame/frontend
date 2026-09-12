@@ -66,7 +66,9 @@
   --foreground: oklch(0.938 0.003 49);
   --card: oklch(0.24 0.009 318);
   --card-foreground: oklch(0.938 0.003 49);
-  --popover: oklch(0.222 0.007 326);
+  /* popover ต้องสว่างกว่า card — dark theme คือ "ชั้นยกขึ้น" ไม่ใช่มืดกว่า
+     (มืดกว่าทำ popup จมกับการ์ด เห็นไม่ชัดว่าลอยอยู่) */
+  --popover: oklch(0.285 0.009 320);
   --popover-foreground: oklch(0.938 0.003 49);
   --primary: oklch(0.7 0.17 45);
   --primary-foreground: oklch(0.15 0.02 45);

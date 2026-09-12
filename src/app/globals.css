@@ -144,6 +144,12 @@
        scrollbar จะกระพริบที่ขอบขวาทุกครั้งที่เปิด-ปิด และ div ขยายก็ทำหน้าเลื่อนซ้าย */
     overflow-y: scroll;
   }
+  /* react-remove-scroll ฉีด body[data-scroll-locked]{margin-right:10px} ชดเชย
+     scrollbar ที่มันคิดว่าจะหาย — แต่ scrollbar ของเราถาวร margin จึงกลายเป็น
+     ช่องว่างด้านขวาตอน dropdown/dialog active (specificity 0-1-2 ชนะกฎที่ฉีด 0-1-1) */
+  html body[data-scroll-locked] {
+    margin-right: 0 !important;
+  }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);

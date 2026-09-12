@@ -10,23 +10,34 @@ describe("resolveVerifyOutcome", () => {
   it("accepts a valid account and surfaces the verified name when present", () => {
     expect(
       resolveVerifyOutcome(
-        result({ valid: true, accountInfo: { username: "PlayerOne" } }),
+        result({ valid: true, supported: true, accountInfo: { username: "PlayerOne" } }),
       ),
     ).toEqual({ state: "ok", accountName: "PlayerOne" });
   });
 
   it("accepts a valid account that carries no account name", () => {
-    expect(resolveVerifyOutcome(result({ valid: true }))).toEqual({
+    expect(resolveVerifyOutcome(result({ valid: true, supported: true }))).toEqual({
       state: "ok",
       accountName: undefined,
     });
   });
 
-  it("treats a product without provider verification as non-blocking", () => {
-    // SEAGM answers 20136 "does not support account verification".
+  it("never reports success for a product the provider cannot verify (20136)", () => {
+    // Production regression: SEAGM answers 20136 with valid:true (backend
+    // deliberately lets the sale through) and the storefront rendered
+    // "บัญชีถูกต้อง" + locked the fields for a garbage ID. Nothing was checked.
     const outcome = resolveVerifyOutcome(
-      result({ valid: false, supported: false, errorCode: 20136 }),
+      result({ valid: true, supported: false, errorCode: 20136 }),
     );
+    expect(outcome).toEqual({
+      state: "unavailable",
+      messageKey: "verifyUnsupported",
+    });
+  });
+
+  it("never reports success when an infra error is attached to a valid flag", () => {
+    // Defense in depth: valid:true + infraError means the check did not run.
+    const outcome = resolveVerifyOutcome(result({ valid: true, infraError: true }));
     expect(outcome.state).toBe("unavailable");
   });
 

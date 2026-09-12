@@ -11,7 +11,7 @@ import type { VerifyPlayerResult } from "@/lib/api/products";
  */
 export type VerifyOutcome =
   | { state: "ok"; accountName?: string }
-  | { state: "unavailable"; messageKey: "verifyUnavailable" }
+  | { state: "unavailable"; messageKey: "verifyUnavailable" | "verifyUnsupported" }
   | {
       state: "fail";
       messageKey: "playerInvalid" | "phoneRegionMismatch" | "verifyFailed";
@@ -29,9 +29,21 @@ function failMessageKey(
 
 /** Map a successful HTTP response from the verify endpoints to an outcome. */
 export function resolveVerifyOutcome(result: VerifyPlayerResult): VerifyOutcome {
-  if (result.valid) return { state: "ok", accountName: result.accountInfo?.username };
-  if (result.infraError || !result.supported) {
+  // Order matters: an unsupported product (SEAGM 20136) comes back with
+  // valid:true — the backend lets the sale through — but nothing was actually
+  // checked, so it must never display "บัญชีถูกต้อง" or lock the fields.
+  // Only a provider-confirmed check (supported) may report success.
+  if (result.supported && result.valid && !result.infraError) {
+    return { state: "ok", accountName: result.accountInfo?.username };
+  }
+  if (result.infraError) {
     return { state: "unavailable", messageKey: "verifyUnavailable" };
+  }
+  if (!result.supported) {
+    // SEAGM 20136 — this game has no account-verification API at the provider.
+    // Buying stays allowed (the backend re-checks at order time); say so
+    // honestly instead of flashing a bogus "บัญชีถูกต้อง".
+    return { state: "unavailable", messageKey: "verifyUnsupported" };
   }
   return { state: "fail", messageKey: failMessageKey(result.errorCode) };
 }

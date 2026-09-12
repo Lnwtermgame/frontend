@@ -10,11 +10,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useFaqArticleBySlug } from "@/lib/query/hooks";
 import { markFaqHelpful } from "@/lib/api/support";
 import { DashErrorState, formatDateTime } from "@/components/dashboard/shared";
+import { decodeRouteParam } from "@/lib/route-param";
 
 export default function FaqArticlePage() {
   const t = useTranslations("support");
   const params = useParams<Record<string, string>>();
-  const slug = params?.slug ?? "";
+  const slug = decodeRouteParam(params?.slug);
   const article = useFaqArticleBySlug(slug);
   const [voted, setVoted] = useState(false);
 

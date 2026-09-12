@@ -10,11 +10,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useNewsArticle } from "@/lib/query/hooks";
 import { DashErrorState, formatDateTime } from "@/components/dashboard/shared";
+import { decodeRouteParam } from "@/lib/route-param";
 
 export default function NewsArticleDetailPage() {
   const t = useTranslations("support");
   const params = useParams<Record<string, string>>();
-  const slug = params?.slug ?? "";
+  const slug = decodeRouteParam(params?.slug);
   const article = useNewsArticle(slug);
 
   if (article.isLoading) {

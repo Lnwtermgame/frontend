@@ -17,6 +17,7 @@ import { Markdown } from "@/components/markdown";
 import { startBuyFlow } from "@/lib/buy-flow";
 import { ApiError } from "@/lib/api/client";
 import { lineTotal } from "@/lib/pricing";
+import { decodeRouteParam } from "@/lib/route-param";
 import type { ProductTypePublic } from "@/lib/api/products";
 
 export type ProductRoute = "games" | "card" | "mobile";
@@ -31,7 +32,9 @@ export function ProductPage({ route }: { route: ProductRoute }) {
   const t = useTranslations("product");
   const router = useRouter();
   const routeParams = useParams<Record<string, string>>();
-  const slug = routeParams?.[FIELD_BY_ROUTE[route]] ?? "";
+  // Dynamic params arrive percent-encoded; slugs containing spaces must be
+  // decoded before the API lookup or the slug double-encodes and 404s.
+  const slug = decodeRouteParam(routeParams?.[FIELD_BY_ROUTE[route]]);
   const query = useProductBySlug(slug);
   const user = useAuthStore((s) => s.user);
 
@@ -140,7 +143,7 @@ export function ProductPage({ route }: { route: ProductRoute }) {
   if (query.isError || !query.data) {
     return (
       <div className="mx-auto w-full max-w-6xl px-4 py-16 text-center">
-        <p className="font-semibold" role="alert">{t("orderFailed")}</p>
+        <p className="font-semibold" role="alert">{t("loadError")}</p>
       </div>
     );
   }

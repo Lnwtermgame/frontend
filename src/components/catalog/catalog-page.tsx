@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProducts } from "@/lib/query/hooks";
 import { ShelfTile } from "@/components/product/shelf-tile";
-import type { Product } from "@/lib/api/products";
+import { PlatformIcon } from "@/components/catalog/platform-icons";
+import type { GameType, Product } from "@/lib/api/products";
 
 export type CatalogMode = "games" | "card" | "mobile";
 
@@ -36,6 +37,22 @@ const SORTS: Record<SortKey, { sortBy: "salesCount" | "createdAt"; sortOrder: "a
 
 type PriceBand = "lt50" | "50to200" | "gt200";
 
+/* ลำดับแพลตฟอร์มตามความนิยม */
+const PLATFORM_ORDER: GameType[] = ["MOBILE", "PC", "STEAM", "PLAYSTATION", "XBOX", "NINTENDO", "WEBGAME"];
+
+/* i18n key ของแต่ละแพลตฟอร์ม */
+function platformLabelKey(type: GameType): string {
+  switch (type) {
+    case "PC": return "platformPc";
+    case "MOBILE": return "platformMobile";
+    case "STEAM": return "platformSteam";
+    case "PLAYSTATION": return "platformPlaystation";
+    case "XBOX": return "platformXbox";
+    case "NINTENDO": return "platformNintendo";
+    case "WEBGAME": return "platformWebgame";
+  }
+}
+
 function minPrice(p: Product): number | null {
   const types = p.types ?? [];
   return types.length ? Math.min(...types.map((t) => t.displayPrice)) : null;
@@ -53,10 +70,20 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
   const copy = COPY_BY_MODE[mode];
   const searchParams = useSearchParams();
   const urlSearch = searchParams.get("search") ?? "";
+  const urlPlatform = searchParams.get("platform") as GameType | null;
   const [search, setSearch] = useState(urlSearch);
-  const [categorySlug, setCategorySlug] = useState<string | null>(null);
+  const [gameTypeFilter, setGameTypeFilter] = useState<GameType | null>(
+    urlPlatform && PLATFORM_ORDER.includes(urlPlatform) ? urlPlatform : null,
+  );
   const [sort, setSort] = useState<SortKey>("sales");
   const [priceBand, setPriceBand] = useState<PriceBand | null>(null);
+
+  /* sync platform param ที่เปลี่ยนจาก URL (เช่น กด back) */
+  useEffect(() => {
+    setGameTypeFilter(
+      urlPlatform && PLATFORM_ORDER.includes(urlPlatform) ? urlPlatform : null,
+    );
+  }, [urlPlatform]);
 
   const products = useProducts({
     search: urlSearch || undefined,
@@ -65,36 +92,47 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
     sortOrder: SORTS[sort].sortOrder,
   });
 
+  /* สินค้าตามโหมด + มี gameType เท่านั้น (สินค้าไร้ประเภทยังไม่พร้อมแสดง) */
   const byType = useMemo(
-    () => (products.data ?? []).filter((p) => p.productType === TYPE_BY_MODE[mode]),
+    () => (products.data ?? []).filter((p) => p.productType === TYPE_BY_MODE[mode] && p.gameType),
     [products.data, mode],
   );
 
-  /* หมวดใน sidebar สร้างจากสินค้าที่แสดงจริง (group by p.category + ตัวนับ) —
-     endpoint /products/categories คืนหมวดแม่ที่สินค้าไม่ได้ผูกด้วยตรง ๆ (filter แล้วได้ 0) */
-  const derivedCategories = useMemo(() => {
-    const map = new Map<string, { slug: string; name: string; count: number }>();
+  /* แพลตฟอร์มใน sidebar — group by p.gameType นับจากสินค้าที่แสดงจริง */
+  const platformCounts = useMemo(() => {
+    const counts = new Map<GameType, number>();
     for (const p of byType) {
-      if (!p.category) continue;
-      const cur = map.get(p.category.slug);
-      if (cur) cur.count += 1;
-      else map.set(p.category.slug, { slug: p.category.slug, name: p.category.name, count: 1 });
+      const gt = p.gameType!;
+      counts.set(gt, (counts.get(gt) ?? 0) + 1);
     }
-    return [...map.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+    // เรียงตามลำดับที่กำหนด และแสดงเฉพาะแพลตฟอร์มที่มีสินค้า
+    return PLATFORM_ORDER.filter((gt) => counts.get(gt)).map((gt) => ({
+      type: gt,
+      count: counts.get(gt)!,
+    }));
   }, [byType]);
 
   const filtered = useMemo(() => {
-    let out = categorySlug ? byType.filter((p) => p.category?.slug === categorySlug) : byType;
+    let out = gameTypeFilter ? byType.filter((p) => p.gameType === gameTypeFilter) : byType;
     if (priceBand) out = out.filter((p) => inBand(minPrice(p), priceBand));
     if (sort === "priceAsc")
       out = [...out].sort((a, b) => (minPrice(a) ?? Infinity) - (minPrice(b) ?? Infinity));
     if (sort === "priceDesc")
       out = [...out].sort((a, b) => (minPrice(b) ?? -Infinity) - (minPrice(a) ?? -Infinity));
     return out;
-  }, [byType, categorySlug, priceBand, sort]);
+  }, [byType, gameTypeFilter, priceBand, sort]);
 
-  const countFor = (slug: string | null) =>
-    slug === null ? byType.length : byType.filter((p) => p.category?.slug === slug).length;
+  const countFor = (type: GameType | null) =>
+    type === null ? byType.length : byType.filter((p) => p.gameType === type).length;
+
+  const selectPlatform = (type: GameType | null) => {
+    setGameTypeFilter(type);
+    const params = new URLSearchParams(window.location.search);
+    if (type) params.set("platform", type.toLowerCase());
+    else params.delete("platform");
+    const q = params.toString();
+    window.history.replaceState(null, "", q ? `?${q}` : window.location.pathname);
+  };
 
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,13 +161,13 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
           <div className="flex gap-6 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:block lg:overflow-visible lg:pb-0">
             <div className="mb-5 min-w-[180px] flex-none lg:min-w-0">
               <h4 className="mb-2 text-[11.5px] font-bold tracking-wider text-muted-foreground/70 uppercase">
-                {t("sidebarCategories")}
+                {t("sidebarPlatform")}
               </h4>
               <button
                 type="button"
-                onClick={() => setCategorySlug(null)}
+                onClick={() => selectPlatform(null)}
                 className={`flex w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] text-[13px] font-semibold transition-colors ${
-                  categorySlug === null
+                  gameTypeFilter === null
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-card hover:text-foreground"
                 }`}
@@ -137,19 +175,22 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                 {t("filterAll")}
                 <span className="num text-[11px] text-muted-foreground/70">{countFor(null)}</span>
               </button>
-              {derivedCategories.map((c) => (
+              {platformCounts.map(({ type, count }) => (
                 <button
-                  key={c.slug}
+                  key={type}
                   type="button"
-                  onClick={() => setCategorySlug(c.slug)}
+                  onClick={() => selectPlatform(type)}
                   className={`flex w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] text-[13px] font-semibold transition-colors ${
-                    categorySlug === c.slug
+                    gameTypeFilter === type
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:bg-card hover:text-foreground"
                   }`}
                 >
-                  {c.name}
-                  <span className="num text-[11px] text-muted-foreground/70">{c.count}</span>
+                  <span className="flex items-center gap-2">
+                    <PlatformIcon type={type} className="size-[15px] opacity-80" />
+                    {t(platformLabelKey(type))}
+                  </span>
+                  <span className="num text-[11px] text-muted-foreground/70">{count}</span>
                 </button>
               ))}
             </div>

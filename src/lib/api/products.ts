@@ -41,6 +41,12 @@ export interface ProductTypePublic {
   fields?: SeagmField[];
 }
 
+/** ประเภทแพลตฟอร์มเกม — มิตินำทางบนหน้าร้าน */
+export type GameType = "PC" | "MOBILE" | "XBOX" | "PLAYSTATION" | "NINTENDO" | "STEAM" | "WEBGAME";
+
+/** ภูมิภาคขาย — มิติแสดงผล (badge บน tile) */
+export type Region = "GLOBAL" | "MALAYSIA" | "THAILAND";
+
 export interface Product {
   id: string;
   name: string;
@@ -49,6 +55,8 @@ export interface Product {
   shortDescription?: string;
   categoryId: string;
   category?: { id: string; name: string; slug: string };
+  gameType?: GameType | null;
+  region?: Region | null;
   imageUrl?: string;
   coverImageUrl?: string;
   productType: "CARD" | "DIRECT_TOPUP" | "MOBILE_RECHARGE";
@@ -95,6 +103,8 @@ export interface ListProductsParams {
   search?: string;
   isFeatured?: boolean;
   isBestseller?: boolean;
+  gameType?: GameType;
+  region?: Region;
   // หมายเหตุ: API ไม่รองรับ sortBy=price — เรียงราคาทำฝั่ง client แทน
   sortBy?: "name" | "createdAt" | "salesCount" | "viewCount";
   sortOrder?: "asc" | "desc";

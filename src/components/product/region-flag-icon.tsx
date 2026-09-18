@@ -96,6 +96,24 @@ const FLAGS: Record<string, FlagComponent> = {
   "gb-wls": IconWales, ye: IconYemen, zm: IconZambia, zw: IconZimbabwe,
 };
 
+/** กรอบศิลป์ (artboard) ของธงทั้งชุด nucleo-flags — วัดจากไอคอนจริงครบ 237 ตัวแล้วเท่ากันหมด:
+ *  ตัวธงวาดที่ x=1, y=4 ขนาด 30×24 บนกริด 32×32 (สัดส่วน 5:4) เหลือขอบโปร่งรอบละ 1 หน่วยแนวนอน
+ *  และ 4 หน่วยแนวตั้ง
+ *  ค่า viewBox นี้ถูกส่งเข้า <Icon> เพื่อแทนค่าเริ่มต้น "0 0 32 32" — ในตัว <Icon> มีการ spread
+ *  ...props ต่อท้าย viewBox จึง override ได้ (ดู vendor/nucleo-flags/dist/components/Icon.js)
+ *  ผลคือ SVG แสดงเฉพาะตัวธง ไม่มีขอบโปร่งรอบ ๆ → ธงทุกประเทศยาวเท่ากันและเต็มกรอบ badge
+ *  ถ้าอนาคตเจอธงที่วาดคนละกรอบ: เพิ่ม "รหัสประเทศ": "x y กว้าง สูง" ลงใน FLAG_VIEWBOX_OVERRIDES */
+const FLAG_VIEWBOX = "1 4 30 24";
+
+/** ขนาดธรรมชาติของ SVG ต้องเป็นสัดส่วนเดียวกับกรอบธง (30:24) ไม่ใช่จัตุรัส
+ *  เพราะไอคอนจาก vendor ตั้ง width/height = 32px ไว้ ทำให้เบราว์เซอร์เข้าใจว่า intrinsic ratio เป็น 1:1
+ *  แล้วบีบความสูงของธงให้เท่าความกว้าง (ธงดูสั้น) — ส่ง width/height ทับให้ตรงสัดส่วนจริง
+ *  จะทำให้ CSS อย่าง `h-auto w-[18px]` คิดความสูงได้เองเป็น 14.4px โดยไม่ต้องฮาร์ดโค้ดความสูง */
+const FLAG_NATURAL_WIDTH = 30;
+const FLAG_NATURAL_HEIGHT = 24;
+
+const FLAG_VIEWBOX_OVERRIDES: Record<string, string> = {};
+
 interface RegionFlagIconProps {
   /** ISO 3166-1 alpha-2 lowercase ("th", "my", "us", ...) หรือ "global" */
   code: string;
@@ -111,5 +129,12 @@ export function RegionFlagIcon({ code, className }: RegionFlagIconProps) {
   const FlagComponent = FLAGS[code];
   if (!FlagComponent) return null;
 
-  return <FlagComponent className={className} />;
+  return (
+    <FlagComponent
+      className={className}
+      viewBox={FLAG_VIEWBOX_OVERRIDES[code] ?? FLAG_VIEWBOX}
+      width={FLAG_NATURAL_WIDTH}
+      height={FLAG_NATURAL_HEIGHT}
+    />
+  );
 }

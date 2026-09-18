@@ -54,7 +54,10 @@ export function ShelfTile({ product }: { product: Product }) {
             className="absolute right-1.5 top-1.5 inline-flex items-center justify-center overflow-hidden rounded-[4px] shadow-sm transition-transform group-hover:scale-105"
             title={product.region}
           >
-            <RegionFlag region={product.region} className="size-[18px]" />
+            {/* กำหนดความกว้างอย่างเดียว ความสูงคิดตามสัดส่วนจริงของธง (5:4) ให้เอง
+                ปัจจุบันได้ 18×14.4px — ต้องอาศัย width/height ที่ส่งเข้า RegionFlagIcon
+                เพราะไอคอนจาก vendor ตั้ง 32px ไว้ ทำให้ถ้าไม่ทับจะเป็นจัตุรัส 1:1 */}
+            <RegionFlag region={product.region} className="h-auto w-[18px]" />
           </span>
         )}
       </div>

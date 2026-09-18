@@ -24,12 +24,8 @@ const THB = new Intl.NumberFormat("th-TH", {
   maximumFractionDigits: 0,
 });
 
-/** ภูมิภาค → ไอคอนธง + สีของ badge */
-const REGION_BADGE: Record<NonNullable<Product["region"]>, { className: string }> = {
-  THAILAND: { className: "bg-blue-600/90 text-white" },
-  MALAYSIA: { className: "bg-amber-500/90 text-black" },
-  GLOBAL: { className: "bg-neutral-800/80 text-white" },
-};
+/** ภูมิภาคที่แสดงธงบนการ์ด — GLOBAL ไม่มีธง (ไม่ผูกประเทศ) จึงไม่อยู่ในรายการ */
+const FLAGGED_REGIONS = new Set(["THAILAND", "MALAYSIA"]);
 
 /** แถบ tile ไร้กรอบ (ปกสี + ชื่อ + หมวด + ราคาจริง) — ภาษาเดียวกับ landing
  *  ใช้ร่วมกันทั้ง ProductShelf (หน้าแรก) และ catalog sidebar grid */
@@ -39,7 +35,7 @@ export function ShelfTile({ product }: { product: Product }) {
   const cheapest = types.length
     ? types.reduce((a, b) => (a.displayPrice <= b.displayPrice ? a : b))
     : null;
-  const regionBadge = product.region ? REGION_BADGE[product.region] : null;
+  const showFlag = !!product.region && FLAGGED_REGIONS.has(product.region);
 
   return (
     <Link
@@ -53,7 +49,7 @@ export function ShelfTile({ product }: { product: Product }) {
           fallbackSub={FALLBACK_SUB[product.productType]}
           sizes="(max-width: 640px) 30vw, (max-width: 1024px) 25vw, 160px"
         />
-        {regionBadge && product.region && (
+        {showFlag && product.region && (
           <span
             className="absolute right-1.5 top-1.5 inline-flex items-center justify-center overflow-hidden rounded-[4px] shadow-sm transition-transform group-hover:scale-105"
             title={product.region}

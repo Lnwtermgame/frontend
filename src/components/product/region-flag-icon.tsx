@@ -104,37 +104,12 @@ interface RegionFlagIconProps {
 
 /**
  * ธงประเทศจากชุด nucleo-flags (https://nucleoapp.com/svg-flag-icons)
- * รองรับครบทุกประเทศ (~200 รหัส ISO) — code = "global" แสดงลูกโลก
+ * รองรับครบทุกประเทศ (~200 รหัส ISO)
  * รายการรหัสทั้งหมด: scripts/build-flag-map.mjs → flag-component-map.ts
  */
 export function RegionFlagIcon({ code, className }: RegionFlagIconProps) {
-  if (code === "global") {
-    return <GlobalFlagIcon className={className} />;
-  }
-
   const FlagComponent = FLAGS[code];
   if (!FlagComponent) return null;
 
   return <FlagComponent className={className} />;
-}
-
-/** ลูกโลกสำหรับ GLOBAL — วาดเอง (ชุด nucleo-flags เป็นธงประเทศ ไม่มี global) */
-function GlobalFlagIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-label="ทั่วโลก (Global)"
-      role="img"
-      viewBox="0 0 32 20"
-      fill="none"
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect width="32" height="20" fill="#182338" />
-      <circle cx="16" cy="10" r="7.5" fill="#233554" stroke="#60A5FA" strokeWidth="0.9" />
-      <line x1="8.5" y1="10" x2="23.5" y2="10" stroke="#93C5FD" strokeWidth="0.8" />
-      <ellipse cx="16" cy="10" rx="7.5" ry="3.8" stroke="#93C5FD" strokeWidth="0.8" fill="none" />
-      <ellipse cx="16" cy="10" rx="3.5" ry="7.5" stroke="#93C5FD" strokeWidth="0.8" fill="none" />
-      <line x1="16" y1="2.5" x2="16" y2="17.5" stroke="#93C5FD" strokeWidth="0.8" />
-    </svg>
-  );
 }

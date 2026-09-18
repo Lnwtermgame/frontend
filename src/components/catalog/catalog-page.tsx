@@ -53,6 +53,13 @@ function platformLabelKey(type: GameType): string {
   }
 }
 
+/** อ่านค่า ?platform= จาก URL — URL เก็บเป็นตัวพิมพ์เล็ก ต้อง normalize เป็น GameType ก่อนเทียบ */
+function parsePlatformParam(raw: string | null): GameType | null {
+  if (!raw) return null;
+  const upper = raw.toUpperCase();
+  return (PLATFORM_ORDER as string[]).includes(upper) ? (upper as GameType) : null;
+}
+
 function minPrice(p: Product): number | null {
   const types = p.types ?? [];
   return types.length ? Math.min(...types.map((t) => t.displayPrice)) : null;
@@ -70,19 +77,15 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
   const copy = COPY_BY_MODE[mode];
   const searchParams = useSearchParams();
   const urlSearch = searchParams.get("search") ?? "";
-  const urlPlatform = searchParams.get("platform") as GameType | null;
+  const urlPlatform = searchParams.get("platform");
   const [search, setSearch] = useState(urlSearch);
-  const [gameTypeFilter, setGameTypeFilter] = useState<GameType | null>(
-    urlPlatform && PLATFORM_ORDER.includes(urlPlatform) ? urlPlatform : null,
-  );
+  const [gameTypeFilter, setGameTypeFilter] = useState<GameType | null>(() => parsePlatformParam(urlPlatform));
   const [sort, setSort] = useState<SortKey>("sales");
   const [priceBand, setPriceBand] = useState<PriceBand | null>(null);
 
-  /* sync platform param ที่เปลี่ยนจาก URL (เช่น กด back) */
+  /* sync เมื่อ URL เปลี่ยนจากภายนอก (กด back/forward หรือลิงก์) */
   useEffect(() => {
-    setGameTypeFilter(
-      urlPlatform && PLATFORM_ORDER.includes(urlPlatform) ? urlPlatform : null,
-    );
+    setGameTypeFilter(parsePlatformParam(urlPlatform));
   }, [urlPlatform]);
 
   const products = useProducts({
@@ -125,18 +128,23 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
   const countFor = (type: GameType | null) =>
     type === null ? byType.length : byType.filter((p) => p.gameType === type).length;
 
-  const selectPlatform = (type: GameType | null) => {
-    setGameTypeFilter(type);
+  /** อัปเดต query param โดยไม่ทับตัวอื่น (platform กับ search อยู่ร่วมกันได้) */
+  const updateUrlParam = (key: string, value: string | null) => {
     const params = new URLSearchParams(window.location.search);
-    if (type) params.set("platform", type.toLowerCase());
-    else params.delete("platform");
+    if (value) params.set(key, value);
+    else params.delete(key);
     const q = params.toString();
     window.history.replaceState(null, "", q ? `?${q}` : window.location.pathname);
   };
 
+  const selectPlatform = (type: GameType | null) => {
+    setGameTypeFilter(type);
+    updateUrlParam("platform", type ? type.toLowerCase() : null);
+  };
+
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    window.history.replaceState(null, "", `?search=${encodeURIComponent(search)}`);
+    updateUrlParam("search", search.trim() || null);
   };
 
   const sortItem = (key: SortKey, label: string) => (

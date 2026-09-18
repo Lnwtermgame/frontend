@@ -58,7 +58,7 @@ export function ShelfTile({ product }: { product: Product }) {
             className="absolute right-1.5 top-1.5 inline-flex items-center justify-center overflow-hidden rounded-[4px] shadow-sm transition-transform group-hover:scale-105"
             title={product.region}
           >
-            <RegionFlag region={product.region} className="h-3.5 w-5.5" />
+            <RegionFlag region={product.region} className="size-[18px]" />
           </span>
         )}
       </div>

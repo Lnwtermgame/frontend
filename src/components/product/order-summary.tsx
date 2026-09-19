@@ -29,19 +29,22 @@ export interface BuyPayload {
   paymentMethod: "PROMPTPAY" | "TRUEMONEY" | "LINEPAY" | "CREDIT_CARD" | "BANK_TRANSFER";
 }
 
-/* หัวข้อย่อยแบบเดียวกับ "วิธีเติม" ของหน้าแรก — ชิปเลขสี่เหลี่ยมมน ไม่ใช่วงกลม+เส้นเชื่อม */
+/* หัวข้อย่อยแบบเดียวกับ "วิธีเติม" ของหน้าแรก — ชิปเลขสี่เหลี่ยมมน ไม่ใช่วงกลม+เส้นเชื่อม
+   relative ให้วาดทับเส้นนำสายตา (absolute วาดทับ static เสมอ) + ชั้นพื้นทึบ bg-card รองใต้ tint
+   ไม่งั้นเส้นพาดหลังตัวเลขและซึมผ่านพื้นโปร่ง 15% */
 function StepChip({ n, done, active }: { n: number; done?: boolean; active?: boolean }) {
   return (
     <span
-      className={`num grid size-[22px] shrink-0 place-items-center rounded-[7px] text-[11.5px] font-bold ${
-        done
-          ? "bg-status-success/15 text-status-success"
-          : active
-            ? "bg-primary/15 text-primary"
-            : "bg-secondary text-muted-foreground"
-      }`}
+      className={`num relative grid size-[22px] shrink-0 place-items-center overflow-hidden rounded-[7px] bg-card text-[11.5px] font-bold`}
     >
-      {done ? <Check className="size-3.5" aria-hidden /> : n}
+      {/* ชั้น tint โปร่งทับบนพื้นทึบ — เส้นเชื่อมถูกบังโดยชั้นพื้น */}
+      <span
+        aria-hidden
+        className={`absolute inset-0 ${done ? "bg-status-success/15" : active ? "bg-primary/15" : ""}`}
+      />
+      <span className={`relative ${done ? "text-status-success" : active ? "text-primary" : "text-muted-foreground"}`}>
+        {done ? <Check className="size-3.5" aria-hidden /> : n}
+      </span>
     </span>
   );
 }

@@ -231,6 +231,14 @@ export function ProductPage({ route }: { route: ProductRoute }) {
         ) : null}
       </div>
 
+      {/* กันแถบสรุปตรึงขอบล่างทับเนื้อหาท้ายหน้า (เฉพาะเมื่อมีแถบจริง = เลือกแพ็กเกจแล้ว) */}
+      {selected ? (
+        <div
+          aria-hidden
+          className="h-[calc(84px+env(safe-area-inset-bottom))] lg:hidden"
+        />
+      ) : null}
+
       <ConfirmOrderDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}

@@ -20,6 +20,14 @@ function thaiPlaceholder(field: SeagmField): string | undefined {
   return field.placeholder;
 }
 
+/**
+ * ฟิลด์ข้อมูลบัญชีที่ backend กำหนดมา (User ID / Zone ID / เบอร์โทร ฯลฯ)
+ *
+ * ป้ายชื่อทุกช่องเป็น label จริง ไม่ใช่ placeholder — ข้อความในช่องเป็นเพียงตัวอย่าง
+ * เมื่อตรวจไม่ผ่าน ช่องนั้นจะติด aria-invalid + ชี้ไปที่ข้อความ error ด้วย aria-describedby
+ * เพื่อให้ screen reader อ่านเหตุผลได้ และกรอบช่องเปลี่ยนสีตามสถานะ
+ * ความสูงช่องเป็น 44px บนมือถือ (นิ้วแตะ) และ 32px บนจอใหญ่ (ตามสเกลเดิมของเว็บ)
+ */
 export function DynamicFields({
   fields,
   values,
@@ -40,8 +48,9 @@ export function DynamicFields({
     <div className="flex flex-col gap-3">
       {sorted.map((field) => {
         const error = errors[field.name];
+        const errorId = `field-${field.name}-error`;
         return (
-          <div key={field.name} className="flex flex-col gap-1">
+          <div key={field.name} className="flex flex-col gap-1.5">
             <Label htmlFor={`field-${field.name}`}>
               {field.label}
               {field.required ? " *" : ""}
@@ -52,7 +61,12 @@ export function DynamicFields({
                 onValueChange={(v) => onChange(field.name, v)}
                 disabled={disabled}
               >
-                <SelectTrigger id={`field-${field.name}`}>
+                <SelectTrigger
+                  id={`field-${field.name}`}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={error ? errorId : undefined}
+                  className="data-[size=default]:h-11 lg:data-[size=default]:h-8"
+                >
                   <SelectValue placeholder={disabled ? undefined : thaiPlaceholder(field)} />
                 </SelectTrigger>
                 <SelectContent>
@@ -66,11 +80,13 @@ export function DynamicFields({
             ) : field.multiline ? (
               <textarea
                 id={`field-${field.name}`}
-                className="min-h-[80px] rounded-[10px] border bg-transparent px-3 py-2 text-sm disabled:opacity-60"
+                className="min-h-[80px] rounded-[10px] border bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20"
                 placeholder={thaiPlaceholder(field)}
                 value={values[field.name] ?? ""}
                 onChange={(e) => onChange(field.name, e.target.value)}
                 disabled={disabled}
+                aria-invalid={Boolean(error)}
+                aria-describedby={error ? errorId : undefined}
               />
             ) : (
               <Input
@@ -79,11 +95,13 @@ export function DynamicFields({
                 placeholder={disabled ? undefined : thaiPlaceholder(field)}
                 onChange={(e) => onChange(field.name, e.target.value)}
                 disabled={disabled}
-                className="num disabled:opacity-60"
+                aria-invalid={Boolean(error)}
+                aria-describedby={error ? errorId : undefined}
+                className="num h-11 disabled:opacity-60 lg:h-8"
               />
             )}
             {error ? (
-              <p role="alert" className="text-xs text-destructive">
+              <p id={errorId} role="alert" className="text-xs text-destructive">
                 {error}
               </p>
             ) : null}
@@ -91,7 +109,8 @@ export function DynamicFields({
         );
       })}
       {disabled ? (
-        <p className="text-[11px] text-muted-foreground/70">{t("lockedHint")}</p>
+        // ไม่ลด opacity: muted-foreground @70% บน bg-card ตกไป ~3.9:1 (ต่ำกว่า 4.5:1)
+        <p className="text-[11px] text-muted-foreground">{t("lockedHint")}</p>
       ) : null}
     </div>
   );

@@ -57,6 +57,7 @@ export interface Product {
   category?: { id: string; name: string; slug: string };
   gameType?: GameType | null;
   region?: Region | null;
+  countryCode?: string | null;
   imageUrl?: string;
   coverImageUrl?: string;
   productType: "CARD" | "DIRECT_TOPUP" | "MOBILE_RECHARGE";

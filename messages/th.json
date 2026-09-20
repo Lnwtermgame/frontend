@@ -368,5 +368,35 @@
   },
   "common": {
     "loading": "กำลังโหลด…"
+  },
+  "mobileRecharge": {
+    "heroTitle": "เติมเงินมือถือ จากทุกที่ ให้ทุกคน",
+    "heroSubtitle": "เลือกประเทศ กรอกเบอร์ผู้รับ เลือกค่ายและนิยาม จบในหน้าเดียว",
+    "stepCountry": "เลือกประเทศผู้รับ",
+    "stepPhone": "เบอร์ผู้รับ",
+    "stepOperator": "เลือกผู้ให้บริการ",
+    "stepDenomination": "เลือกนิยาม",
+    "countryPlaceholder": "เลือกประเทศ",
+    "phonePlaceholder": "กรอกเบอร์ผู้รับ เช่น 0841234567",
+    "phoneTooShort": "เบอร์ต้องยาว 8–12 หลัก",
+    "fromPrice": "จาก {price}",
+    "temporarilyUnavailable": "ชั่วคราวไม่พร้อมขาย",
+    "noDenominations": "ไม่พบนิยามที่พร้อมขาย",
+    "editStep": "แก้ไข",
+    "summaryCountry": "ประเทศผู้รับ",
+    "summaryPhone": "เบอร์ผู้รับ",
+    "summaryOperator": "ผู้ให้บริการ",
+    "summaryDenomination": "นิยาม",
+    "total": "ยอดรวม",
+    "paymentMethod": "ช่องทางชำระเงิน",
+    "payLabelPickCountry": "เลือกประเทศก่อน",
+    "payLabelEnterPhone": "กรอกเบอร์ผู้รับ",
+    "payLabelPickOperator": "เลือกผู้ให้บริการ",
+    "payLabelPickDenom": "เลือกนิยาม",
+    "payLabelPay": "ชำระเงิน {total}",
+    "errorPhoneInvalid": "เบอร์ผู้รับไม่ถูกต้อง กรุณาตรวจสอบแล้วลองใหม่",
+    "errorOperatorMismatch": "เบอร์นี้ไม่ตรงกับผู้ให้บริการที่เลือก",
+    "errorOrderFailed": "สั่งซื้อไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
+    "loadError": "โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่"
   }
 }

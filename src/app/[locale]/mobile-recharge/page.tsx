@@ -1,5 +1,10 @@
-import { CatalogPage } from "@/components/catalog/catalog-page";
+import { Suspense } from "react";
+import { MobileRechargePage } from "@/components/mobile-recharge/mobile-recharge-page";
 
 export default function MobileRechargeCatalogPage() {
-  return <CatalogPage mode="mobile" />;
+  return (
+    <Suspense>
+      <MobileRechargePage />
+    </Suspense>
+  );
 }

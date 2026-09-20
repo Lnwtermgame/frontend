@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,6 +19,11 @@ import {
   groupOperatorsByCountry,
   isPhoneValid,
 } from "@/lib/mobile-recharge";
+import {
+  initialWizardState,
+  reduceWizard,
+  stepOpen,
+} from "@/lib/wizard-state";
 import { MOBILE_COUNTRIES, countryByCode, type CountryMeta } from "@/lib/mobile-countries";
 import { useAuthStore } from "@/stores/auth";
 import type { Product, ProductTypePublic } from "@/lib/api/products";
@@ -39,10 +44,7 @@ export function MobileRechargePage() {
 
   const products = useProducts({ limit: 100 });
 
-  const [countryCode, setCountryCode] = useState<string | null>(null);
-  const [phone, setPhone] = useState("");
-  const [operator, setOperator] = useState<Product | null>(null);
-  const [selectedType, setSelectedType] = useState<ProductTypePublic | null>(null);
+  const [wizard, dispatch] = useReducer(reduceWizard, initialWizardState);
   const [buyError, setBuyError] = useState<string | null>(null);
   const [phoneError, setPhoneError] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -65,14 +67,16 @@ export function MobileRechargePage() {
       })),
     [groups],
   );
+  const { countryCode, phone, operator, selectedType } = wizard;
   const country: CountryMeta | null = countryByCode(countryCode) ?? null;
   const operators = country ? groups.get(country.code) ?? [] : [];
   const phoneOk = isPhoneValid(phone);
 
-  // ขั้นที่ถือว่า "เปิด" ถัดไป
-  const step2Open = Boolean(country);
-  const step3Open = step2Open && phoneOk;
-  const step4Open = step3Open && Boolean(operator);
+  // ขั้นที่ถือว่า "เปิด" ถัดไป (logic เดียวกับที่ทดสอบใน wizard-state.test.ts)
+  const open = stepOpen(wizard);
+  const step2Open = open.step2;
+  const step3Open = open.step3;
+  const step4Open = open.step4;
 
   // Deep link: /mobile-recharge?operator=<slug>&country=<CODE>
   const operatorParam = searchParams.get("operator");
@@ -81,40 +85,12 @@ export function MobileRechargePage() {
   useEffect(() => {
     if (appliedDeepLink.current || !products.isSuccess) return;
     appliedDeepLink.current = true;
-
-    if (operatorParam) {
-      const match = (products.data ?? []).find(
-        (p) =>
-          p.productType === "MOBILE_RECHARGE" &&
-          p.isActive &&
-          (p.slug === operatorParam || p.slug === decodeURIComponent(operatorParam)),
-      );
-      if (match?.countryCode) {
-        setCountryCode(match.countryCode);
-        setOperator(match);
-        return;
-      }
-    }
-    if (countryParam && groups.has(countryParam.toUpperCase())) {
-      setCountryCode(countryParam.toUpperCase());
-    }
-  }, [products.isSuccess, products.data, operatorParam, countryParam, groups]);
-
-  const changeCountry = (code: string) => {
-    setCountryCode(code);
-    // เปลี่ยนประเทศ = ล้างทุกอย่างด้านล่าง (เบอร์/ผู้ให้บริการ/นิยาม) — เหมือน SEAGM
-    setPhone("");
-    setOperator(null);
-    setSelectedType(null);
-    setPhoneError(false);
-    setEditingStep(null);
-  };
-
-  const changeOperator = (op: Product) => {
-    setOperator(op);
-    setSelectedType(null); // เปลี่ยนผู้ให้บริการ = เลือกนิยามใหม่
-    setEditingStep(null);
-  };
+    dispatch({
+      type: "applyDeepLink",
+      products: products.data ?? [],
+      params: { operator: operatorParam, country: countryParam },
+    });
+  }, [products.isSuccess, products.data, operatorParam, countryParam]);
 
   const goToStep = (step: 1 | 2 | 3 | 4) => {
     setEditingStep(step);
@@ -266,7 +242,11 @@ export function MobileRechargePage() {
             <CountrySelect
               countries={availableCountries.map(({ operatorCount: _n, ...c }) => c)}
               value={countryCode}
-              onChange={changeCountry}
+              onChange={(code) => {
+                dispatch({ type: "pickCountry", code });
+                setPhoneError(false);
+                setEditingStep(null);
+              }}
             />,
           )}
 
@@ -282,13 +262,9 @@ export function MobileRechargePage() {
                 country={country}
                 value={phone}
                 onChange={(v) => {
-                  setPhone(v);
+                  // reset ขั้นล่างเมื่อเบอร์เสีย อยู่ใน reducer (setPhone) — spec §5.6
+                  dispatch({ type: "setPhone", phone: v });
                   setPhoneError(false);
-                  // เบอร์กลับเป็น invalid หลังเคย valid = ค่าขั้นบนเปลี่ยนจริง → reset ขั้นล่าง (spec §5.6)
-                  if (!isPhoneValid(v) && operator) {
-                    setOperator(null);
-                    setSelectedType(null);
-                  }
                 }}
                 invalidHighlight={phoneError}
               />
@@ -305,7 +281,10 @@ export function MobileRechargePage() {
             <OperatorList
               operators={operators}
               selectedId={operator?.id ?? null}
-              onSelect={changeOperator}
+              onSelect={(op) => {
+                dispatch({ type: "pickOperator", operator: op });
+                setEditingStep(null);
+              }}
             />,
           )}
 
@@ -320,7 +299,7 @@ export function MobileRechargePage() {
               <PackageGrid
                 types={activeTypes}
                 selectedId={selectedType?.id ?? null}
-                onSelect={(ty) => setSelectedType(ty)}
+                onSelect={(ty) => dispatch({ type: "pickType", selectedType: ty })}
               />
             ) : (
               <p className="py-4 text-center text-sm text-muted-foreground">

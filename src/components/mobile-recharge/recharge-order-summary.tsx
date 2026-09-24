@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -18,23 +18,6 @@ import type { CountryMeta } from "@/lib/mobile-countries";
 import { useAuthStore } from "@/stores/auth";
 import type { Product, ProductTypePublic } from "@/lib/api/products";
 
-/** ชิปเลขขั้นตอน — สไตล์เดียวกับ order-summary.tsx ของหน้าสินค้า */
-function StepChip({ n, done, active }: { n: number; done?: boolean; active?: boolean }) {
-  return (
-    <span className="num relative grid size-[22px] shrink-0 place-items-center overflow-hidden rounded-[7px] bg-card text-[11.5px] font-bold">
-      <span
-        aria-hidden
-        className={`absolute inset-0 ${done ? "bg-status-success/15" : active ? "bg-primary/15" : ""}`}
-      />
-      <span
-        className={`relative ${done ? "text-status-success" : active ? "text-primary" : "text-muted-foreground"}`}
-      >
-        {done ? <Check className="size-3.5" aria-hidden /> : n}
-      </span>
-    </span>
-  );
-}
-
 export type WizardState = {
   country: CountryMeta | null;
   phone: string;
@@ -43,25 +26,23 @@ export type WizardState = {
 };
 
 /**
- * แผงสรุปการเติมเงิน — ใบเสร็จของ wizard 4 ขั้น
- * Desktop: sticky ขวา / Mobile: ตัวแผงใน DOM + แถบตรึงล่างเมื่อเลือกนิยามแล้ว
- * ปุ่ม PAY NOW เปลี่ยน label ตามขั้นแรกที่ยังไม่เสร็จ (บอกเหตุของ disabled)
+ * แผงสรุป (SEAGM-style) — ผู้รับ / รายการ / ยอดรวม / ปุ่มชำระ ต่อเนื่อง
+ * Desktop: sticky ขวา / Mobile: แถบตรึงล่างเมื่อเลือกนิยามแล้ว
+ * ปุ่ม disabled พร้อม label บอกขั้นที่ยังขาด (ไม่มี timeline 4 ขั้นแล้ว)
  */
 export function RechargeOrderSummary({
   state,
   buying,
   buyError,
-  phoneInvalid,
   onBuyAttempt,
-  onGoToStep,
 }: {
   state: WizardState;
   buying: boolean;
   buyError: string | null;
-  /** backend แจ้งเบอร์ผิด — กดปุ่มแล้วพาไปแก้ขั้น 2 */
-  phoneInvalid: boolean;
+  /** เก็บ signature เดิมไว้ (backend แจ้งเบอร์ผิด) — page จัดการ scroll เอง */
+  phoneInvalid?: boolean;
   onBuyAttempt: () => void;
-  onGoToStep: (step: 1 | 2 | 3 | 4) => void;
+  onGoToStep?: (step: 1 | 2 | 3 | 4) => void;
 }) {
   const t = useTranslations("mobileRecharge");
   const ta = useTranslations("auth");
@@ -88,34 +69,22 @@ export function RechargeOrderSummary({
           ? t("payLabelPickDenom")
           : t("payLabelPay", { total: formatTHB(total) });
 
-  const handleAttempt = () => {
-    if (!country) return onGoToStep(1);
-    if (!phoneOk) return onGoToStep(2);
-    if (!operator) return onGoToStep(3);
-    if (!selectedType) return onGoToStep(4);
-    onBuyAttempt();
-  };
-
   const summaryRows = (
     <>
       <div className="flex items-center justify-between gap-3 text-[12.5px]">
-        <span className="text-muted-foreground">{t("summaryCountry")}</span>
-        <span className="font-medium">
-          {country ? `${country.flag} ${countryName(country)}` : "—"}
+        <span className="text-muted-foreground">{t("summaryRecipient")}</span>
+        <span className="num max-w-[60%] truncate font-medium">
+          {country && phone ? `+${country.callingCode} ${phone}` : "—"}
         </span>
-      </div>
-      <div className="mt-1.5 flex items-center justify-between gap-3 text-[12.5px]">
-        <span className="text-muted-foreground">{t("summaryPhone")}</span>
-        <span className="num font-medium">{country && phone ? `+${country.callingCode} ${phone}` : "—"}</span>
       </div>
       <div className="mt-1.5 flex items-center justify-between gap-3 text-[12.5px]">
         <span className="text-muted-foreground">{t("summaryOperator")}</span>
         <span className="max-w-[60%] truncate font-medium">{operator?.name ?? "—"}</span>
       </div>
       {selectedType ? (
-        <div className="mt-1.5 flex items-center justify-between gap-3 text-[12.5px]">
-          <span className="text-muted-foreground">{t("summaryDenomination")}</span>
-          <span className="max-w-[60%] truncate font-medium">{selectedType.name}</span>
+        <div className="mt-1.5 flex items-start justify-between gap-3 text-[12.5px]">
+          <span className="shrink-0 text-muted-foreground">{t("summaryDenomination")}</span>
+          <span className="text-right font-medium">{selectedType.name}</span>
         </div>
       ) : null}
     </>
@@ -131,9 +100,9 @@ export function RechargeOrderSummary({
       </div>
       <Button
         size="lg"
-        className={`mt-3.5 h-12 w-full text-sm font-semibold lg:h-10 ${allDone ? "" : ""}`}
-        onClick={handleAttempt}
-        disabled={buying}
+        className="mt-3.5 h-12 w-full rounded-[6px] text-sm font-bold lg:h-11"
+        onClick={onBuyAttempt}
+        disabled={buying || !allDone}
         aria-busy={buying}
       >
         {buyingSpinner}
@@ -157,43 +126,10 @@ export function RechargeOrderSummary({
   return (
     <>
       <aside className="rounded-[14px] border bg-card p-4 shadow-(--shadow-tile) lg:sticky lg:top-20">
-        {/* ไทม์ไลน์ 4 ขั้นแบบเดียวกับหน้าสินค้า */}
-        <div className="relative">
-          <span
-            aria-hidden
-            className="absolute top-[22px] bottom-[22px] left-[10.5px] w-px bg-border"
-          />
-          {(
-            [
-              [1, Boolean(country), t("stepCountry"), country ? `${country.flag} ${countryName(country)}` : null],
-              [2, phoneOk, t("stepPhone"), country && phone ? `+${country.callingCode} ${phone}` : null],
-              [3, Boolean(operator), t("stepOperator"), operator?.name ?? null],
-              [4, Boolean(selectedType), t("stepDenomination"), selectedType?.name ?? null],
-            ] as Array<[number, boolean, string, string | null]>
-          ).map(([n, done, title, value]) => (
-            <div key={n} className={n > 1 ? "mt-4" : ""}>
-              <div className="flex items-center gap-2.5">
-                <StepChip n={n} done={done} active={!done} />
-                <span className="text-[13px] font-bold">{title}</span>
-                {done && value ? (
-                  <button
-                    type="button"
-                    onClick={() => onGoToStep(n as 1 | 2 | 3 | 4)}
-                    className="ml-auto text-[11.5px] font-semibold text-primary underline-offset-4 hover:underline"
-                  >
-                    {t("editStep")}
-                  </button>
-                ) : null}
-              </div>
-              {done && value ? (
-                <p className="mt-1.5 pl-[32px] text-[12.5px] font-medium">{value}</p>
-              ) : null}
-            </div>
-          ))}
-        </div>
+        <div className="border-b border-border pb-3">{summaryRows}</div>
 
         {isAuthenticated ? (
-          <div className="mt-4">
+          <div className="mt-3.5">
             <Label htmlFor="mr-payment-method" className="text-xs">
               {t("paymentMethod")}
             </Label>
@@ -219,9 +155,8 @@ export function RechargeOrderSummary({
           </div>
         ) : null}
 
-        <div className="mt-4 border-t border-border pt-3">
-          {summaryRows}
-          <div className="mt-3">{totalBlock}</div>
+        <div className="mt-3.5 border-t border-border pt-3">
+          {totalBlock}
           {errorBlock}
         </div>
       </aside>
@@ -238,8 +173,8 @@ export function RechargeOrderSummary({
             </div>
             <Button
               size="lg"
-              className="h-12 shrink-0 px-4 text-sm font-semibold"
-              onClick={handleAttempt}
+              className="h-12 shrink-0 rounded-[6px] px-4 text-sm font-bold"
+              onClick={onBuyAttempt}
               disabled={buying}
               aria-busy={buying}
             >

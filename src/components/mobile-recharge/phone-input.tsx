@@ -2,14 +2,13 @@
 
 import { useTranslations } from "next-intl";
 import { CircleAlert } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import type { CountryMeta } from "@/lib/mobile-countries";
 import { isPhoneValid, normalizePhone } from "@/lib/mobile-recharge";
 
 /**
- * ขั้น 2 — เบอร์ผู้รับ
- * Prefix +<callingCode> อ่านอย่างเดียว (คงที่ตามประเทศที่เลือก) ผู้ใช้พิมพ์แต่ตัวเบอร์
- * เตือนขอบแดงเมื่อพิมพ์ยังไม่ครบ 8 หลัก / step ถือว่าเสร็จเมื่อผ่าน isPhoneValid
+ * ขั้น 2 — เบอร์ผู้รับ (SEAGM-style)
+ * Field เดียว: +<callingCode> ฝังด้านใน (อ่านอย่างเดียว) + ช่องพิมพ์เบอร์
+ * สูง 48px คงที่ตาม field ประเทศ
  */
 export function PhoneInput({
   country,
@@ -24,26 +23,25 @@ export function PhoneInput({
   invalidHighlight?: boolean;
 }) {
   const t = useTranslations("mobileRecharge");
-  const tooShort = value.length > 0 && value.length < 8;
+  const tooShort = value.length > 0 && !isPhoneValid(value);
   const invalid = invalidHighlight || tooShort;
 
   return (
     <div className="flex flex-col gap-1.5">
-      <div
-        className={`flex items-stretch overflow-hidden rounded-[10px] border transition-colors focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/25 ${
-          invalid ? "border-destructive" : "border-input"
-        }`}
+      <label
+        className={`flex h-12 items-stretch overflow-hidden rounded-[6px] bg-muted/60 transition-colors focus-within:ring-2 focus-within:ring-ring/40 ${
+          invalid ? "ring-2 ring-destructive/60" : ""
+        } lg:h-10`}
       >
         <span
-          className={`num flex min-w-[64px] items-center justify-center gap-1.5 border-r px-3 text-sm font-semibold ${
-            invalid ? "text-destructive" : "text-muted-foreground"
+          className={`num flex items-center border-r border-border/60 px-3.5 text-[14px] font-semibold select-none ${
+            invalid ? "text-destructive" : "text-foreground/80"
           }`}
         >
-          <span aria-hidden className="text-base leading-none">{country.flag}</span>
           +{country.callingCode}
         </span>
-        <Input
-          type="text"
+        <input
+          type="tel"
           inputMode="numeric"
           autoComplete="tel-national"
           aria-label={t("stepPhone")}
@@ -51,9 +49,9 @@ export function PhoneInput({
           value={value}
           onChange={(e) => onChange(normalizePhone(e.target.value, country.callingCode))}
           placeholder={t("phonePlaceholder")}
-          className="num h-11 min-w-0 flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 disabled:opacity-60 lg:h-10"
+          className="num h-full min-w-0 flex-1 bg-transparent px-3 text-[14px] outline-none placeholder:text-muted-foreground"
         />
-      </div>
+      </label>
       {invalid ? (
         <p role="alert" className="flex items-center gap-1.5 text-xs text-destructive">
           <CircleAlert className="size-3.5 shrink-0" aria-hidden />

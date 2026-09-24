@@ -8,8 +8,8 @@ import { useRouter } from "@/i18n/routing";
 import { usePaymentMethods, useProducts } from "@/lib/query/hooks";
 import { startBuyFlow } from "@/lib/buy-flow";
 import { ApiError } from "@/lib/api/client";
-import { PackageGrid } from "@/components/product/package-grid";
 import { ConfirmOrderDialog } from "@/components/product/confirm-order-dialog";
+import { PackageGrid } from "@/components/product/package-grid";
 import { CountrySelect } from "./country-select";
 import { PhoneInput } from "./phone-input";
 import { OperatorList } from "./operator-list";
@@ -26,14 +26,11 @@ import {
 } from "@/lib/wizard-state";
 import { MOBILE_COUNTRIES, countryByCode, type CountryMeta } from "@/lib/mobile-countries";
 import { useAuthStore } from "@/stores/auth";
-import type { Product, ProductTypePublic } from "@/lib/api/products";
 
 /**
- * หน้าเติมเงินโทรศัพท์แบบ wizard 4 ขั้น (SEAGM-style)
- * ประเทศ → เบอร์ผู้รับ → ผู้ให้บริการ → นิยาม จบในหน้าเดียว
- *
- * State ทั้งหมดอยู่ที่หน้านี้ ตัว step components เป็น controlled (value + onChange)
- * เปลี่ยนขั้นบน = reset ขั้นล่าง (เหมือน SEAGM)
+ * หน้าเติมเงินโทรศัพท์ — SEAGM-style (spec §5)
+ * ทุกขั้นเรียงเป็น section ต่อเนื่องบนหน้าเดียว: ประเทศ → เบอร์ → ค่าย → นิยาม
+ * ขั้นถัดไปไขได้เมื่อขั้นก่อนหน้าเสร็จ (reducer กัน reset ขั้นล่างเมื่อแก้ขั้นบน)
  */
 export function MobileRechargePage() {
   const t = useTranslations("mobileRecharge");
@@ -49,14 +46,11 @@ export function MobileRechargePage() {
   const [phoneError, setPhoneError] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [buying, setBuying] = useState(false);
-  /** ขั้นที่กำลังขยายแก้ไข (null = ขั้นปัจจุบันสูงสุดที่ยังไม่เสร็จ) */
-  const [editingStep, setEditingStep] = useState<number | null>(null);
 
-  const step1Ref = useRef<HTMLDivElement>(null);
   const step2Ref = useRef<HTMLDivElement>(null);
   const step3Ref = useRef<HTMLDivElement>(null);
   const step4Ref = useRef<HTMLDivElement>(null);
-  const stepRefs = [step1Ref, step2Ref, step3Ref, step4Ref] as const;
+  const stepRefs = { 2: step2Ref, 3: step3Ref, 4: step4Ref } as const;
 
   const groups = useMemo(() => groupOperatorsByCountry(products.data ?? []), [products.data]);
   const availableCountries = useMemo(
@@ -72,7 +66,6 @@ export function MobileRechargePage() {
   const operators = country ? groups.get(country.code) ?? [] : [];
   const phoneOk = isPhoneValid(phone);
 
-  // ขั้นที่ถือว่า "เปิด" ถัดไป (logic เดียวกับที่ทดสอบใน wizard-state.test.ts)
   const open = stepOpen(wizard);
   const step2Open = open.step2;
   const step3Open = open.step3;
@@ -92,15 +85,11 @@ export function MobileRechargePage() {
     });
   }, [products.isSuccess, products.data, operatorParam, countryParam]);
 
-  const goToStep = (step: 1 | 2 | 3 | 4) => {
-    setEditingStep(step);
-    const ref = stepRefs[step - 1].current;
+  const goToStep = (step: 2 | 3 | 4) => {
+    const ref = stepRefs[step].current;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     requestAnimationFrame(() => {
-      ref?.scrollIntoView({
-        block: "center",
-        behavior: reduceMotion ? "auto" : "smooth",
-      });
+      ref?.scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" });
     });
   };
 
@@ -182,48 +171,46 @@ export function MobileRechargePage() {
     );
   }
 
-  const activeTypes = (operator?.types ?? []).filter((ty) => ty.isActive);
-
-  /** แสดงขั้นแบบย่อ (เสร็จแล้วและไม่ได้กำลังแก้ไข) หรือขยายเต็ม */
-  const renderStep = (
-    n: 1 | 2 | 3 | 4,
-    ref: React.RefObject<HTMLDivElement | null>,
-    title: string,
-    done: boolean,
-    open: boolean,
-    collapsedValue: string | null,
-    children: React.ReactNode,
-  ) => {
-    const collapsed = done && editingStep !== n;
-    const expanded = editingStep === n || (!done && open);
+  // ไม่มีสินค้า MOBILE_RECHARGE เลย (เช่น SEAGM sync ยังไม่ได้ข้อมูล) —
+  // wizard ว่างจะดูเหมือนพังทั้งหน้า แสดง empty state ชัดเจนแทน
+  if (availableCountries.length === 0) {
     return (
-      <div
-        ref={ref}
-        className={`rounded-[14px] border border-border/60 bg-card p-5 transition-opacity ${
-          open || done ? "" : "pointer-events-none opacity-50"
-        }`}
-      >
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-[13px] font-bold">
-            <span className="num mr-2 inline-grid size-[22px] place-items-center rounded-[7px] bg-primary/10 text-[11.5px] font-bold text-primary">
-              {n}
-            </span>
-            {title}
-          </h2>
-          {collapsed && collapsedValue ? (
-            <button
-              type="button"
-              onClick={() => setEditingStep(n)}
-              className="max-w-[55%] truncate text-right text-[12.5px] font-medium text-primary underline-offset-4 hover:underline"
-            >
-              {collapsedValue}
-            </button>
-          ) : null}
+      <div className="mx-auto w-full max-w-6xl px-4 py-8">
+        <h1 className="text-[22px] font-extrabold tracking-tight">{t("heroTitle")}</h1>
+        <p className="mt-1 text-[13px] text-muted-foreground">{t("heroSubtitle")}</p>
+        <div className="mt-10 flex flex-col items-center gap-3 rounded-[14px] border border-border/60 bg-card px-6 py-16 text-center">
+          <span aria-hidden className="text-4xl">📵</span>
+          <p className="text-[15px] font-semibold">{t("noService")}</p>
+          <p className="max-w-md text-[13px] text-muted-foreground">{t("noServiceHint")}</p>
+          <a
+            href="/"
+            className="mt-3 inline-flex h-10 items-center rounded-[10px] bg-primary px-5 text-[13.5px] font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            {t("backToHome")}
+          </a>
         </div>
-        {expanded ? <div className="mt-3.5">{children}</div> : null}
       </div>
     );
-  };
+  }
+
+  const activeTypes = (operator?.types ?? []).filter((ty) => ty.isActive);
+
+  /** Section หัวข้อ + เนื้อหา — ขั้นที่ยังไม่เปิดจางลงแต่ยังโชว์โครง (SEAGM ทำแบบนี้) */
+  const section = (
+    step: 2 | 3 | 4,
+    ref: React.RefObject<HTMLDivElement | null>,
+    title: string,
+    isOpen: boolean,
+    children: React.ReactNode,
+  ) => (
+    <div
+      ref={ref}
+      className={`transition-opacity ${isOpen ? "" : "pointer-events-none opacity-50"}`}
+    >
+      <h2 className="text-[13px] font-bold">{title}</h2>
+      {isOpen ? <div className="mt-2.5">{children}</div> : null}
+    </div>
+  );
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8">
@@ -231,38 +218,31 @@ export function MobileRechargePage() {
       <p className="mt-1 text-[13px] text-muted-foreground">{t("heroSubtitle")}</p>
 
       <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="flex flex-col gap-4">
-          {renderStep(
-            1,
-            step1Ref,
-            t("stepCountry"),
-            Boolean(country),
-            true,
-            country ? `${country.flag} ${country.code}` : null,
-            <CountrySelect
-              countries={availableCountries.map(({ operatorCount: _n, ...c }) => c)}
-              value={countryCode}
-              onChange={(code) => {
-                dispatch({ type: "pickCountry", code });
-                setPhoneError(false);
-                setEditingStep(null);
-              }}
-            />,
-          )}
+        <div className="flex flex-col gap-5">
+          <div>
+            <h2 className="text-[13px] font-bold">{t("stepCountry")}</h2>
+            <div className="mt-2.5">
+              <CountrySelect
+                countries={availableCountries.map(({ operatorCount: _n, ...c }) => c)}
+                value={countryCode}
+                onChange={(code) => {
+                  dispatch({ type: "pickCountry", code });
+                  setPhoneError(false);
+                }}
+              />
+            </div>
+          </div>
 
-          {renderStep(
+          {section(
             2,
             step2Ref,
             t("stepPhone"),
-            phoneOk,
             step2Open,
-            country && phone ? `+${country.callingCode} ${phone}` : null,
             country ? (
               <PhoneInput
                 country={country}
                 value={phone}
                 onChange={(v) => {
-                  // reset ขั้นล่างเมื่อเบอร์เสีย อยู่ใน reducer (setPhone) — spec §5.6
                   dispatch({ type: "setPhone", phone: v });
                   setPhoneError(false);
                 }}
@@ -271,30 +251,26 @@ export function MobileRechargePage() {
             ) : null,
           )}
 
-          {renderStep(
+          {section(
             3,
             step3Ref,
             t("stepOperator"),
-            Boolean(operator),
             step3Open,
-            operator?.name ?? null,
             <OperatorList
               operators={operators}
               selectedId={operator?.id ?? null}
               onSelect={(op) => {
                 dispatch({ type: "pickOperator", operator: op });
-                setEditingStep(null);
+                requestAnimationFrame(() => goToStep(4));
               }}
             />,
           )}
 
-          {renderStep(
+          {section(
             4,
             step4Ref,
             t("stepDenomination"),
-            Boolean(selectedType),
             step4Open,
-            selectedType?.name ?? null,
             activeTypes.length ? (
               <PackageGrid
                 types={activeTypes}
@@ -315,7 +291,7 @@ export function MobileRechargePage() {
           buyError={buyError}
           phoneInvalid={phoneError}
           onBuyAttempt={handleBuyAttempt}
-          onGoToStep={goToStep}
+          onGoToStep={(n) => (n === 1 ? undefined : goToStep(n as 2 | 3 | 4))}
         />
       </div>
 

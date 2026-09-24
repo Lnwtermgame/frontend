@@ -17,12 +17,10 @@ import { RechargeOrderSummary } from "./recharge-order-summary";
 import {
   buildPlayerInfo,
   groupOperatorsByCountry,
-  isPhoneValid,
 } from "@/lib/mobile-recharge";
 import {
   initialWizardState,
   reduceWizard,
-  stepOpen,
 } from "@/lib/wizard-state";
 import { MOBILE_COUNTRIES, countryByCode, type CountryMeta } from "@/lib/mobile-countries";
 import { useAuthStore } from "@/stores/auth";
@@ -64,12 +62,6 @@ export function MobileRechargePage() {
   const { countryCode, phone, operator, selectedType } = wizard;
   const country: CountryMeta | null = countryByCode(countryCode) ?? null;
   const operators = country ? groups.get(country.code) ?? [] : [];
-  const phoneOk = isPhoneValid(phone);
-
-  const open = stepOpen(wizard);
-  const step2Open = open.step2;
-  const step3Open = open.step3;
-  const step4Open = open.step4;
 
   // Deep link: /mobile-recharge?operator=<slug>&country=<CODE>
   const operatorParam = searchParams.get("operator");
@@ -84,6 +76,19 @@ export function MobileRechargePage() {
       params: { operator: operatorParam, country: countryParam },
     });
   }, [products.isSuccess, products.data, operatorParam, countryParam]);
+
+  // เปิดหน้ามาประเทศผู้รับ = ไทย (ถ้ามีในคลัง) — deep link มีสิทธิ์ทับ
+  useEffect(() => {
+    if (!products.isSuccess || countryCode || operatorParam || countryParam) return;
+    if (!groups.has("TH")) return;
+    dispatch({ type: "pickCountry", code: "TH" });
+  }, [products.isSuccess, countryCode, groups, operatorParam, countryParam]);
+
+  // ค่ายแรกของประเทศ = ค่ายที่แสดงนิยาม — กดค่ายอื่นถึงจะสลับ
+  useEffect(() => {
+    if (operator || operators.length === 0) return;
+    dispatch({ type: "pickOperator", operator: operators[0] });
+  }, [operator, operators]);
 
   const goToStep = (step: 2 | 3 | 4) => {
     const ref = stepRefs[step].current;
@@ -195,20 +200,15 @@ export function MobileRechargePage() {
 
   const activeTypes = (operator?.types ?? []).filter((ty) => ty.isActive);
 
-  /** Section หัวข้อ + เนื้อหา — ขั้นที่ยังไม่เปิดจางลงแต่ยังโชว์โครง (SEAGM ทำแบบนี้) */
+  /** Section หัวข้อ + เนื้อหา — แสดงทุกขั้นตั้งแต่โหลด ไม่ล็อกตามขั้นก่อนหน้า */
   const section = (
-    step: 2 | 3 | 4,
     ref: React.RefObject<HTMLDivElement | null>,
     title: string,
-    isOpen: boolean,
     children: React.ReactNode,
   ) => (
-    <div
-      ref={ref}
-      className={`transition-opacity ${isOpen ? "" : "pointer-events-none opacity-50"}`}
-    >
+    <div ref={ref}>
       <h2 className="text-[13px] font-bold">{title}</h2>
-      {isOpen ? <div className="mt-2.5">{children}</div> : null}
+      <div className="mt-2.5">{children}</div>
     </div>
   );
 
@@ -234,10 +234,8 @@ export function MobileRechargePage() {
           </div>
 
           {section(
-            2,
             step2Ref,
             t("stepPhone"),
-            step2Open,
             country ? (
               <PhoneInput
                 country={country}
@@ -252,25 +250,18 @@ export function MobileRechargePage() {
           )}
 
           {section(
-            3,
             step3Ref,
             t("stepOperator"),
-            step3Open,
             <OperatorList
               operators={operators}
               selectedId={operator?.id ?? null}
-              onSelect={(op) => {
-                dispatch({ type: "pickOperator", operator: op });
-                requestAnimationFrame(() => goToStep(4));
-              }}
+              onSelect={(op) => dispatch({ type: "pickOperator", operator: op })}
             />,
           )}
 
           {section(
-            4,
             step4Ref,
             t("stepDenomination"),
-            step4Open,
             activeTypes.length ? (
               <PackageGrid
                 types={activeTypes}

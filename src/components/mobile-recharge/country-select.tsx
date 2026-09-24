@@ -1,12 +1,14 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { RegionFlagIcon } from "@/components/product/region-flag-icon";
 import type { CountryMeta } from "@/lib/mobile-countries";
 
 /**
  * ขั้น 1 — เลือกประเทศผู้รับ (SEAGM-style card grid)
- * ทุกประเทศที่มีสินค้าแสดงเป็นการ์ด 2 คอลัมน์ตั้งแต่โหลด: ธงใหญ่ + ชื่อ + จำนวนค่าย
+ * ทุกประเทศที่มีสินค้าแสดงเป็นการ์ด 2 คอลัมน์ตั้งแต่โหลด: ธง + ชื่อ + รหัสโทร
  * การ์ดที่เลือก = ring inset 2px สี primary — ภาษาเดียวกับ OperatorList
+ * ธงเป็น SVG จากชุด nucleo-flags (ไม่ใช้อีโมจิ) — เรนเดอร์เหมือนกันทุกแพลตฟอร์ม
  */
 export function CountrySelect({
   countries,
@@ -47,9 +49,12 @@ export function CountrySelect({
           >
             <span
               aria-hidden
-              className="grid size-12 shrink-0 place-items-center rounded-[6px] bg-background text-[26px] leading-none"
+              className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-[6px] bg-white p-1 shadow-sm"
             >
-              {c.flag}
+              <RegionFlagIcon
+                code={c.code.toLowerCase()}
+                className="h-auto w-full"
+              />
             </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-[13px] font-bold">

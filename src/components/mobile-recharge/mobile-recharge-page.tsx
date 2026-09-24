@@ -223,7 +223,7 @@ export function MobileRechargePage() {
             <h2 className="text-[13px] font-bold">{t("stepCountry")}</h2>
             <div className="mt-2.5">
               <CountrySelect
-                countries={availableCountries.map(({ operatorCount: _n, ...c }) => c)}
+                countries={availableCountries}
                 value={countryCode}
                 onChange={(code) => {
                   dispatch({ type: "pickCountry", code });

@@ -1,8 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { formatTHB } from "@/lib/pricing";
+import { productImage } from "@/lib/product-image";
 import { minActivePrice } from "@/lib/mobile-recharge";
 import type { Product } from "@/lib/api/products";
 
@@ -32,7 +34,6 @@ export function OperatorList({
         const price = minActivePrice(op);
         const sellable = price !== null;
         const selected = op.id === selectedId;
-        const initial = op.name.trim().charAt(0).toUpperCase() || "?";
         return (
           <button
             key={op.id}
@@ -49,24 +50,13 @@ export function OperatorList({
                   : "bg-muted/60 hover:bg-muted"
             }`}
           >
-            {op.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={op.imageUrl}
-                alt=""
-                width={48}
-                height={48}
-                loading="lazy"
-                className="size-12 shrink-0 rounded-[6px] bg-background object-contain"
-              />
-            ) : (
-              <span
-                aria-hidden
-                className="grid size-12 shrink-0 place-items-center rounded-[6px] bg-primary/10 text-[18px] font-extrabold text-primary"
-              >
-                {initial}
-              </span>
-            )}
+            <Image
+              src={productImage(op.name, op.imageUrl)}
+              alt={op.name}
+              width={48}
+              height={48}
+              className="size-12 shrink-0 rounded-[6px] object-cover"
+            />
             <span className="min-w-0 flex-1">
               <span className="block truncate text-[13px] font-bold">
                 {op.name}

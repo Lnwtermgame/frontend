@@ -50,13 +50,15 @@ export function OperatorList({
                   : "bg-muted/60 hover:bg-muted"
             }`}
           >
-            <Image
-              src={productImage(op.name, op.imageUrl)}
-              alt={op.name}
-              width={48}
-              height={48}
-              className="size-12 shrink-0 rounded-[6px] object-cover"
-            />
+            <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-[6px] bg-white p-1 shadow-sm">
+              <Image
+                src={productImage(op.name, op.imageUrl)}
+                alt={op.name}
+                width={48}
+                height={48}
+                className="size-full object-contain"
+              />
+            </div>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-[13px] font-bold">
                 {op.name}

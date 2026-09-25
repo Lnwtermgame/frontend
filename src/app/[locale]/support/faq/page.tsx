@@ -53,6 +53,7 @@ function FaqInner() {
             size="sm"
             variant={selectedCatId === null ? "default" : "outline"}
             onClick={() => setSelectedCatId(null)}
+            className="min-h-11 md:min-h-7"
           >
             {t("allCategories")}
           </Button>
@@ -62,6 +63,7 @@ function FaqInner() {
               size="sm"
               variant={selectedCatId === cat.id ? "default" : "outline"}
               onClick={() => setSelectedCatId(cat.id)}
+              className="min-h-11 md:min-h-7"
             >
               {cat.name} {cat.articleCount ? `(${cat.articleCount})` : ""}
             </Button>

@@ -67,7 +67,7 @@ export function BannerCarousel() {
               <p className="mt-2 text-[13px] text-white/85 md:text-[13.5px]">{s.desc}</p>
               <Link
                 href={s.href}
-                className="mt-4 inline-flex h-10 items-center gap-2 rounded-[10px] bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+                className="mt-4 inline-flex h-11 items-center gap-2 rounded-[10px] bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 md:h-10"
                 tabIndex={i === index ? 0 : -1}
               >
                 {s.cta}
@@ -77,7 +77,9 @@ export function BannerCarousel() {
           </div>
         ))}
       </div>
-      <div className="mt-3 flex justify-center gap-1.5">
+      {/* จุดสลับสไลด์ — container ยืดพื้นที่แตะเป็นแถวสูง 24px,
+          ตัวจุดเอง 7px เล็กเกินกดบนมือถือ (WCAG 2.5.8 minimum 24px) */}
+      <div className="mt-3 flex justify-center">
         {slides.map((s, i) => (
           <button
             key={s.href}
@@ -85,10 +87,14 @@ export function BannerCarousel() {
             aria-label={`${i + 1} / ${slides.length}`}
             aria-current={i === index}
             onClick={() => setIndex(i)}
-            className={`h-[7px] rounded-full transition-all duration-300 ${
-              i === index ? "w-5 bg-primary" : "w-[7px] bg-border hover:bg-muted-foreground/50"
-            }`}
-          />
+            className="flex h-11 w-11 items-center justify-center"
+          >
+            <span
+              className={`block h-[7px] rounded-full transition-all duration-300 ${
+                i === index ? "w-5 bg-primary" : "w-[7px] bg-border"
+              }`}
+            />
+          </button>
         ))}
       </div>
     </div>

@@ -24,7 +24,7 @@ export default function ContactPage() {
               แจ้งปัญหาการสั่งซื้อ ไม่ได้รับสินค้า หรือปัญหาระบบ แอดมินดูแลโดยตรง
             </p>
           </div>
-          <Button asChild className="mt-6 w-full">
+          <Button asChild className="mt-6 h-11 w-full md:h-8">
             <Link href="/support/tickets">{t("newTicket")}</Link>
           </Button>
         </div>
@@ -39,7 +39,7 @@ export default function ContactPage() {
               ค้นหาคำตอบด่วนเกี่ยวกับช่องทางชำระเงิน, วิธีเติมเกม, และสถานะออเดอร์
             </p>
           </div>
-          <Button variant="outline" asChild className="mt-6 w-full">
+          <Button variant="outline" asChild className="mt-6 h-11 w-full md:h-8">
             <Link href="/support/faq">{t("faqTitle")}</Link>
           </Button>
         </div>

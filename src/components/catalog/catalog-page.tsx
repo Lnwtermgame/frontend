@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -27,7 +27,7 @@ const COPY_BY_MODE = {
 
 type SortKey = "sales" | "priceAsc" | "priceDesc" | "newest";
 
-/* เรียงราคาไม่มีใน API — ใช้ยอดขายเป็นฐาน fetch แล้วเรียงฝั่ง client จาก minPrice */
+/* à¹€à¸£à¸µà¸¢à¸‡à¸£à¸²à¸„à¸²à¹„à¸¡à¹ˆà¸¡à¸µà¹ƒà¸™ API â€” à¹ƒà¸Šà¹‰à¸¢à¸­à¸”à¸‚à¸²à¸¢à¹€à¸›à¹‡à¸™à¸à¸²à¸™ fetch à¹à¸¥à¹‰à¸§à¹€à¸£à¸µà¸¢à¸‡à¸à¸±à¹ˆà¸‡ client à¸ˆà¸²à¸ minPrice */
 const SORTS: Record<SortKey, { sortBy: "salesCount" | "createdAt"; sortOrder: "asc" | "desc" }> = {
   sales: { sortBy: "salesCount", sortOrder: "desc" },
   priceAsc: { sortBy: "salesCount", sortOrder: "desc" },
@@ -37,10 +37,10 @@ const SORTS: Record<SortKey, { sortBy: "salesCount" | "createdAt"; sortOrder: "a
 
 type PriceBand = "lt50" | "50to200" | "gt200";
 
-/* ลำดับแพลตฟอร์มตามความนิยม */
+/* à¸¥à¸³à¸”à¸±à¸šà¹à¸žà¸¥à¸•à¸Ÿà¸­à¸£à¹Œà¸¡à¸•à¸²à¸¡à¸„à¸§à¸²à¸¡à¸™à¸´à¸¢à¸¡ */
 const PLATFORM_ORDER: GameType[] = ["MOBILE", "PC", "STEAM", "PLAYSTATION", "XBOX", "NINTENDO", "WEBGAME"];
 
-/* i18n key ของแต่ละแพลตฟอร์ม */
+/* i18n key à¸‚à¸­à¸‡à¹à¸•à¹ˆà¸¥à¸°à¹à¸žà¸¥à¸•à¸Ÿà¸­à¸£à¹Œà¸¡ */
 function platformLabelKey(type: GameType): string {
   switch (type) {
     case "PC": return "platformPc";
@@ -53,7 +53,7 @@ function platformLabelKey(type: GameType): string {
   }
 }
 
-/** อ่านค่า ?platform= จาก URL — URL เก็บเป็นตัวพิมพ์เล็ก ต้อง normalize เป็น GameType ก่อนเทียบ */
+/** à¸­à¹ˆà¸²à¸™à¸„à¹ˆà¸² ?platform= à¸ˆà¸²à¸ URL â€” URL à¹€à¸à¹‡à¸šà¹€à¸›à¹‡à¸™à¸•à¸±à¸§à¸žà¸´à¸¡à¸žà¹Œà¹€à¸¥à¹‡à¸ à¸•à¹‰à¸­à¸‡ normalize à¹€à¸›à¹‡à¸™ GameType à¸à¹ˆà¸­à¸™à¹€à¸—à¸µà¸¢à¸š */
 function parsePlatformParam(raw: string | null): GameType | null {
   if (!raw) return null;
   const upper = raw.toUpperCase();
@@ -83,7 +83,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
   const [sort, setSort] = useState<SortKey>("sales");
   const [priceBand, setPriceBand] = useState<PriceBand | null>(null);
 
-  /* sync เมื่อ URL เปลี่ยนจากภายนอก (กด back/forward หรือลิงก์) */
+  /* sync à¹€à¸¡à¸·à¹ˆà¸­ URL à¹€à¸›à¸¥à¸µà¹ˆà¸¢à¸™à¸ˆà¸²à¸à¸ à¸²à¸¢à¸™à¸­à¸ (à¸à¸” back/forward à¸«à¸£à¸·à¸­à¸¥à¸´à¸‡à¸à¹Œ) */
   useEffect(() => {
     setGameTypeFilter(parsePlatformParam(urlPlatform));
   }, [urlPlatform]);
@@ -95,20 +95,20 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
     sortOrder: SORTS[sort].sortOrder,
   });
 
-  /* สินค้าตามโหมด + มี gameType เท่านั้น (สินค้าไร้ประเภทยังไม่พร้อมแสดง) */
+  /* à¸ªà¸´à¸™à¸„à¹‰à¸²à¸•à¸²à¸¡à¹‚à¸«à¸¡à¸” + à¸¡à¸µ gameType à¹€à¸—à¹ˆà¸²à¸™à¸±à¹‰à¸™ (à¸ªà¸´à¸™à¸„à¹‰à¸²à¹„à¸£à¹‰à¸›à¸£à¸°à¹€à¸ à¸—à¸¢à¸±à¸‡à¹„à¸¡à¹ˆà¸žà¸£à¹‰à¸­à¸¡à¹à¸ªà¸”à¸‡) */
   const byType = useMemo(
     () => (products.data ?? []).filter((p) => p.productType === TYPE_BY_MODE[mode] && p.gameType),
     [products.data, mode],
   );
 
-  /* แพลตฟอร์มใน sidebar — group by p.gameType นับจากสินค้าที่แสดงจริง */
+  /* à¹à¸žà¸¥à¸•à¸Ÿà¸­à¸£à¹Œà¸¡à¹ƒà¸™ sidebar â€” group by p.gameType à¸™à¸±à¸šà¸ˆà¸²à¸à¸ªà¸´à¸™à¸„à¹‰à¸²à¸—à¸µà¹ˆà¹à¸ªà¸”à¸‡à¸ˆà¸£à¸´à¸‡ */
   const platformCounts = useMemo(() => {
     const counts = new Map<GameType, number>();
     for (const p of byType) {
       const gt = p.gameType!;
       counts.set(gt, (counts.get(gt) ?? 0) + 1);
     }
-    // เรียงตามลำดับที่กำหนด และแสดงเฉพาะแพลตฟอร์มที่มีสินค้า
+    // à¹€à¸£à¸µà¸¢à¸‡à¸•à¸²à¸¡à¸¥à¸³à¸”à¸±à¸šà¸—à¸µà¹ˆà¸à¸³à¸«à¸™à¸” à¹à¸¥à¸°à¹à¸ªà¸”à¸‡à¹€à¸‰à¸žà¸²à¸°à¹à¸žà¸¥à¸•à¸Ÿà¸­à¸£à¹Œà¸¡à¸—à¸µà¹ˆà¸¡à¸µà¸ªà¸´à¸™à¸„à¹‰à¸²
     return PLATFORM_ORDER.filter((gt) => counts.get(gt)).map((gt) => ({
       type: gt,
       count: counts.get(gt)!,
@@ -128,7 +128,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
   const countFor = (type: GameType | null) =>
     type === null ? byType.length : byType.filter((p) => p.gameType === type).length;
 
-  /** อัปเดต query param โดยไม่ทับตัวอื่น (platform กับ search อยู่ร่วมกันได้) */
+  /** à¸­à¸±à¸›à¹€à¸”à¸• query param à¹‚à¸”à¸¢à¹„à¸¡à¹ˆà¸—à¸±à¸šà¸•à¸±à¸§à¸­à¸·à¹ˆà¸™ (platform à¸à¸±à¸š search à¸­à¸¢à¸¹à¹ˆà¸£à¹ˆà¸§à¸¡à¸à¸±à¸™à¹„à¸”à¹‰) */
   const updateUrlParam = (key: string, value: string | null) => {
     const params = new URLSearchParams(window.location.search);
     if (value) params.set(key, value);
@@ -151,7 +151,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
     <button
       type="button"
       onClick={() => setSort(key)}
-      className={`w-full rounded-[8px] px-2.5 py-[7px] text-left text-[13px] font-semibold transition-colors ${
+      className={`flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] text-left text-[13px] font-semibold transition-colors lg:min-h-0 ${
         sort === key
           ? "bg-primary/10 text-primary"
           : "text-muted-foreground hover:bg-card hover:text-foreground"
@@ -164,7 +164,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8">
       <div className="grid gap-7 lg:grid-cols-[220px_minmax(0,1fr)]">
-        {/* sidebar — sticky บนเดสก์ท็อป, แถบเลื่อนแนวนอนบนมือถือ */}
+        {/* sidebar â€” sticky à¸šà¸™à¹€à¸”à¸ªà¸à¹Œà¸—à¹‡à¸­à¸›, à¹à¸–à¸šà¹€à¸¥à¸·à¹ˆà¸­à¸™à¹à¸™à¸§à¸™à¸­à¸™à¸šà¸™à¸¡à¸·à¸­à¸–à¸·à¸­ */}
         <aside className="min-w-0 self-start lg:sticky lg:top-[76px]">
           <div className="flex gap-6 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:block lg:overflow-visible lg:pb-0">
             <div className="mb-5 min-w-[180px] flex-none lg:min-w-0">
@@ -174,21 +174,21 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
               <button
                 type="button"
                 onClick={() => selectPlatform(null)}
-                className={`flex w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] text-[13px] font-semibold transition-colors ${
+                className={`flex min-h-11 w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] text-[13px] font-semibold transition-colors lg:min-h-0 ${
                   gameTypeFilter === null
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-card hover:text-foreground"
                 }`}
               >
                 {t("filterAll")}
-                <span className="num text-[11px] text-muted-foreground/70">{countFor(null)}</span>
+                <span className="num text-xs text-muted-foreground/70">{countFor(null)}</span>
               </button>
               {platformCounts.map(({ type, count }) => (
                 <button
                   key={type}
                   type="button"
                   onClick={() => selectPlatform(type)}
-                  className={`flex w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] text-[13px] font-semibold transition-colors ${
+                  className={`flex min-h-11 w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] text-[13px] font-semibold transition-colors lg:min-h-0 ${
                     gameTypeFilter === type
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:bg-card hover:text-foreground"
@@ -198,7 +198,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                     <PlatformIcon type={type} className="size-[15px] opacity-80" />
                     {t(platformLabelKey(type))}
                   </span>
-                  <span className="num text-[11px] text-muted-foreground/70">{count}</span>
+                  <span className="num text-xs text-muted-foreground/70">{count}</span>
                 </button>
               ))}
             </div>
@@ -220,7 +220,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
               <button
                 type="button"
                 onClick={() => setPriceBand(null)}
-                className={`w-full rounded-[8px] px-2.5 py-[7px] text-left text-[13px] font-semibold transition-colors ${
+                className={`flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] text-left text-[13px] font-semibold transition-colors lg:min-h-0 ${
                   priceBand === null
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-card hover:text-foreground"
@@ -239,7 +239,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                   key={band}
                   type="button"
                   onClick={() => setPriceBand(band)}
-                  className={`w-full rounded-[8px] px-2.5 py-[7px] text-left text-[13px] font-semibold transition-colors ${
+                  className={`flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] text-left text-[13px] font-semibold transition-colors lg:min-h-0 ${
                     priceBand === band
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:bg-card hover:text-foreground"
@@ -252,7 +252,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
           </div>
         </aside>
 
-        {/* เนื้อหา */}
+        {/* à¹€à¸™à¸·à¹‰à¸­à¸«à¸² */}
         <div className="min-w-0">
           <h1 className="text-[22px] font-extrabold tracking-tight">{t(copy.titleKey)}</h1>
           <p className="mt-1 text-[13px] text-muted-foreground">{t(copy.subKey)}</p>

@@ -130,7 +130,7 @@ export function NavSearch({
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-foreground truncate">{product.name}</p>
-                    <p className="text-[11px] text-muted-foreground truncate">
+                    <p className="text-[11.5px] text-muted-foreground truncate">
                       {product.category?.name ?? (product.productType === "DIRECT_TOPUP" ? "เติมตรง" : "บัตรเติมเงิน")}
                     </p>
                   </div>

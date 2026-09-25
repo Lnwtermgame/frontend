@@ -217,7 +217,10 @@ export function MobileRechargePage() {
       <h1 className="text-[22px] font-extrabold tracking-tight">{t("heroTitle")}</h1>
       <p className="mt-1 text-[13px] text-muted-foreground">{t("heroSubtitle")}</p>
 
-      <div className="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+      {/* minmax(0,1fr) บน mobile track — grid auto track มีพื้น min-content เท่าการ์ดสรุป
+          (ชื่อค่ายยาวอย่าง Globe Telecom Philippines ดันหน้ากว้าง 324px ในจอ 320px);
+          minmax(0,1fr) ยกพื้นนี้ออกให้การ์ดหดได้ (skeleton ใช้ grid เดิม — แก้ที่เดียวครอบทั้งคู่) */}
+      <div className="mt-6 grid grid-cols-[minmax(0,1fr)] items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="flex flex-col gap-5">
           <div>
             <h2 className="text-[13px] font-bold">{t("stepCountry")}</h2>

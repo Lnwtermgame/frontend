@@ -76,10 +76,10 @@ export function GameCover({
       />
       <span className="absolute left-3 top-2.5 text-[17px] font-extrabold leading-none" style={{ color: dna.ink }}>
         {dna.mono}
-        <small className="mt-1.5 block text-[8.5px] font-bold tracking-[0.14em] opacity-70">{dna.sub}</small>
+        <small className="mt-1.5 block text-[10px] font-bold tracking-[0.14em] opacity-70">{dna.sub}</small>
       </span>
       {!compact && (
-        <span className="relative truncate bg-black/65 px-2.5 py-1.5 text-[11px] font-bold text-[#f3f1f0]">
+        <span className="relative truncate bg-black/65 px-2.5 py-1.5 text-[11.5px] font-bold text-[#f3f1f0]">
           {name}
         </span>
       )}

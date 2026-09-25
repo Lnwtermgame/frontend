@@ -109,7 +109,7 @@ function ResetPasswordInner() {
             </p>
           ) : null}
 
-          <Button type="submit" disabled={isSubmitting} className="mt-2 w-full font-semibold">
+          <Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full font-semibold md:h-8">
             {isSubmitting ? "กำลังตั้งรหัสผ่าน…" : t("resetPasswordTitle")}
           </Button>
         </form>

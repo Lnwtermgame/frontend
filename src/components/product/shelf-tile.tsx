@@ -63,7 +63,7 @@ export function ShelfTile({ product }: { product: Product }) {
       </div>
       <div className="min-w-0">
         <p className="truncate text-xs font-semibold">{product.name}</p>
-        <p className="truncate text-[11px] text-muted-foreground">
+        <p className="truncate text-[11.5px] text-muted-foreground">
           {product.gameType ?? product.category?.name ?? FALLBACK_SUB[product.productType]}
         </p>
         {cheapest && (
@@ -75,7 +75,7 @@ export function ShelfTile({ product }: { product: Product }) {
                   {THB.format(cheapest.originPrice)}
                 </span>
               )}
-            <span className="ml-1 text-[10.5px] font-semibold text-muted-foreground/70">{t("andUp")}</span>
+            <span className="ml-1 text-xs font-semibold text-muted-foreground/70">{t("andUp")}</span>
           </p>
         )}
       </div>

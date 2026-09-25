@@ -31,7 +31,7 @@ export function ProductShelf({
         <h2 className="text-xl font-extrabold tracking-tight">{title}</h2>
         <Link
           href={moreHref}
-          className="ml-auto text-[13px] font-semibold whitespace-nowrap text-muted-foreground transition-colors hover:text-primary"
+          className="ml-auto -my-2 flex h-11 items-center text-[13px] font-semibold whitespace-nowrap text-muted-foreground transition-colors hover:text-primary"
         >
           {t("viewAll")} →
         </Link>

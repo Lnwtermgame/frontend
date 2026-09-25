@@ -61,7 +61,7 @@ function VerifyEmailInner() {
         <div className="rounded-[14px] border border-status-success/40 bg-status-success/10 p-6 space-y-3">
           <CheckCircle2 className="mx-auto size-10 text-status-success" />
           <p className="text-sm font-semibold text-status-success">{t("verifyEmailSuccess")}</p>
-          <Button asChild className="mt-2 w-full">
+          <Button asChild className="mt-2 h-11 w-full md:h-8">
             <Link href="/login">{t("login")}</Link>
           </Button>
         </div>
@@ -87,7 +87,7 @@ function VerifyEmailInner() {
               )}
             </div>
           ) : null}
-          <Button asChild variant="ghost" size="sm" className="w-full">
+          <Button asChild variant="ghost" size="sm" className="h-11 w-full md:h-7">
             <Link href="/login">{t("login")}</Link>
           </Button>
         </div>

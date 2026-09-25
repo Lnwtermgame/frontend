@@ -37,7 +37,7 @@ export default function NewsArticleDetailPage() {
     <div className="mx-auto w-full max-w-4xl px-4 py-10">
       <Link
         href="/news"
-        className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary"
+        className="-mt-2 mb-4 inline-flex min-h-11 items-center gap-1.5 text-sm text-muted-foreground hover:text-primary"
       >
         <ArrowLeft className="size-4" />
         {t("newsTitle")}

@@ -21,7 +21,7 @@ export function PasswordInput({ className, ...props }: React.ComponentProps<"inp
         type="button"
         onClick={() => setShow((v) => !v)}
         aria-label={show ? t("hidePassword") : t("showPassword")}
-        className="absolute top-1/2 right-1.5 grid size-8 -translate-y-1/2 place-items-center rounded-[8px] text-muted-foreground transition-colors hover:text-foreground"
+        className="absolute top-1/2 right-0.5 grid size-11 -translate-y-1/2 place-items-center rounded-[8px] text-muted-foreground transition-colors hover:text-foreground md:right-1.5 md:size-8"
       >
         {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
       </button>

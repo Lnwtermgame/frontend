@@ -96,16 +96,16 @@ export function ProductBand({
             {product.name}
           </h1>
           <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[12.5px] text-muted-foreground">
-            <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-[10px] font-bold text-primary">
+            <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-[11.5px] font-bold text-primary">
               {FALLBACK_SUB[product.productType]}
             </span>
             {product.category?.name ? (
-              <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[10px] font-bold text-muted-foreground">
+              <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[11.5px] font-bold text-muted-foreground">
                 {product.category.name}
               </span>
             ) : null}
             {product.isBestseller ? (
-              <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[10px] font-bold text-muted-foreground">
+              <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[11.5px] font-bold text-muted-foreground">
                 ขายดี
               </span>
             ) : null}
@@ -129,12 +129,17 @@ export function ProductBand({
             size="sm"
             disabled={favLoading}
             onClick={onToggleFavorite}
-            className={`gap-1.5 text-xs ${isFavorite ? "border-primary text-primary" : ""}`}
+            className={`min-h-11 gap-1.5 text-xs md:min-h-7 ${isFavorite ? "border-primary text-primary" : ""}`}
           >
             <Heart className={`size-4 ${isFavorite ? "fill-primary text-primary" : ""}`} />
             <span>{isFavorite ? "ถูกใจแล้ว" : "ถูกใจ"}</span>
           </Button>
-          <Button variant="outline" size="sm" onClick={onCopyLink} className="gap-1.5 text-xs">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onCopyLink}
+            className="min-h-11 gap-1.5 text-xs md:min-h-7"
+          >
             {copied ? <Check className="size-4 text-status-success" /> : <Share2 className="size-4" />}
             <span>{copied ? "คัดลอกแล้ว" : "แชร์"}</span>
           </Button>

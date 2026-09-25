@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-sm space-y-6">
         <Link
           href="/login"
-          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary"
+          className="-mt-2 mb-1 inline-flex min-h-11 items-center gap-1.5 text-xs text-muted-foreground hover:text-primary"
         >
           <ArrowLeft className="size-3.5" />
           {t("login")}
@@ -90,7 +90,7 @@ export default function ForgotPasswordPage() {
               </p>
             ) : null}
 
-            <Button type="submit" disabled={isSubmitting} className="mt-2 w-full font-semibold">
+            <Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full font-semibold md:h-8">
               {isSubmitting ? "กำลังส่งคำขอ…" : t("sendResetLink")}
             </Button>
           </form>

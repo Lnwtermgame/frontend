@@ -37,7 +37,7 @@ export function TrustStrip() {
             </div>
             <div className="min-w-0">
               <p className="text-xs font-bold leading-tight text-foreground">{item.title}</p>
-              <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{item.desc}</p>
+              <p className="mt-1 text-[11.5px] leading-snug text-muted-foreground">{item.desc}</p>
             </div>
           </div>
         ))}

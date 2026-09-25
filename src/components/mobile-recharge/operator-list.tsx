@@ -68,7 +68,9 @@ export function OperatorList({
                   {t("fromPrice", { price: formatTHB(price) })}
                 </span>
               ) : (
-                <Badge variant="secondary" className="mt-1">
+                // Badge ปกติ shrink-0 — ในการ์ดแคบ 139px ป้าย "ชั่วคราวไม่พร้อมขาย" (113px)
+                // ดันล้นขอบการ์ด 44px; ยอมให้ตัดด้วย ellipsis แทน
+                <Badge variant="secondary" className="mt-1 max-w-full truncate">
                   {t("temporarilyUnavailable")}
                 </Badge>
               )}

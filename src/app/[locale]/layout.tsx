@@ -1,4 +1,5 @@
 import "../globals.css";
+import type { Viewport } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -11,6 +12,15 @@ import { NotificationsRealtime } from "@/components/providers/notifications-real
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { CookieNotice } from "@/components/layout/cookie-notice";
+
+/** viewportFit: "cover" จำเป็นสำหรับ env(safe-area-inset-*) — ถ้าไม่ตั้ง
+ *  เบราว์เซอร์ iOS จะคืนค่า inset เป็น 0 เสมอ ทำให้ padding กันรอยบาก
+ *  ของแถบสรุปตรึงล่าง (recharge-order-summary / order-summary) ไม่ทำงาน */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

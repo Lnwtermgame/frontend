@@ -101,7 +101,7 @@ export function PackageGrid({
             type="button"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
-            className="mt-2.5 flex w-full items-center justify-center gap-1 text-[12.5px] font-semibold text-primary underline-offset-4 hover:underline"
+            className="mt-2.5 flex h-11 w-full items-center justify-center gap-1 text-[12.5px] font-semibold text-primary underline-offset-4 hover:underline"
           >
             {open ? t("showLess") : t("showMore", { count: items.length })}
             <ChevronDown

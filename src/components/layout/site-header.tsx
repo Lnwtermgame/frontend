@@ -57,7 +57,7 @@ function HeaderInner() {
   };
 
   const logo = (
-    <Link href="/" className="flex items-center gap-2">
+    <Link href="/" className="flex min-h-11 items-center gap-2">
       <Image
         src="/brand/logo-mark.png"
         alt=""
@@ -89,7 +89,7 @@ function HeaderInner() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="-ml-2 size-9 md:hidden"
+                className="-ml-2 size-11 md:hidden"
                 aria-label={t("menu")}
               >
                 <Menu className="size-5" />
@@ -228,11 +228,13 @@ function HeaderInner() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
+              // min-h-11 — ปุ่ม auth ใน header ต้องแตะได้ถึง 44px บนมือถือ
+              // (size=sm ของ Button สูงแค่ 28px); md:min-h-8 คืนค่าบนเดสก์ท็อป
               <>
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="outline" size="sm" asChild className="min-h-11 md:min-h-8">
                   <Link href="/login">{ta("login")}</Link>
                 </Button>
-                <Button size="sm" asChild className="hidden sm:inline-flex">
+                <Button size="sm" asChild className="hidden min-h-11 sm:inline-flex md:min-h-8">
                   <Link href="/register">{ta("register")}</Link>
                 </Button>
               </>

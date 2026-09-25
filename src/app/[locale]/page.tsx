@@ -34,7 +34,7 @@ export default function HomePage() {
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-2.5 text-[13.5px] font-bold text-muted-foreground transition-colors hover:text-foreground"
+              className="flex min-h-11 items-center gap-2.5 py-1 text-[13.5px] font-bold text-muted-foreground transition-colors hover:text-foreground"
             >
               <span className="grid size-[38px] place-items-center rounded-[11px] border border-border/60 bg-card text-primary">
                 <Icon className="size-[17px]" />

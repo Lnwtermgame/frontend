@@ -166,7 +166,7 @@ export function RechargeOrderSummary({
         <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
           <div className="mx-auto flex w-full max-w-6xl items-center gap-3 px-4 py-2.5">
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] leading-tight text-muted-foreground">{t("total")}</p>
+              <p className="text-[11.5px] leading-tight text-muted-foreground">{t("total")}</p>
               <p className="num text-lg leading-tight font-extrabold text-primary">
                 {formatTHB(total)}
               </p>

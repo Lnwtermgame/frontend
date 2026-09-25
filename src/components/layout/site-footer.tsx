@@ -4,7 +4,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 
 const COL_LABEL = "text-[11.5px] font-bold tracking-wider text-muted-foreground/70 uppercase";
-const LINK = "block py-[3.5px] text-[13.5px] text-muted-foreground transition-colors hover:text-primary";
+// py ใหญ่กว่าตัวอักษร — ยืดแถวแตะบนมือถือให้ถึง 44px (WCAG 2.5.8) โดยไม่ต้องขยับ layout
+const LINK = "-my-2 flex min-h-11 items-center py-2.5 text-[13.5px] text-muted-foreground transition-colors hover:text-primary";
 
 export function SiteFooter() {
   const t = useTranslations("footer");

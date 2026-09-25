@@ -71,7 +71,10 @@ export function LoginForm() {
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center justify-between">
           <Label htmlFor="password">{t("password")}</Label>
-          <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-primary hover:underline">
+          <Link
+            href="/forgot-password"
+            className="-my-2 flex min-h-11 items-center text-xs text-muted-foreground hover:text-primary hover:underline md:min-h-0 md:py-0"
+          >
             {t("forgotPassword")}
           </Link>
         </div>
@@ -85,13 +88,16 @@ export function LoginForm() {
             )}
           </div>
       {formError && <p role="alert" className="text-xs text-destructive">{formError}</p>}
-      <Button type="submit" disabled={isSubmitting} className="mt-2 w-full font-semibold">
+      <Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full font-semibold md:h-8">
         {isSubmitting ? "กำลังเข้าสู่ระบบ…" : t("login")}
       </Button>
 
       <p className="text-center text-xs text-muted-foreground">
         {t("noAccount")}{" "}
-        <Link href="/register" className="font-semibold text-primary hover:underline">
+        <Link
+          href="/register"
+          className="inline-flex min-h-11 items-center font-semibold text-primary hover:underline md:min-h-0"
+        >
           {t("register")}
         </Link>
       </p>

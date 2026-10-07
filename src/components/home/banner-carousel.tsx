@@ -18,6 +18,7 @@ type Slide = {
 
 export function BannerCarousel() {
   const t = useTranslations("home.banner");
+  const th = useTranslations("home");
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -38,10 +39,17 @@ export function BannerCarousel() {
     <div
       role="region"
       aria-roledescription="carousel"
-      aria-label="โปรโมชั่น"
+      aria-label={t("regionLabel")}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={(e) => {
+        // เลิกพักเฉพาะเมื่อโฟกัสออกนอก carousel ทั้งหมด (ไม่ใช่แค่ย้ายระหว่างลิงก์/จุดข้างใน)
+        if (!e.currentTarget.contains(e.relatedTarget)) setPaused(false);
+      }}
     >
+      {/* h1 เดียวของหน้าแรก — sr-only เพราะสไลด์โชว์ชื่อโปรโมชั่นเป็น h2 อยู่แล้ว */}
+      <h1 className="sr-only">{th("srHeading")}</h1>
       <div className="relative h-[280px] overflow-hidden rounded-[14px] md:h-[230px]">
         {slides.map((s, i) => (
           <div
@@ -58,13 +66,13 @@ export function BannerCarousel() {
             <span aria-hidden className="absolute right-[22%] -bottom-[64%] h-[120%] w-[18%] rotate-[16deg]" style={{ background: s.b2 }} />
             <span aria-hidden className="absolute -bottom-[70%] -left-[4%] h-[110%] w-[30%] rotate-[16deg]" style={{ background: s.b3 }} />
             <div className="relative max-w-[640px] px-6 md:px-10">
-              <span className="inline-flex items-center rounded-full border border-white/20 bg-black/25 px-3 py-1 text-[11.5px] font-bold tracking-wide text-white">
+              <span className="inline-flex items-center rounded-full border border-white/20 bg-black/25 px-3 py-1 text-2xs font-bold tracking-wide text-white">
                 {t("eyebrow")}
               </span>
-              <h2 className="mt-3 text-[26px] leading-[1.16] font-extrabold tracking-tight text-white md:text-[31px]">
+              <h2 className="mt-3 text-2xl leading-[1.16] font-extrabold tracking-tight text-white md:text-3xl">
                 {s.title} <span className="text-[#ffd9a3]">{s.hi}</span>
               </h2>
-              <p className="mt-2 text-[13px] text-white/85 md:text-[13.5px]">{s.desc}</p>
+              <p className="mt-2 text-sm text-white/85">{s.desc}</p>
               <Link
                 href={s.href}
                 className="mt-4 inline-flex h-11 items-center gap-2 rounded-[10px] bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 md:h-10"

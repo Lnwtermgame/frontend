@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { useCoupons, useMyCoupons } from "@/lib/query/hooks";
 import { claimCoupon } from "@/lib/api/dashboard";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ function couponValue(c: {
 
 export default function DashboardCouponsPage() {
   const t = useTranslations("dashboard");
+  const locale = useLocale();
   const coupons = useCoupons({ limit: 50 });
   const myCoupons = useMyCoupons();
   const [claimingId, setClaimingId] = useState<string | null>(null);
@@ -26,8 +28,11 @@ export default function DashboardCouponsPage() {
     setClaimingId(id);
     try {
       await claimCoupon(id);
+      toast.success(t("claimCouponOk"));
       coupons.refetch();
       myCoupons.refetch();
+    } catch {
+      toast.error(t("claimCouponFailed"));
     } finally {
       setClaimingId(null);
     }
@@ -50,7 +55,10 @@ export default function DashboardCouponsPage() {
           ) : coupons.isError ? (
             <DashErrorState onRetry={() => coupons.refetch()} />
           ) : !coupons.data?.data.length ? (
-            <DashEmptyState title={t("emptyCoupons")} />
+            <DashEmptyState
+              title={t("emptyCoupons")}
+              description={t("emptyCouponsDesc")}
+            />
           ) : (
             <div className="grid gap-2.5 sm:grid-cols-2">
               {coupons.data.data.map((c) => (
@@ -67,7 +75,7 @@ export default function DashboardCouponsPage() {
                       <p className="mt-0.5 truncate text-xs text-muted-foreground">{c.description}</p>
                     ) : null}
                     <p className="num mt-0.5 text-xs text-muted-foreground">
-                      {formatDateTime(c.endDate)}
+                      {formatDateTime(c.endDate, locale)}
                     </p>
                   </div>
                   <Button
@@ -103,7 +111,7 @@ export default function DashboardCouponsPage() {
                   <span className="text-xs font-semibold text-muted-foreground">{t("used")}</span>
                 ) : (
                   <span className="num text-xs text-muted-foreground">
-                    {formatDateTime(c.endDate)}
+                    {formatDateTime(c.endDate, locale)}
                   </span>
                 )}
               </div>

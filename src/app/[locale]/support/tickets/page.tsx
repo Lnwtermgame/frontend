@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Plus, Send, XCircle, ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { localizeAuthError } from "@/components/auth/form-feedback";
 import {
   Dialog,
   DialogContent,
@@ -27,7 +29,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTickets, useTicketDetail } from "@/lib/query/hooks";
 import { createTicket, replyTicket, closeTicket } from "@/lib/api/support";
-import type { Ticket, TicketCategory } from "@/lib/api/support";
+import type { TicketCategory } from "@/lib/api/support";
 import { StatusBadge, DashEmptyState, DashErrorState, formatDateTime } from "@/components/dashboard/shared";
 
 const CATEGORIES: TicketCategory[] = [
@@ -42,6 +44,9 @@ const CATEGORIES: TicketCategory[] = [
 
 export default function SupportTicketsPage() {
   const t = useTranslations("support");
+  const tc = useTranslations("common");
+  const ta = useTranslations("auth");
+  const locale = useLocale();
   const user = useAuthStore((s) => s.user);
   const status = useAuthStore((s) => s.status);
   const router = useRouter();
@@ -75,7 +80,7 @@ export default function SupportTicketsPage() {
   if (status === "bootstrapping" || !user) {
     return (
       <div className="mx-auto w-full max-w-4xl px-4 py-16 text-center">
-        <p className="text-sm text-muted-foreground">กำลังโหลด…</p>
+        <p className="text-sm text-muted-foreground">{tc("loading")}</p>
       </div>
     );
   }
@@ -83,7 +88,7 @@ export default function SupportTicketsPage() {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!subject.trim() || !description.trim()) {
-      setFormError("กรุณากรอกหัวข้อและรายละเอียดปัญหา");
+      setFormError(t("formValidationError"));
       return;
     }
     setIsSubmitting(true);
@@ -99,10 +104,11 @@ export default function SupportTicketsPage() {
       setSubject("");
       setDescription("");
       setOrderId("");
+      toast.success(t("ticketCreated"));
       tickets.refetch();
       setActiveTicketId(created.id);
-    } catch (err: any) {
-      setFormError(err?.message || "เกิดข้อผิดพลาดในการส่งเรื่อง");
+    } catch (err) {
+      setFormError(localizeAuthError(err instanceof Error ? err.message : undefined, t("ticketCreateFailed"), ta));
     } finally {
       setIsSubmitting(false);
     }
@@ -110,12 +116,17 @@ export default function SupportTicketsPage() {
 
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeTicketId || !replyText.trim()) return;
+    // กัน double-submit ระหว่างที่กำลังส่งอยู่
+    if (!activeTicketId || isReplying || !replyText.trim()) return;
     setIsReplying(true);
     try {
       await replyTicket(activeTicketId, replyText.trim());
+      // ล้างช่องเฉพาะเมื่อส่งสำเร็จ — ถ้าพลาดให้ผู้ใช้ก๊อปข้อความไปกู้คืนได้
       setReplyText("");
+      toast.success(t("replySent"));
       activeTicket.refetch();
+    } catch {
+      toast.error(t("replyFailed"));
     } finally {
       setIsReplying(false);
     }
@@ -125,10 +136,11 @@ export default function SupportTicketsPage() {
     if (!activeTicketId) return;
     try {
       await closeTicket(activeTicketId);
+      toast.success(t("ticketClosedOk"));
       activeTicket.refetch();
       tickets.refetch();
     } catch {
-      // noop
+      toast.error(t("ticketCloseFailed"));
     }
   };
 
@@ -161,7 +173,7 @@ export default function SupportTicketsPage() {
                 </div>
                 <h1 className="mt-1.5 text-xl font-bold">{tkt.subject}</h1>
                 <p className="num mt-1 text-xs text-muted-foreground">
-                  {formatDateTime(tkt.createdAt)} · {t(`cat_${tkt.category}` as never)}
+                  {formatDateTime(tkt.createdAt, locale)} · {t(`cat_${tkt.category}` as never)}
                   {tkt.orderId ? ` · Order: ${tkt.orderId}` : ""}
                 </p>
               </div>
@@ -178,8 +190,8 @@ export default function SupportTicketsPage() {
             <div className="space-y-3">
               <div className="rounded-[12px] border bg-card p-4">
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span className="font-semibold text-foreground">{user.username} (ผู้แจ้ง)</span>
-                  <span className="num">{formatDateTime(tkt.createdAt)}</span>
+                  <span className="font-semibold text-foreground">{t("ticketReporter", { name: user.username })}</span>
+                  <span className="num">{formatDateTime(tkt.createdAt, locale)}</span>
                 </div>
                 <p className="mt-2 whitespace-pre-line text-sm">{tkt.description}</p>
               </div>
@@ -196,9 +208,9 @@ export default function SupportTicketsPage() {
                   >
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <span className={`font-semibold ${isAdmin ? "text-primary" : "text-foreground"}`}>
-                        {isAdmin ? "ทีมงาน Lnwtermgame" : msg.user?.username ?? "ผู้ใช้"}
+                        {isAdmin ? t("staffName") : msg.user?.username ?? t("fallbackUserName")}
                       </span>
-                      <span className="num">{formatDateTime(msg.createdAt)}</span>
+                      <span className="num">{formatDateTime(msg.createdAt, locale)}</span>
                     </div>
                     <p className="mt-2 whitespace-pre-line text-sm">{msg.content}</p>
                   </div>
@@ -210,7 +222,7 @@ export default function SupportTicketsPage() {
             {tkt.status !== "CLOSED" ? (
               <form onSubmit={handleReply} className="flex gap-2">
                 <textarea
-                  className="flex-1 rounded-[10px] border bg-card px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="flex-1 rounded-[10px] border bg-card px-3 py-2 text-sm focus:outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                   placeholder={t("replyPlaceholder")}
                   rows={2}
                   value={replyText}
@@ -269,7 +281,7 @@ export default function SupportTicketsPage() {
                   <StatusBadge status={tkt.status} />
                 </div>
                 <p className="num mt-1 text-xs text-muted-foreground">
-                  {tkt.ticketNumber} · {t(`cat_${tkt.category}` as never)} · {formatDateTime(tkt.createdAt)}
+                  {tkt.ticketNumber} · {t(`cat_${tkt.category}` as never)} · {formatDateTime(tkt.createdAt, locale)}
                 </p>
               </button>
             ))}
@@ -309,7 +321,7 @@ export default function SupportTicketsPage() {
                   id="subject"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  placeholder="เช่น ไม่ได้รับเพชรในเกม, สลิปโอนเงินซ้ำ"
+                  placeholder={t("subjectPlaceholder")}
                   required
                 />
               </div>
@@ -328,11 +340,11 @@ export default function SupportTicketsPage() {
                 <Label htmlFor="description">{t("description")} *</Label>
                 <textarea
                   id="description"
-                  className="w-full rounded-[10px] border bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full rounded-[10px] border bg-transparent px-3 py-2 text-sm focus:outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                   rows={4}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="ระบุวันเวลาที่ทำรายการ เลขที่อ้างอิง หรือปัญหาที่พบ..."
+                  placeholder={t("descriptionPlaceholder")}
                   required
                 />
               </div>
@@ -346,7 +358,7 @@ export default function SupportTicketsPage() {
 
             <DialogFooter className="gap-2">
               <Button type="button" variant="outline" onClick={() => setCreateOpen(false)}>
-                {t("cancel", { defaultMessage: "ยกเลิก" })}
+                {t("cancel")}
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? t("sending") : t("send")}

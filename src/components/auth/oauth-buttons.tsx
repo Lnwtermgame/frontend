@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useLocale } from "next-intl";
 import { signIn } from "next-auth/react";
 import { getOAuthProviders } from "@/lib/api/auth";
 
@@ -26,6 +27,7 @@ const ICONS: Record<string, React.ReactNode> = {
  * ระหว่างโหลดยังไม่วาดอะไรเลย กัน divider แวบขึ้นแล้วหาย
  */
 export function OAuthSection({ dividerLabel }: { dividerLabel: string }) {
+  const locale = useLocale();
   const { data: providers } = useQuery({
     queryKey: ["oauth-providers"],
     queryFn: getOAuthProviders,
@@ -41,7 +43,7 @@ export function OAuthSection({ dividerLabel }: { dividerLabel: string }) {
           <button
             key={provider.name}
             type="button"
-            onClick={() => signIn(provider.name, { callbackUrl: "/th" })}
+            onClick={() => signIn(provider.name, { callbackUrl: `/${locale}` })}
             className="flex h-11 w-full items-center justify-center gap-2.5 rounded-[10px] border border-border bg-secondary text-sm font-semibold transition-colors hover:border-muted-foreground/40 hover:bg-accent"
           >
             {ICONS[provider.name] ?? null}
@@ -49,7 +51,7 @@ export function OAuthSection({ dividerLabel }: { dividerLabel: string }) {
           </button>
         ))}
       </div>
-      <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground/70">
+      <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground-strong">
         <span className="h-px flex-1 bg-border/60" />
         {dividerLabel}
         <span className="h-px flex-1 bg-border/60" />

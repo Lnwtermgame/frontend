@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { useAuthStore } from "@/stores/auth";
 import { Link, useRouter } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
@@ -13,24 +14,29 @@ import { Label } from "@/components/ui/label";
 import { OAuthSection } from "@/components/auth/oauth-buttons";
 import { PasswordInput } from "@/components/auth/password-input";
 import { AuthShell } from "@/components/auth/auth-shell";
+import { FieldError, FormAlert, localizeAuthError } from "@/components/auth/form-feedback";
 
-const registerSchema = z
-  .object({
-    username: z
-      .string()
-      .min(3, "ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร")
-      .max(30, "ชื่อผู้ใช้ต้องไม่เกิน 30 ตัวอักษร")
-      .regex(/^[a-zA-Z0-9_-]+$/, "ชื่อผู้ใช้ต้องเป็นตัวอักษรภาษาอังกฤษ ตัวเลข _ หรือ - เท่านั้น"),
-    email: z.string().email("รูปแบบอีเมลไม่ถูกต้อง"),
-    password: z.string().min(8, "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน",
-    path: ["confirmPassword"],
-  });
+// สร้าง schema ใน component เพื่อใช้ข้อความแปลจาก messages/th.json (auth.validation.*)
+const buildRegisterSchema = (t: (key: string) => string) =>
+  z
+    .object({
+      username: z
+        .string()
+        .min(3, t("validation.usernameMin"))
+        .max(30, t("validation.usernameMax"))
+        .regex(/^[a-zA-Z0-9_-]+$/, t("validation.usernameFormat")),
+      email: z.string().min(1, t("validation.emailRequired")).email(t("validation.emailInvalid")),
+      password: z.string().min(8, t("validation.passwordMin")),
+      confirmPassword: z.string().min(1, t("validation.confirmPasswordRequired")),
+      // ต้องติ๊กยอมรับเงื่อนไขก่อนส่งแบบฟอร์ม
+      terms: z.boolean().refine((v) => v === true, t("validation.termsRequired")),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("validation.passwordMismatch"),
+      path: ["confirmPassword"],
+    });
 
-type RegisterValues = z.infer<typeof registerSchema>;
+type RegisterValues = { username: string; email: string; password: string; confirmPassword: string; terms: boolean };
 
 export default function RegisterPage() {
   const t = useTranslations("auth");
@@ -43,46 +49,57 @@ export default function RegisterPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterValues>({
-    resolver: zodResolver(registerSchema),
-    mode: "onBlur",
+    resolver: zodResolver(buildRegisterSchema(t)),
+    mode: "onTouched",
+    defaultValues: { terms: false },
   });
+
+  const clearFormError = () => setFormError(null);
 
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null);
     const result = await registerWithPassword(values.username, values.email, values.password);
     if (result.ok) {
-      router.replace("/");
+      // สมัครสำเร็จ → พาไปหน้ายืนยันอีเมล (?new=1 = แสดงข้อความชวนตรวจอีเมล) แทนการดรอปลงหน้าแรกเงียบๆ
+      toast.success(t("registerToast"));
+      router.replace("/verify-email?new=1");
     } else {
-      setFormError(result.message ?? t("registerFailed"));
+      setFormError(localizeAuthError(result.message, t("registerFailed"), t));
     }
   });
 
   return (
     <AuthShell>
       <h1 className="text-xl font-extrabold tracking-tight">{t("register")}</h1>
-      <p className="mt-1 mb-5 text-[13px] text-muted-foreground">{t("registerSub")}</p>
+      <p className="mt-1 mb-5 text-sm text-muted-foreground">{t("registerSub")}</p>
 
       <OAuthSection dividerLabel={t("orWithEmail")} />
 
-      <form onSubmit={onSubmit} noValidate className="flex flex-col gap-3.5">
+      <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="username">{t("username")}</Label>
-          <Input id="username" type="text" autoComplete="username" {...register("username")} />
-          {errors.username && (
-            <p role="alert" className="text-xs text-destructive">
-              {errors.username.message}
-            </p>
-          )}
+          <Input
+            id="username"
+            type="text"
+            autoComplete="username"
+            aria-invalid={!!errors.username}
+            aria-describedby={errors.username ? "username-error" : undefined}
+            {...register("username", { onChange: clearFormError })}
+          />
+          <FieldError id="username-error" message={errors.username?.message} />
         </div>
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="email">{t("email")}</Label>
-          <Input id="email" type="email" autoComplete="email" {...register("email")} />
-          {errors.email && (
-            <p role="alert" className="text-xs text-destructive">
-              {errors.email.message}
-            </p>
-          )}
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? "email-error" : undefined}
+            {...register("email", { onChange: clearFormError })}
+          />
+          <FieldError id="email-error" message={errors.email?.message} />
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -91,13 +108,11 @@ export default function RegisterPage() {
             id="password"
             autoComplete="new-password"
             placeholder={t("passwordHint")}
-            {...register("password")}
+            aria-invalid={!!errors.password}
+            aria-describedby={errors.password ? "password-error" : undefined}
+            {...register("password", { onChange: clearFormError })}
           />
-          {errors.password && (
-            <p role="alert" className="text-xs text-destructive">
-              {errors.password.message}
-            </p>
-          )}
+          <FieldError id="password-error" message={errors.password?.message} />
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -105,22 +120,44 @@ export default function RegisterPage() {
           <PasswordInput
             id="confirmPassword"
             autoComplete="new-password"
-            {...register("confirmPassword")}
+            aria-invalid={!!errors.confirmPassword}
+            aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
+            {...register("confirmPassword", { onChange: clearFormError })}
           />
-          {errors.confirmPassword && (
-            <p role="alert" className="text-xs text-destructive">
-              {errors.confirmPassword.message}
-            </p>
-          )}
+          <FieldError id="confirmPassword-error" message={errors.confirmPassword?.message} />
         </div>
 
-        {formError ? (
-          <p role="alert" className="text-xs text-destructive">
-            {formError}
-          </p>
-        ) : null}
+        {/* ยอมรับเงื่อนไข — ลิงก์อยู่ใน label แต่คลิกลิงก์ไม่กระทบการติ๊ก (interactive content ยกเว้น label activation) */}
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-start gap-2.5">
+            <input
+              id="terms"
+              type="checkbox"
+              className="mt-0.5 size-4 shrink-0 cursor-pointer rounded-[4px] accent-primary"
+              aria-invalid={!!errors.terms}
+              aria-describedby={errors.terms ? "terms-error" : undefined}
+              {...register("terms", { onChange: clearFormError })}
+            />
+            <Label
+              htmlFor="terms"
+              className="cursor-pointer text-sm font-normal leading-snug text-muted-foreground"
+            >
+              {t("termsAgreePrefix")}{" "}
+              <Link href="/terms" className="font-semibold text-primary hover:underline">
+                {t("termsOfService")}
+              </Link>{" "}
+              {t("andJoin")}{" "}
+              <Link href="/privacy" className="font-semibold text-primary hover:underline">
+                {t("privacyPolicy")}
+              </Link>
+            </Label>
+          </div>
+          <FieldError id="terms-error" message={errors.terms?.message} />
+        </div>
 
-        <Button type="submit" disabled={isSubmitting} className="mt-1 h-11 w-full font-semibold">
+        {formError ? <FormAlert variant="error">{formError}</FormAlert> : null}
+
+        <Button type="submit" disabled={isSubmitting} className="h-11 w-full font-semibold">
           {isSubmitting ? t("registering") : t("register")}
         </Button>
 

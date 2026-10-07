@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getCmsPage } from "@/lib/api/support";
@@ -40,13 +41,16 @@ export default async function DynamicCmsPage({
 
   if (!page) notFound();
 
+  const t = await getTranslations("cms");
+  const locale = await getLocale();
+
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-12">
       <article className="rounded-[14px] border bg-card p-6 sm:p-10 shadow-(--shadow-tile)">
         <h1 className="text-2xl font-bold sm:text-3xl">{page.title}</h1>
         {page.updatedAt ? (
           <p className="num mt-2 text-xs text-muted-foreground border-b pb-4">
-            ปรับปรุงล่าสุดเมื่อ: {formatDateTime(page.updatedAt)}
+            {t("lastUpdated")} {formatDateTime(page.updatedAt, locale)}
           </p>
         ) : null}
 

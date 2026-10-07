@@ -9,60 +9,77 @@ import {
   FileText,
   Search,
   ArrowRight,
-  ShieldCheck,
 } from "lucide-react";
 import { Link, useRouter } from "@/i18n/routing";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useFaqCategories } from "@/lib/query/hooks";
+
+type HubCard = {
+  title: string;
+  desc: string;
+  href: string;
+  icon: typeof HelpCircle;
+  badge: string | null;
+  cta: string;
+};
 
 export default function SupportHubPage() {
   const t = useTranslations("support");
   const router = useRouter();
   const [search, setSearch] = useState("");
 
+  // นับจำนวนบทความจริงจากหมวดหมู่ FAQ — ไม่เคลมตัวเลขที่ตรวจสอบไม่ได้
+  const faqCategories = useFaqCategories();
+  const articleTotal =
+    faqCategories.data?.reduce((sum, cat) => sum + (cat.articleCount ?? 0), 0) ?? 0;
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!search.trim()) return;
-    router.push(`/support/faq`);
+    router.push(`/support/faq?search=${encodeURIComponent(search.trim())}`);
   };
 
-  const HUB_CARDS = [
+  const HUB_CARDS: HubCard[] = [
     {
-      title: "คำถามที่พบบ่อย (FAQ)",
-      desc: "ค้นหาคำตอบด่วนเกี่ยวกับช่องทางชำระเงิน ขั้นตอนการเติม และปัญหาที่พบบ่อย",
+      title: t("hubFaqTitle"),
+      desc: t("hubFaqDesc"),
       href: "/support/faq",
       icon: HelpCircle,
-      badge: "45 บทความ",
+      badge: articleTotal > 0 ? t("faqArticleCount", { count: articleTotal }) : null,
+      cta: t("hubFaqCta"),
     },
     {
-      title: "แจ้งปัญหาคำสั่งซื้อ (Tickets)",
-      desc: "ส่งคำร้องให้เจ้าหน้าที่ตรวจสอบโดยตรง พร้อมติดตามสถานะและสนทนาแบบ Real-time",
+      title: t("hubTicketsTitle"),
+      desc: t("hubTicketsDesc"),
       href: "/support/tickets",
       icon: MessageSquare,
-      badge: "ดูแลโดยตรง",
+      badge: t("hubTicketsBadge"),
+      cta: t("reportIssue"),
     },
     {
-      title: "ติดต่อเรา (Contact)",
-      desc: "ช่องทางการติดต่อทีมงานและรายละเอียดเวลาทำการ พร้อมช่วยเหลือตลอด 24 ชั่วโมง",
+      title: t("hubContactTitle"),
+      desc: t("hubContactDesc"),
       href: "/support/contact",
       icon: Headphones,
-      badge: "24 ชั่วโมง",
+      badge: t("hubContactBadge"),
+      cta: t("contactUs"),
     },
     {
-      title: "นโยบายการคืนเงิน",
-      desc: "เงื่อนไขและข้อกำหนดในการขอรับเงินคืนสำหรับสินค้าดิจิทัล",
+      title: t("hubRefundTitle"),
+      desc: t("hubRefundDesc"),
       href: "/refund",
       icon: FileText,
-      badge: "ข้อกำหนด",
+      badge: t("hubRefundBadge"),
+      cta: t("hubRefundCta"),
     },
   ];
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-12">
       <div className="text-center">
-        <h1 className="text-2xl font-bold sm:text-3xl">ศูนย์บริการช่วยเหลือ Lnwtermgame</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">{t("hubTitle")}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          เราพร้อมช่วยเหลือและดูแลทุกปัญหาการสั่งซื้อของคุณตลอด 24 ชั่วโมง
+          {t("hubSubtitle")}
         </p>
 
         <form onSubmit={handleSearch} className="relative mx-auto mt-6 max-w-lg">
@@ -70,7 +87,7 @@ export default function SupportHubPage() {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="พิมพ์คำถามที่ต้องการค้นหา…"
+            placeholder={t("hubSearchPlaceholder")}
             className="pl-9"
           />
         </form>
@@ -88,9 +105,11 @@ export default function SupportHubPage() {
                 <div className="inline-flex size-10 items-center justify-center rounded-[10px] bg-primary/10 text-primary">
                   <card.icon className="size-5" />
                 </div>
-                <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
-                  {card.badge}
-                </span>
+                {card.badge ? (
+                  <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
+                    {card.badge}
+                  </span>
+                ) : null}
               </div>
               <h2 className="mt-4 text-base font-bold text-foreground group-hover:text-primary transition-colors">
                 {card.title}
@@ -99,12 +118,23 @@ export default function SupportHubPage() {
             </div>
 
             <div className="mt-6 flex items-center gap-1 text-xs font-semibold text-primary">
-              <span>ไปยังหน้านี้</span>
+              <span>{card.cta}</span>
               <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
             </div>
           </Link>
         ))}
       </div>
+
+      {/* เมื่อค้นหาแล้วไม่พบคำตอบ — ทางเลือกถัดไปคือเปิดตั๋วกับทีมงาน */}
+      <p className="mt-8 text-center text-sm text-muted-foreground">
+        {t("hubNoAnswer")}{" "}
+        <Link
+          href="/support/tickets"
+          className="inline-flex min-h-11 items-center font-semibold text-primary hover:underline md:min-h-0"
+        >
+          {t("newTicket")}
+        </Link>
+      </p>
     </div>
   );
 }

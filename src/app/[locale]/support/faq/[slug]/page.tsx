@@ -1,9 +1,10 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ThumbsUp, ThumbsDown, ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,6 +15,7 @@ import { decodeRouteParam } from "@/lib/route-param";
 
 export default function FaqArticlePage() {
   const t = useTranslations("support");
+  const locale = useLocale();
   const params = useParams<Record<string, string>>();
   const slug = decodeRouteParam(params?.slug);
   const article = useFaqArticleBySlug(slug);
@@ -40,7 +42,7 @@ export default function FaqArticlePage() {
       await markFaqHelpful(art.id, isHelpful);
       setVoted(true);
     } catch {
-      // noop
+      toast.error(t("voteFailed"));
     }
   };
 
@@ -57,7 +59,7 @@ export default function FaqArticlePage() {
       <article className="rounded-[14px] border bg-card p-6 shadow-(--shadow-tile)">
         <h1 className="text-xl font-bold sm:text-2xl">{art.title}</h1>
         <p className="num mt-2 text-xs text-muted-foreground">
-          {formatDateTime(art.updatedAt)}
+          {formatDateTime(art.updatedAt, locale)}
         </p>
 
         <div className="mt-6 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">

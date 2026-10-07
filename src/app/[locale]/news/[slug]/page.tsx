@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeft, Eye } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -14,6 +14,7 @@ import { decodeRouteParam } from "@/lib/route-param";
 
 export default function NewsArticleDetailPage() {
   const t = useTranslations("support");
+  const locale = useLocale();
   const params = useParams<Record<string, string>>();
   const slug = decodeRouteParam(params?.slug);
   const article = useNewsArticle(slug);
@@ -47,10 +48,10 @@ export default function NewsArticleDetailPage() {
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="secondary">{item.category}</Badge>
           {item.isFeatured ? (
-            <Badge className="bg-primary text-primary-foreground">แนะนำ</Badge>
+            <Badge className="bg-primary text-primary-foreground">{t("featuredBadge")}</Badge>
           ) : null}
           <div className="num ml-auto flex items-center gap-3 text-xs text-muted-foreground">
-            <span>{formatDateTime(item.publishedAt)}</span>
+            <span>{formatDateTime(item.publishedAt, locale)}</span>
             <span className="flex items-center gap-1">
               <Eye className="size-3.5" />
               {item.viewCount}

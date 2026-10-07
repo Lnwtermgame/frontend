@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
@@ -12,25 +13,26 @@ import { DashErrorState } from "@/components/dashboard/shared";
 
 export default function NotificationPreferencesPage() {
   const t = useTranslations("dashboard");
+  const tc = useTranslations("common");
   const prefs = useNotificationPreferences();
 
-  const [form, setForm] = useState<NotificationPreferences>({
+  // เก็บเฉพาะค่าที่ผู้ใช้เปลี่ยน — ค่าที่เหลืออ่านตรงจากข้อมูลเซิร์ฟเวอร์ตอนเรนเดอร์
+  // (ไม่ต้อง sync ลง state ใน effect ตอน query มาถึง)
+  const [overrides, setOverrides] = useState<Partial<NotificationPreferences>>({});
+  const [saving, setSaving] = useState(false);
+  const [savedMsg, setSavedMsg] = useState(false);
+
+  const form: NotificationPreferences = {
     emailNotifications: true,
     pushNotifications: true,
     orderUpdates: true,
     promotions: true,
-  });
-  const [saving, setSaving] = useState(false);
-  const [savedMsg, setSavedMsg] = useState(false);
-
-  useEffect(() => {
-    if (prefs.data) {
-      setForm(prefs.data);
-    }
-  }, [prefs.data]);
+    ...prefs.data,
+    ...overrides,
+  };
 
   const handleToggle = (key: keyof NotificationPreferences) => {
-    setForm((prev) => ({ ...prev, [key]: !prev[key] }));
+    setOverrides((prev) => ({ ...prev, [key]: !form[key] }));
     setSavedMsg(false);
   };
 
@@ -40,6 +42,8 @@ export default function NotificationPreferencesPage() {
       await updateNotificationPreferences(form);
       setSavedMsg(true);
       prefs.refetch();
+    } catch {
+      toast.error(t("prefSaveFailed"));
     } finally {
       setSaving(false);
     }
@@ -48,23 +52,23 @@ export default function NotificationPreferencesPage() {
   const ITEMS: Array<{ key: keyof NotificationPreferences; title: string; desc: string }> = [
     {
       key: "emailNotifications",
-      title: "การแจ้งเตือนทางอีเมล",
-      desc: "รับอีเมลแจ้งสถานะคำสั่งซื้อและการแจ้งเตือนสำคัญของบัญชี",
+      title: t("prefEmailTitle"),
+      desc: t("prefEmailDesc"),
     },
     {
       key: "pushNotifications",
-      title: "การแจ้งเตือนบนเบราว์เซอร์ (Push)",
-      desc: "รับการแจ้งเตือนทันทีเมื่อคำสั่งซื้อสำเร็จหรือมีการตอบกลับ",
+      title: t("prefPushTitle"),
+      desc: t("prefPushDesc"),
     },
     {
       key: "orderUpdates",
-      title: "อัปเดตสถานะคำสั่งซื้อ",
-      desc: "แจ้งเตือนทุกขั้นตอนตั้งแต่ชำระเงินจนถึงส่งมอบสินค้า",
+      title: t("prefOrderUpdatesTitle"),
+      desc: t("prefOrderUpdatesDesc"),
     },
     {
       key: "promotions",
-      title: "โปรโมชั่นและส่วนลดพิเศษ",
-      desc: "รับข่าวสารคูปองส่วนลดและโปรโมชั่นเติมเกมรายสัปดาห์",
+      title: t("prefPromotionsTitle"),
+      desc: t("prefPromotionsDesc"),
     },
   ];
 
@@ -79,13 +83,13 @@ export default function NotificationPreferencesPage() {
           {t("notifications")}
         </Link>
         <h1 className="text-xl font-bold">{t("notificationPreferences")}</h1>
-        <p className="mt-0.5 text-[13px] text-muted-foreground">เลือกช่องทางและประเภทข้อความที่คุณต้องการรับ</p>
+        <p className="mt-0.5 text-sm text-muted-foreground">{t("prefDesc")}</p>
       </div>
 
       {savedMsg ? (
         <div className="flex items-center gap-2 rounded-[10px] border border-status-success/40 bg-status-success/10 p-3 text-xs font-semibold text-status-success">
           <CheckCircle2 className="size-4" />
-          <span>บันทึกการตั้งค่าเรียบร้อยแล้ว</span>
+          <span>{t("prefSaved")}</span>
         </div>
       ) : null}
 
@@ -115,7 +119,7 @@ export default function NotificationPreferencesPage() {
                   size="sm"
                   onClick={() => handleToggle(item.key)}
                 >
-                  {form[item.key] ? "เปิด" : "ปิด"}
+                  {form[item.key] ? tc("on") : tc("off")}
                 </Button>
               </div>
             ))}
@@ -124,7 +128,7 @@ export default function NotificationPreferencesPage() {
 
         <div className="mt-6 border-t pt-4">
           <Button disabled={saving || prefs.isLoading} onClick={handleSave}>
-            {saving ? "กำลังบันทึก…" : "บันทึกการตั้งค่า"}
+            {saving ? t("prefSaving") : t("prefSave")}
           </Button>
         </div>
       </div>

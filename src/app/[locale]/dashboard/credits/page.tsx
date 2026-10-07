@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useCreditBalance, useCreditTransactions } from "@/lib/query/hooks";
 import { formatTHB } from "@/lib/pricing";
@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 
 export default function DashboardCreditsPage() {
   const t = useTranslations("dashboard");
+  const locale = useLocale();
   const [page, setPage] = useState(1);
   const balance = useCreditBalance();
   const tx = useCreditTransactions({ page, limit: 10 });
@@ -31,7 +32,7 @@ export default function DashboardCreditsPage() {
         {/* แผงซ้าย — ตรึงบน desktop */}
         <aside className="flex min-w-0 flex-col gap-3 md:sticky md:top-20">
           <div className="rounded-[14px] border bg-card p-4">
-            <p className="text-[11.5px] font-bold tracking-wide text-muted-foreground">
+            <p className="text-2xs font-bold tracking-wide text-muted-foreground">
               {t("creditBalance")}
             </p>
             {balance.isLoading ? (
@@ -43,10 +44,10 @@ export default function DashboardCreditsPage() {
                 {formatTHB(balance.data?.balance ?? 0)}
               </p>
             )}
-            <p className="mt-2 text-[12.5px] text-muted-foreground">{t("currencyNote")}</p>
+            <p className="mt-2 text-xs text-muted-foreground">{t("currencyNote")}</p>
 
             {!tx.isLoading && rows.length ? (
-              <div className="mt-3 space-y-1.5 border-t border-dashed pt-3 text-[12.5px]">
+              <div className="mt-3 space-y-1.5 border-t border-dashed pt-3 text-xs">
                 {lastIn ? (
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="text-muted-foreground">{t("lastIn")}</span>
@@ -66,10 +67,10 @@ export default function DashboardCreditsPage() {
           </div>
 
           <div className="rounded-[14px] border bg-card p-4">
-            <p className="text-[11.5px] font-bold tracking-wide text-muted-foreground">
+            <p className="text-2xs font-bold tracking-wide text-muted-foreground">
               {t("whatIsCredit")}
             </p>
-            <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground">
+            <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
               {t("whatIsCreditDesc")}
             </p>
           </div>
@@ -113,8 +114,8 @@ export default function DashboardCreditsPage() {
                         {positive ? "+" : "−"}
                         {formatTHB(Math.abs(item.amount))}
                       </span>
-                      <span className="num mt-0.5 block text-[11.5px] text-muted-foreground">
-                        {formatDateTime(item.createdAt)}
+                      <span className="num mt-0.5 block text-2xs text-muted-foreground">
+                        {formatDateTime(item.createdAt, locale)}
                       </span>
                     </div>
                   </>

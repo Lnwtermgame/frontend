@@ -11,12 +11,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { requestPasswordReset } from "@/lib/api/auth";
+import { AuthShell } from "@/components/auth/auth-shell";
+import { FieldError, FormAlert, localizeAuthError } from "@/components/auth/form-feedback";
 
-const forgotSchema = z.object({
-  email: z.string().email("รูปแบบอีเมลไม่ถูกต้อง"),
-});
+// สร้าง schema ใน component เพื่อใช้ข้อความแปลจาก messages/th.json (auth.validation.*)
+const buildForgotSchema = (t: (key: string) => string) =>
+  z.object({
+    email: z.string().email(t("validation.emailInvalid")),
+  });
 
-type ForgotValues = z.infer<typeof forgotSchema>;
+type ForgotValues = { email: string };
 
 export default function ForgotPasswordPage() {
   const t = useTranslations("auth");
@@ -28,7 +32,7 @@ export default function ForgotPasswordPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<ForgotValues>({
-    resolver: zodResolver(forgotSchema),
+    resolver: zodResolver(buildForgotSchema(t)),
     mode: "onBlur",
   });
 
@@ -37,14 +41,14 @@ export default function ForgotPasswordPage() {
     try {
       await requestPasswordReset(values.email);
       setIsSent(true);
-    } catch (err: any) {
-      setErrorMsg(err?.message || "เกิดข้อผิดพลาดในการส่งคำขอ");
+    } catch (err) {
+      setErrorMsg(localizeAuthError(err instanceof Error ? err.message : undefined, t("requestFailed"), t));
     }
   });
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
-      <div className="w-full max-w-sm space-y-6">
+    <AuthShell>
+      <div className="w-full space-y-6">
         <Link
           href="/login"
           className="-mt-2 mb-1 inline-flex min-h-11 items-center gap-1.5 text-xs text-muted-foreground hover:text-primary"
@@ -54,7 +58,7 @@ export default function ForgotPasswordPage() {
         </Link>
 
         <div>
-          <h1 className="text-2xl font-bold">{t("forgotPasswordTitle")}</h1>
+          <h1 className="text-xl font-extrabold tracking-tight">{t("forgotPasswordTitle")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{t("forgotPasswordDesc")}</p>
         </div>
 
@@ -75,27 +79,21 @@ export default function ForgotPasswordPage() {
                 type="email"
                 placeholder="name@example.com"
                 autoComplete="email"
-                {...register("email")}
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? "email-error" : undefined}
+                {...register("email", { onChange: () => setErrorMsg(null) })}
               />
-              {errors.email && (
-                <p role="alert" className="text-xs text-destructive">
-                  {errors.email.message}
-                </p>
-              )}
+              <FieldError id="email-error" message={errors.email?.message} />
             </div>
 
-            {errorMsg ? (
-              <p role="alert" className="text-xs text-destructive">
-                {errorMsg}
-              </p>
-            ) : null}
+            {errorMsg ? <FormAlert variant="error">{errorMsg}</FormAlert> : null}
 
-            <Button type="submit" disabled={isSubmitting} className="mt-2 h-11 w-full font-semibold md:h-8">
-              {isSubmitting ? "กำลังส่งคำขอ…" : t("sendResetLink")}
+            <Button type="submit" disabled={isSubmitting} className="h-11 w-full font-semibold md:h-9">
+              {isSubmitting ? t("sendingRequest") : t("sendResetLink")}
             </Button>
           </form>
         )}
       </div>
-    </main>
+    </AuthShell>
   );
 }

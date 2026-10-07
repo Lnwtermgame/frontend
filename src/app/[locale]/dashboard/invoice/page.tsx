@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useInvoices } from "@/lib/query/hooks";
 import { formatTHB } from "@/lib/pricing";
@@ -10,6 +10,7 @@ import { Pager, DashErrorState, DashEmptyState, DashPageHead, formatDateTime } f
 
 export default function DashboardInvoicesPage() {
   const t = useTranslations("dashboard");
+  const locale = useLocale();
   const [page, setPage] = useState(1);
   const invoices = useInvoices({ page, limit: 10 });
 
@@ -23,7 +24,12 @@ export default function DashboardInvoicesPage() {
         ) : invoices.isError ? (
           <DashErrorState onRetry={() => invoices.refetch()} />
         ) : !invoices.data?.data.length ? (
-          <DashEmptyState title={t("emptyInvoices")} description={t("emptyInvoicesDesc")} />
+          <DashEmptyState
+            title={t("emptyInvoices")}
+            description={t("emptyInvoicesDesc")}
+            actionHref="/dashboard/orders"
+            actionLabel={t("viewOrders")}
+          />
         ) : (
           invoices.data.data.map((inv) => (
             <Link
@@ -38,7 +44,7 @@ export default function DashboardInvoicesPage() {
                   {formatTHB(inv.totalAmount)}
                 </span>
               </div>
-              <p className="num mt-0.5 text-xs text-muted-foreground">{formatDateTime(inv.issuedAt)}</p>
+              <p className="num mt-0.5 text-xs text-muted-foreground">{formatDateTime(inv.issuedAt, locale)}</p>
             </Link>
           ))
         )}

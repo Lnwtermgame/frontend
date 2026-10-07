@@ -62,8 +62,9 @@ export const useAuthStore = create<AuthState>()(
           return { ok: true };
         } catch (error) {
           set({ status: "guest" });
-          const message =
-            error instanceof Error ? error.message : "เข้าสู่ระบบไม่สำเร็จ";
+          // fallback ข้อความไทยอยู่ที่หน้า login (auth.loginFailed) —
+          // store ส่งเฉพาะ message จาก Error ออกไป
+          const message = error instanceof Error ? error.message : undefined;
           return { ok: false, message };
         }
       },
@@ -76,8 +77,8 @@ export const useAuthStore = create<AuthState>()(
           return { ok: true };
         } catch (error) {
           set({ status: "guest" });
-          const message =
-            error instanceof Error ? error.message : "สมัครสมาชิกไม่สำเร็จ";
+          // fallback ข้อความไทยอยู่ที่หน้าสมัคร (auth.registerFailed)
+          const message = error instanceof Error ? error.message : undefined;
           return { ok: false, message };
         }
       },
@@ -113,6 +114,19 @@ export const useAuthStore = create<AuthState>()(
 );
 
 if (typeof window !== "undefined") {
+  // โลแคลที่รองรับ — ประกาศซ้ำจาก i18n/routing.ts เพราะไฟล์นั้นไม่ได้ export ลิสต์โลแคล
+  // เมื่อเพิ่ม "en" ใน routing.ts ให้เติมที่นี่ด้วย แล้ว redirect จะใช้ prefix ถูกต้องอัตโนมัติ
+  const SUPPORTED_LOCALES = ["th"] as const;
+  const DEFAULT_LOCALE = "th";
+
+  /** อ่าน prefix โลแคลจาก URL ปัจจุบัน (/th/... → "th") ถ้าไม่ตรงกับที่รองรับใช้โลแคลเริ่มต้น */
+  function localePrefixFromPathname(): string {
+    const first = window.location.pathname.split("/")[1];
+    return (SUPPORTED_LOCALES as readonly string[]).includes(first ?? "")
+      ? (first as string)
+      : DEFAULT_LOCALE;
+  }
+
   configureAuthSync({
     hasStoredUser: () => Boolean(useAuthStore.getState().user),
     onSessionExpired: () => {
@@ -122,8 +136,8 @@ if (typeof window !== "undefined") {
         .then(({ signOut }) => signOut({ redirect: false }))
         .catch(() => {});
       if (!window.location.pathname.includes("/login")) {
-        sessionStorage.setItem("session_expired", "true");
-        window.location.href = "/login?session_expired=true";
+        // hard navigation เพื่อเคลียร์ state ทั้งหน้า — สถานะแจ้งเตือนส่งผ่าน query param อย่างเดียว
+        window.location.href = `/${localePrefixFromPathname()}/login?session_expired=true`;
       }
     },
   });

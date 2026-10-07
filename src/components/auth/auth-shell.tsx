@@ -45,12 +45,12 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
             <br />
             <span className="text-primary">{t("shellTitle2")}</span>
           </h2>
-          <p className="mt-2.5 max-w-[34ch] text-[13px] text-muted-foreground lg:mt-3">
+          <p className="mt-2.5 max-w-[34ch] text-sm text-muted-foreground lg:mt-3">
             {t("shellTag")}
           </p>
           <ul className="mt-6 hidden flex-col gap-3 lg:flex">
             {trustItems.map(({ icon: Icon, label }) => (
-              <li key={label} className="flex items-center gap-2.5 text-[13px] font-semibold text-muted-foreground">
+              <li key={label} className="flex items-center gap-2.5 text-sm font-semibold text-muted-foreground">
                 <Icon className="size-[15px] text-primary" />
                 {label}
               </li>

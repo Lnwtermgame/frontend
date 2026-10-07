@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   ArrowLeft,
   Check,
@@ -26,6 +26,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Link } from "@/i18n/routing";
+import { toast } from "sonner";
 import { useOrderDetail, useDeliveryStatus } from "@/lib/query/hooks";
 import { cancelOrderById, resendDelivery } from "@/lib/api/dashboard";
 import { formatTHB } from "@/lib/pricing";
@@ -50,7 +51,7 @@ const DOT_CLASS: Record<StepState, string> = {
 
 const LINE_CLASS: Record<StepState, string> = {
   ok: "before:bg-[color-mix(in_oklab,var(--status-success)_55%,var(--border))]",
-  bad: "before:bg-[color-mix(in_oklab,var(--status-success)_55%,var(--border))]",
+  bad: "before:bg-[color-mix(in_oklab,var(--destructive)_55%,var(--border))]",
   cur: "before:bg-[color-mix(in_oklab,var(--status-warning)_55%,var(--border))]",
   off: "",
 };
@@ -59,7 +60,7 @@ const SUB_CLASS: Record<StepState, string> = {
   ok: "text-muted-foreground",
   bad: "text-destructive",
   cur: "text-status-warning",
-  off: "text-muted-foreground/60",
+  off: "text-muted-foreground-strong",
 };
 
 const RAIL_DOT_CLASS: Record<StepState, string> = {
@@ -88,7 +89,7 @@ function uidFromInfo(info: Record<string, unknown> | null | undefined): string {
 
 function LeadRow({ label, value, num }: { label: string; value: string; num?: boolean }) {
   return (
-    <div className="flex items-baseline gap-1.5 text-[13.5px]">
+    <div className="flex items-baseline gap-1.5 text-sm">
       <span className="shrink-0 text-muted-foreground">{label}</span>
       <span aria-hidden className="min-w-4 flex-1 -translate-y-0.5 border-b border-dotted border-border" />
       <span className={cn("max-w-[55%] text-right font-semibold", num && "num")}>{value}</span>
@@ -98,6 +99,8 @@ function LeadRow({ label, value, num }: { label: string; value: string; num?: bo
 
 export default function DashboardOrderDetailPage() {
   const t = useTranslations("dashboard");
+  const tc = useTranslations("common");
+  const locale = useLocale();
   const routeParams = useParams<Record<string, string>>();
   const orderId = routeParams?.orderId ?? "";
 
@@ -186,8 +189,10 @@ export default function DashboardOrderDetailPage() {
     try {
       await cancelOrderById(orderId);
       setCancelOpen(false);
+      toast.success(t("cancelOrderOk"));
       order.refetch();
     } catch {
+      toast.error(t("cancelOrderFailed"));
       setCancelOpen(false);
     } finally {
       setCancelling(false);
@@ -198,9 +203,10 @@ export default function DashboardOrderDetailPage() {
     setResendingId(itemId);
     try {
       await resendDelivery(orderId, itemId);
+      toast.success(t("resendOk"));
       await deliveryQ.refetch();
     } catch {
-      // keep current delivery state on failure
+      toast.error(t("resendFailed"));
     } finally {
       setResendingId(null);
     }
@@ -225,7 +231,7 @@ export default function DashboardOrderDetailPage() {
   const completedAt = d?.completedAt;
 
   const steps: { label: string; state: StepState; sub: string }[] = [
-    { label: t("stepReceived"), state: "ok", sub: formatTime(o.createdAt) },
+    { label: t("stepReceived"), state: "ok", sub: formatTime(o.createdAt, locale) },
     {
       label: t("stepPayment"),
       state: payState,
@@ -236,21 +242,22 @@ export default function DashboardOrderDetailPage() {
       state: delState,
       sub: d
         ? d.status === "COMPLETED" && deliveredAt
-          ? formatTime(deliveredAt)
+          ? formatTime(deliveredAt, locale)
           : statusLabel(d.status)
         : "—",
     },
     {
       label: t("stepDone"),
       state: doneState,
-      sub: doneState === "ok" ? formatTime(completedAt ?? o.updatedAt) : "—",
+      sub: doneState === "ok" ? formatTime(completedAt ?? o.updatedAt, locale) : "—",
     },
   ];
 
   /* ── ลิงก์ "ซื้ออีกครั้ง" จากสินค้ารายการแรก ── */
   const firstProduct = o.items.find((i) => i.product)?.product;
+  // productType ที่ backend เพิ่มใหม่และยังไม่มีใน PRODUCT_BASE จะได้ /games เป็นฐาน fallback
   const buyHref = firstProduct
-    ? `${PRODUCT_BASE[firstProduct.productType]}/${firstProduct.slug}`
+    ? `${PRODUCT_BASE[firstProduct.productType] ?? "/games"}/${firstProduct.slug}`
     : null;
 
   const dest = d?.items.map((i) => uidFromInfo(i.playerInfo)).filter(Boolean)[0] ?? "";
@@ -280,7 +287,7 @@ export default function DashboardOrderDetailPage() {
       <div className="p-4 pb-0">
         <Link
           href="/dashboard/orders"
-          className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted-foreground transition-colors hover:text-primary"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary"
         >
           <ArrowLeft className="size-3.5" aria-hidden />
           {t("ordersMy")}
@@ -299,7 +306,7 @@ export default function DashboardOrderDetailPage() {
               </button>
             </div>
             <p className="num mt-0.5 text-xs text-muted-foreground">
-              {t("createdAtLabel")} {formatDateTime(o.createdAt)}
+              {t("createdAtLabel")} {formatDateTime(o.createdAt, locale)}
             </p>
           </div>
           <div className="ml-auto flex items-center gap-2.5">
@@ -339,14 +346,14 @@ export default function DashboardOrderDetailPage() {
             </span>
             <span
               className={cn(
-                "block truncate px-0.5 text-[12.5px] font-semibold",
+                "block truncate px-0.5 text-xs font-semibold",
                 s.state === "off" && "font-medium text-muted-foreground",
                 s.state === "bad" && "text-destructive",
               )}
             >
               {s.label}
             </span>
-            <span className={cn("num mt-0.5 block text-[11.5px]", SUB_CLASS[s.state])}>{s.sub}</span>
+            <span className={cn("num mt-0.5 block text-2xs", SUB_CLASS[s.state])}>{s.sub}</span>
           </li>
         ))}
       </ol>
@@ -361,7 +368,7 @@ export default function DashboardOrderDetailPage() {
           <>
             <div className="flex flex-wrap items-baseline gap-x-2.5">
               <h2 className="text-sm font-bold">{t("stepReceived")}</h2>
-              <span className="num text-xs text-muted-foreground">{formatDateTime(o.createdAt)}</span>
+              <span className="num text-xs text-muted-foreground">{formatDateTime(o.createdAt, locale)}</span>
             </div>
             <div className="mt-2.5 rounded-[10px] border bg-background/60 p-3">
               <div className="space-y-3">
@@ -385,7 +392,7 @@ export default function DashboardOrderDetailPage() {
                           <p className="truncate text-xs text-muted-foreground">{item.productType.name}</p>
                         ) : null}
                         {uidFromInfo(item.playerInfo) ? (
-                          <p className="num truncate text-[11px] text-muted-foreground/80">
+                          <p className="num truncate text-2xs text-muted-foreground-strong">
                             {uidFromInfo(item.playerInfo)}
                           </p>
                         ) : null}
@@ -410,7 +417,7 @@ export default function DashboardOrderDetailPage() {
                             return (
                               <div
                                 key={pi}
-                                className="num flex items-center gap-2 rounded-lg bg-secondary px-2.5 py-1.5 text-[13px]"
+                                className="num flex items-center gap-2 rounded-lg bg-secondary px-2.5 py-1.5 text-sm"
                               >
                                 <span className="min-w-0 flex-1 break-all">{text}</span>
                                 <Button
@@ -430,7 +437,7 @@ export default function DashboardOrderDetailPage() {
                   </div>
                 ))}
               </div>
-              <div className="mt-3 space-y-1.5 border-t border-dashed pt-3 text-[13.5px]">
+              <div className="mt-3 space-y-1.5 border-t border-dashed pt-3 text-sm">
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="text-muted-foreground">{t("subtotal")}</span>
                   <span className="num">{formatTHB(o.totalAmount)}</span>
@@ -466,7 +473,7 @@ export default function DashboardOrderDetailPage() {
                   <LeadRow label={t("providerRef")} value={pay.providerReference} num />
                 ) : null}
                 <div className="flex items-center gap-2 pt-0.5">
-                  <span className="text-[13.5px] text-muted-foreground">{t("status")}</span>
+                  <span className="text-sm text-muted-foreground">{t("status")}</span>
                   <StatusBadge status={pay.status} />
                 </div>
                 {pay.status === "FAILED" ? (
@@ -482,7 +489,7 @@ export default function DashboardOrderDetailPage() {
                 ) : null}
               </div>
             ) : (
-              <div className="mt-2.5 rounded-[10px] border border-dashed p-3 text-[13px] text-muted-foreground">
+              <div className="mt-2.5 rounded-[10px] border border-dashed p-3 text-sm text-muted-foreground">
                 {t("pendingPaymentNote")}
               </div>
             )}
@@ -498,7 +505,7 @@ export default function DashboardOrderDetailPage() {
             <div className="flex flex-wrap items-baseline gap-x-2.5">
               <h2 className="text-sm font-bold">{t("stepDelivery")}</h2>
               {deliveredAt ? (
-                <span className="num text-xs text-muted-foreground">{formatDateTime(deliveredAt)}</span>
+                <span className="num text-xs text-muted-foreground">{formatDateTime(deliveredAt, locale)}</span>
               ) : null}
             </div>
             {deliveryQ.isLoading ? (
@@ -511,17 +518,17 @@ export default function DashboardOrderDetailPage() {
                 />
                 {dest ? <LeadRow label={t("deliveryDestination")} value={dest} num /> : null}
                 <div className="flex items-center gap-2 pt-0.5">
-                  <span className="text-[13.5px] text-muted-foreground">{t("status")}</span>
+                  <span className="text-sm text-muted-foreground">{t("status")}</span>
                   <StatusBadge status={d.status} />
                 </div>
                 {d.items.map((di) => (
                   <div key={di.id} className="border-t border-dashed pt-2">
-                    <div className="flex flex-wrap items-center gap-2 text-[13.5px]">
+                    <div className="flex flex-wrap items-center gap-2 text-sm">
                       <span className="min-w-0 flex-1 truncate font-semibold">{di.productName}</span>
                       <span className="num text-muted-foreground">×{di.quantity}</span>
                       {di.deliveredAt ? (
                         <span className="num text-xs text-muted-foreground">
-                          {formatDateTime(di.deliveredAt)}
+                          {formatDateTime(di.deliveredAt, locale)}
                         </span>
                       ) : null}
                     </div>
@@ -547,11 +554,11 @@ export default function DashboardOrderDetailPage() {
                 ))}
               </div>
             ) : o.status === "CANCELLED" || o.status === "FAILED" ? (
-              <div className="mt-2.5 rounded-[10px] border border-dashed p-3 text-[13px] text-muted-foreground">
+              <div className="mt-2.5 rounded-[10px] border border-dashed p-3 text-sm text-muted-foreground">
                 {t("deliveryNotReached")}
               </div>
             ) : (
-              <div className="mt-2.5 rounded-[10px] border border-dashed p-3 text-[13px] text-muted-foreground">
+              <div className="mt-2.5 rounded-[10px] border border-dashed p-3 text-sm text-muted-foreground">
                 {t("deliveryWaitPay")}
               </div>
             )}
@@ -568,7 +575,7 @@ export default function DashboardOrderDetailPage() {
               {t("stepDone")}
             </h2>
             <span className="num text-xs text-muted-foreground">
-              {doneState === "ok" ? formatDateTime(completedAt ?? o.updatedAt) : "—"}
+              {doneState === "ok" ? formatDateTime(completedAt ?? o.updatedAt, locale) : "—"}
             </span>
           </div>,
         )}
@@ -608,10 +615,10 @@ export default function DashboardOrderDetailPage() {
           </DialogHeader>
           <DialogFooter className="gap-2">
             <Button variant="outline" onClick={() => setCancelOpen(false)} disabled={cancelling}>
-              {t("cancelOrder")}
+              {tc("close")}
             </Button>
             <Button variant="destructive" onClick={handleCancel} disabled={cancelling}>
-              {cancelling ? t("status_PROCESSING") : t("cancelled")}
+              {cancelling ? t("cancelling") : t("cancelOrder")}
             </Button>
           </DialogFooter>
         </DialogContent>

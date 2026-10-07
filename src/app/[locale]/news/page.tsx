@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useNews } from "@/lib/query/hooks";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,6 +9,7 @@ import { DashEmptyState, DashErrorState, formatDateTime } from "@/components/das
 
 export default function NewsListPage() {
   const t = useTranslations("support");
+  const locale = useLocale();
   const news = useNews({ limit: 20 });
 
   return (
@@ -44,7 +45,7 @@ export default function NewsListPage() {
                     </Badge>
                     {item.isFeatured ? (
                       <Badge className="bg-primary text-primary-foreground text-xs">
-                        แนะนำ
+                        {t("featuredBadge")}
                       </Badge>
                     ) : null}
                   </div>
@@ -56,7 +57,7 @@ export default function NewsListPage() {
                   </p>
                 </div>
                 <div className="num mt-4 border-t pt-3 text-xs text-muted-foreground">
-                  {formatDateTime(item.publishedAt)}
+                  {formatDateTime(item.publishedAt, locale)}
                 </div>
               </Link>
             ))}

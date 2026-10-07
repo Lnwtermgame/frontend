@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronRight } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { useOrders, useOrderCounts } from "@/lib/query/hooks";
@@ -16,7 +16,9 @@ const FILTERS: Array<{ key: string; value: OrderStatus | undefined }> = [
   { key: "status_PENDING", value: "PENDING" },
   { key: "status_PROCESSING", value: "PROCESSING" },
   { key: "status_COMPLETED", value: "COMPLETED" },
+  { key: "status_FAILED", value: "FAILED" },
   { key: "status_CANCELLED", value: "CANCELLED" },
+  { key: "status_REFUNDED", value: "REFUNDED" },
 ];
 
 function uidLine(order: Order): string {
@@ -33,6 +35,7 @@ function uidLine(order: Order): string {
 
 export default function DashboardOrdersPage() {
   const t = useTranslations("dashboard");
+  const locale = useLocale();
   const [status, setStatus] = useState<OrderStatus | undefined>(undefined);
   const [page, setPage] = useState(1);
 
@@ -45,7 +48,7 @@ export default function DashboardOrdersPage() {
         title={t("ordersMy")}
         description={t("ordersDesc")}
         actions={
-          <Link href="/dashboard/coupons" className="text-[13px] font-semibold text-primary hover:underline">
+          <Link href="/dashboard/coupons" className="text-sm font-semibold text-primary hover:underline">
             {t("claimCoupons")} →
           </Link>
         }
@@ -67,7 +70,7 @@ export default function DashboardOrdersPage() {
                 setPage(1);
               }}
               aria-pressed={active}
-              className={`rounded-full border px-3.5 py-1.5 text-[12.5px] font-semibold transition-colors ${
+              className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
                 active
                   ? "border-primary/40 bg-primary/10 text-primary"
                   : "border-border text-muted-foreground hover:border-muted-foreground/40 hover:text-foreground"
@@ -75,7 +78,7 @@ export default function DashboardOrdersPage() {
             >
               {t(f.key as never)}
               {typeof count === "number" ? (
-                <span className="num ml-1.5 text-[11px] opacity-70">{count}</span>
+                <span className="num ml-1.5 text-2xs opacity-70">{count}</span>
               ) : null}
             </button>
           );
@@ -90,7 +93,12 @@ export default function DashboardOrdersPage() {
         ) : orders.isError ? (
           <DashErrorState onRetry={() => orders.refetch()} />
         ) : !orders.data?.data.length ? (
-          <DashEmptyState title={t("emptyOrders")} description={t("emptyOrdersDesc")} />
+          <DashEmptyState
+            title={t("emptyOrders")}
+            description={t("emptyOrdersDesc")}
+            actionHref="/games"
+            actionLabel={t("emptyOrdersAction")}
+          />
         ) : (
           orders.data.data.map((order) => {
             const first = order.items[0];
@@ -125,14 +133,14 @@ export default function DashboardOrdersPage() {
                     ) : null}
                   </p>
                   {uid ? (
-                    <p className="num mt-0.5 truncate text-[11px] text-muted-foreground/80">{uid}</p>
+                    <p className="num mt-0.5 truncate text-2xs text-muted-foreground-strong">{uid}</p>
                   ) : null}
                 </div>
                 <div className="flex shrink-0 items-center gap-3.5 text-right">
                   <div>
                     <StatusBadge status={order.status} />
-                    <span className="num mt-0.5 block text-[11px] text-muted-foreground">
-                      {formatDateTime(order.createdAt)}
+                    <span className="num mt-0.5 block text-2xs text-muted-foreground">
+                      {formatDateTime(order.createdAt, locale)}
                     </span>
                   </div>
                   <span className="num text-[15px] font-bold text-primary">

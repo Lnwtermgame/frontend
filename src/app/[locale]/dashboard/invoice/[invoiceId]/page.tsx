@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/i18n/routing";
 import { useInvoice } from "@/lib/query/hooks";
@@ -10,6 +10,7 @@ import { DashErrorState, formatDateTime } from "@/components/dashboard/shared";
 
 export default function DashboardInvoiceDetailPage() {
   const t = useTranslations("dashboard");
+  const locale = useLocale();
   const routeParams = useParams<Record<string, string>>();
   const id = routeParams?.invoiceId ?? "";
   const invoice = useInvoice(id);
@@ -30,7 +31,7 @@ export default function DashboardInvoiceDetailPage() {
         <div className="flex flex-wrap items-center gap-3">
           <p className="num text-lg font-bold">{inv.invoiceNumber}</p>
           <p className="num ml-auto text-xs text-muted-foreground">
-            {formatDateTime(inv.issuedAt)}
+            {formatDateTime(inv.issuedAt, locale)}
           </p>
         </div>
         <p className="text-xs text-muted-foreground">{inv.orderNumber}</p>

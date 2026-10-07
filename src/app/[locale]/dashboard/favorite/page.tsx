@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 import { useFavorites } from "@/lib/query/hooks";
 import { removeFavorite } from "@/lib/api/dashboard";
 import { ProductTile } from "@/components/product/product-tile";
@@ -20,6 +21,8 @@ export default function DashboardFavoritesPage() {
     try {
       await removeFavorite(favId);
       favorites.refetch();
+    } catch {
+      toast.error(t("removeFavoriteFailed"));
     } finally {
       setRemovingId(null);
     }

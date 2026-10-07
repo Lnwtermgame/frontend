@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 
 export function DashPageHead({
@@ -18,7 +19,7 @@ export function DashPageHead({
       <div>
         <h1 className="text-xl font-bold">{title}</h1>
         {description ? (
-          <p className="mt-0.5 text-[13px] text-muted-foreground">{description}</p>
+          <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>
         ) : null}
       </div>
       {actions ? <div className="flex items-center gap-2">{actions}</div> : null}
@@ -91,12 +92,28 @@ export function DashErrorState({ onRetry }: { onRetry: () => void }) {
   );
 }
 
-export function DashEmptyState({ title, description }: { title: string; description?: string }) {
+/** สถานะว่างของหน้า dashboard — มี action slot (ลิงก์ CTA) ให้เมื่อมีจุดหมายที่เหมาะสม */
+export function DashEmptyState({
+  title,
+  description,
+  actionHref,
+  actionLabel,
+}: {
+  title: string;
+  description?: string;
+  actionHref?: string;
+  actionLabel?: string;
+}) {
   return (
     <div className="rounded-[14px] border bg-card p-8 text-center">
       <p className="text-sm font-semibold">{title}</p>
       {description ? (
-        <p className="mt-1 text-[13px] text-muted-foreground">{description}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+      ) : null}
+      {actionHref && actionLabel ? (
+        <Button asChild size="sm" className="mt-4">
+          <Link href={actionHref}>{actionLabel}</Link>
+        </Button>
       ) : null}
     </div>
   );

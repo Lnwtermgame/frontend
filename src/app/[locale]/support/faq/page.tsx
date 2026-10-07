@@ -1,8 +1,9 @@
 "use client";
 
 import { Suspense, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,8 +14,10 @@ import { DashEmptyState, DashErrorState } from "@/components/dashboard/shared";
 function FaqInner() {
   const t = useTranslations("support");
   const categories = useFaqCategories();
+  const searchParams = useSearchParams();
   const [selectedCatId, setSelectedCatId] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
+  // รับคำค้นจากหน้าศูนย์บริการ (?search=...) เป็นค่าเริ่มต้นของช่องกรอง
+  const [query, setQuery] = useState(() => searchParams.get("search") ?? "");
 
   const articles = useFaqArticles({
     categoryId: selectedCatId ?? undefined,
@@ -42,8 +45,19 @@ function FaqInner() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("searchPlaceholder")}
-            className="pl-9"
+            className="pl-9 pr-10"
+            aria-label={t("searchPlaceholder")}
           />
+          {query ? (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              aria-label={t("clearSearch")}
+              className="absolute right-2.5 top-1/2 grid size-6 -translate-y-1/2 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            >
+              <X className="size-3.5" aria-hidden />
+            </button>
+          ) : null}
         </div>
       </div>
 

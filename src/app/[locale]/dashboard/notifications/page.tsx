@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { CheckCheck, Trash2, Bell, Package, Tag, Megaphone, SlidersHorizontal } from "lucide-react";
+import { toast } from "sonner";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,6 +21,7 @@ const TYPE_ICON: Record<NotificationType, typeof Bell> = {
 
 export default function DashboardNotificationsPage() {
   const t = useTranslations("dashboard");
+  const locale = useLocale();
   const [page, setPage] = useState(1);
   const notifs = useNotifications({ page, limit: 15 });
 
@@ -29,7 +31,10 @@ export default function DashboardNotificationsPage() {
     setActing(true);
     try {
       await markAllNotificationsRead();
+      toast.success(t("markAllReadOk"));
       notifs.refetch();
+    } catch {
+      toast.error(t("markAllReadFailed"));
     } finally {
       setActing(false);
     }
@@ -40,7 +45,7 @@ export default function DashboardNotificationsPage() {
       await markNotificationRead(id);
       notifs.refetch();
     } catch {
-      // noop
+      toast.error(t("markReadFailed"));
     }
   };
 
@@ -49,7 +54,7 @@ export default function DashboardNotificationsPage() {
       await deleteNotification(id);
       notifs.refetch();
     } catch {
-      // noop
+      toast.error(t("deleteNotificationFailed"));
     }
   };
 
@@ -112,7 +117,7 @@ export default function DashboardNotificationsPage() {
                       {item.title}
                     </p>
                     <span className="num ml-auto shrink-0 text-xs text-muted-foreground">
-                      {formatDateTime(item.createdAt)}
+                      {formatDateTime(item.createdAt, locale)}
                     </span>
                   </div>
                   <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{item.message}</p>

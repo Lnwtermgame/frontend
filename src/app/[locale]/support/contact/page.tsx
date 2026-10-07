@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { Headphones, Clock, MessageSquare, HelpCircle, Mail } from "lucide-react";
+import { Clock, MessageSquare, HelpCircle } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 
@@ -21,7 +21,7 @@ export default function ContactPage() {
             </div>
             <h2 className="mt-4 text-base font-bold">{t("ticketsTitle")}</h2>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              แจ้งปัญหาการสั่งซื้อ ไม่ได้รับสินค้า หรือปัญหาระบบ แอดมินดูแลโดยตรง
+              {t("contactTicketsDesc")}
             </p>
           </div>
           <Button asChild className="mt-6 h-11 w-full md:h-8">
@@ -36,7 +36,7 @@ export default function ContactPage() {
             </div>
             <h2 className="mt-4 text-base font-bold">{t("faqTitle")}</h2>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              ค้นหาคำตอบด่วนเกี่ยวกับช่องทางชำระเงิน, วิธีเติมเกม, และสถานะออเดอร์
+              {t("contactFaqDesc")}
             </p>
           </div>
           <Button variant="outline" asChild className="mt-6 h-11 w-full md:h-8">
@@ -51,7 +51,7 @@ export default function ContactPage() {
         </div>
         <p className="mt-2 text-sm font-semibold">{t("contactHours")}</p>
         <p className="mt-1 text-xs text-muted-foreground">
-          ทีมงานพร้อมตอบกลับข้อความและช่วยเหลือตลอด 24 ชั่วโมง ไม่มีวันหยุด
+          {t("contactFastNote")}
         </p>
       </div>
     </div>

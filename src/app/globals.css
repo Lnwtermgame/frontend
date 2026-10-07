@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@fontsource/noto-sans-thai/400.css";
+@import "@fontsource/noto-sans-thai/500.css";
 @import "@fontsource/noto-sans-thai/600.css";
 @import "@fontsource/noto-sans-thai/700.css";
 @import "@fontsource/noto-sans-thai/800.css";
@@ -32,6 +33,7 @@
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
+    --color-muted-foreground-strong: var(--muted-foreground-strong);
     --color-muted: var(--muted);
     --color-secondary-foreground: var(--secondary-foreground);
     --color-secondary: var(--secondary);
@@ -76,6 +78,9 @@
   --secondary-foreground: oklch(0.938 0.003 49);
   --muted: oklch(0.24 0.009 318);
   --muted-foreground: oklch(0.718 0.008 355);
+  /* ตัวหนังสือรองขนาดเล็ก (≤13px) — muted-foreground ธรรมดาเมื่อลด alpha (/70 ลงไป)
+     จะเหลือ contrast ~3.7:1 ต่ำกว่า AA 4.5:1 ให้ใช้ตัวนี้แทนการเลื่อน alpha */
+  --muted-foreground-strong: oklch(0.78 0.008 355);
   --accent: oklch(0.267 0.011 320);
   --accent-foreground: oklch(0.938 0.003 49);
   --destructive: oklch(0.63 0.19 25);
@@ -85,10 +90,23 @@
   --radius: 0.875rem;
 
   /* domain tokens (นอกเหนือ shadcn mapping) */
-  --site-raised: oklch(0.267 0.011 320);
-  --site-accent: oklch(0.7 0.17 45);
-  --site-accent-hover: oklch(0.75 0.17 45);
   --shadow-tile: 0 1px 3px rgb(0 0 0 / 0.4), 0 8px 24px -16px rgb(0 0 0 / 0.6);
+
+  /* ชุดที่ @theme inline map ไว้แต่ :root ไม่เคย define (เคยอยู่ใน .dark ที่ตายแล้ว)
+     — chart ramp อิง hue ของระบบ status tokens */
+  --chart-1: oklch(0.7 0.17 45);
+  --chart-2: oklch(0.72 0.15 150);
+  --chart-3: oklch(0.72 0.13 240);
+  --chart-4: oklch(0.8 0.14 85);
+  --chart-5: oklch(0.63 0.19 25);
+  --sidebar: oklch(0.185 0.007 330);
+  --sidebar-foreground: oklch(0.938 0.003 49);
+  --sidebar-primary: oklch(0.7 0.17 45);
+  --sidebar-primary-foreground: oklch(0.15 0.02 45);
+  --sidebar-accent: oklch(0.267 0.011 320);
+  --sidebar-accent-foreground: oklch(0.938 0.003 49);
+  --sidebar-border: oklch(0.318 0.019 308);
+  --sidebar-ring: oklch(0.7 0.17 45);
   --status-success: oklch(0.72 0.15 150);
   --status-warning: oklch(0.8 0.14 85);
   --status-danger: oklch(0.63 0.19 25);
@@ -99,40 +117,6 @@
   --scrollbar-thumb: oklch(0.38 0.016 310);
   --scrollbar-thumb-hover: oklch(0.46 0.014 308);
   --scrollbar-thumb-active: oklch(0.52 0.012 306);
-}
-
-.dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
 }
 
 @layer base {
@@ -199,6 +183,13 @@
 
 @utility num {
   font-variant-numeric: tabular-nums;
+}
+
+@theme {
+    /* type stops สำหรับขนาดที่ Tailwind ไม่มี — ใช้แทน text-[Npx] กระจายใน components
+       (11px = 2xs · ค่าอื่น map กลับเข้า scale เดิม: 12/12.5→xs, 13/13.5→sm เมื่อ sweep) */
+    --text-2xs: 0.6875rem;
+    --text-2xs--line-height: 1.45;
 }
 
 @media (prefers-reduced-motion: reduce) {

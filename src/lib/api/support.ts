@@ -1,4 +1,4 @@
-import { apiFetch, apiFetchWithMeta, type PageMeta } from "./client";
+import { apiFetch, apiFetchWithMeta } from "./client";
 
 // ============ FAQ Types ============
 

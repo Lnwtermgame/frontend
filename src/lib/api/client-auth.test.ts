@@ -23,10 +23,6 @@ function mockFetch(handler: Handler) {
 
 const auth = (init?: RequestInit) => (init?.headers as Record<string, string>)?.Authorization;
 
-function stub(url: string, init: RequestInit | undefined, status: number, body: unknown) {
-  return { url, init, status, body };
-}
-
 const OK = { success: true, data: "ok" };
 
 beforeEach(() => {

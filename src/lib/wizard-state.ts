@@ -1,5 +1,5 @@
 import type { Product, ProductTypePublic } from "@/lib/api/products";
-import { countryByCode, type CountryMeta } from "@/lib/mobile-countries";
+import { countryByCode } from "@/lib/mobile-countries";
 import { isPhoneValid } from "@/lib/mobile-recharge";
 
 /**

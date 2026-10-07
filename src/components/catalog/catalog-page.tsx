@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
@@ -25,13 +25,17 @@ const COPY_BY_MODE = {
   mobile: { titleKey: "mobileTitle", subKey: "mobileSubtitle" },
 } as const;
 
-type SortKey = "sales" | "priceAsc" | "priceDesc" | "newest";
+/* คำนามของจำนวนผลลัพธ์ตามหมวด — หน้าบัตร/มือถือไม่ใช่ "เกม" (แปลผ่าน catalog.foundCount/foundItems) */
+const FOUND_KEY_BY_MODE: Record<CatalogMode, "foundCount" | "foundItems"> = {
+  games: "foundCount",
+  card: "foundItems",
+  mobile: "foundItems",
+};
 
-/* à¹€à¸£à¸µà¸¢à¸‡à¸£à¸²à¸„à¸²à¹„à¸¡à¹ˆà¸¡à¸µà¹ƒà¸™ API â€” à¹ƒà¸Šà¹‰à¸¢à¸­à¸”à¸‚à¸²à¸¢à¹€à¸›à¹‡à¸™à¸à¸²à¸™ fetch à¹à¸¥à¹‰à¸§à¹€à¸£à¸µà¸¢à¸‡à¸à¸±à¹ˆà¸‡ client à¸ˆà¸²à¸ minPrice */
+type SortKey = "sales" | "newest";
+
 const SORTS: Record<SortKey, { sortBy: "salesCount" | "createdAt"; sortOrder: "asc" | "desc" }> = {
   sales: { sortBy: "salesCount", sortOrder: "desc" },
-  priceAsc: { sortBy: "salesCount", sortOrder: "desc" },
-  priceDesc: { sortBy: "salesCount", sortOrder: "desc" },
   newest: { sortBy: "createdAt", sortOrder: "desc" },
 };
 
@@ -79,14 +83,19 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
   const urlSearch = searchParams.get("search") ?? "";
   const urlPlatform = searchParams.get("platform");
   const [search, setSearch] = useState(urlSearch);
-  const [gameTypeFilter, setGameTypeFilter] = useState<GameType | null>(() => parsePlatformParam(urlPlatform));
+  /* platform filter: URL เป็น source of truth + override ที่ผูกกับค่า param ที่ตั้งล่าสุด —
+     กด chip ใช้ override ทันที (replaceState ไม่ trigger re-render), ส่วน back/forward
+     (urlPlatform เปลี่ยนจากภายนอก) override เก่าหมดอายุ ตกไป parse จาก URL ใหม่เอง */
+  const [platformOverride, setPlatformOverride] = useState<{
+    forParam: string | null;
+    value: GameType | null;
+  } | null>(null);
+  const gameTypeFilter =
+    platformOverride && platformOverride.forParam === urlPlatform
+      ? platformOverride.value
+      : parsePlatformParam(urlPlatform);
   const [sort, setSort] = useState<SortKey>("sales");
   const [priceBand, setPriceBand] = useState<PriceBand | null>(null);
-
-  /* sync à¹€à¸¡à¸·à¹ˆà¸­ URL à¹€à¸›à¸¥à¸µà¹ˆà¸¢à¸™à¸ˆà¸²à¸à¸ à¸²à¸¢à¸™à¸­à¸ (à¸à¸” back/forward à¸«à¸£à¸·à¸­à¸¥à¸´à¸‡à¸à¹Œ) */
-  useEffect(() => {
-    setGameTypeFilter(parsePlatformParam(urlPlatform));
-  }, [urlPlatform]);
 
   const products = useProducts({
     search: urlSearch || undefined,
@@ -118,12 +127,8 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
   const filtered = useMemo(() => {
     let out = gameTypeFilter ? byType.filter((p) => p.gameType === gameTypeFilter) : byType;
     if (priceBand) out = out.filter((p) => inBand(minPrice(p), priceBand));
-    if (sort === "priceAsc")
-      out = [...out].sort((a, b) => (minPrice(a) ?? Infinity) - (minPrice(b) ?? Infinity));
-    if (sort === "priceDesc")
-      out = [...out].sort((a, b) => (minPrice(b) ?? -Infinity) - (minPrice(a) ?? -Infinity));
     return out;
-  }, [byType, gameTypeFilter, priceBand, sort]);
+  }, [byType, gameTypeFilter, priceBand]);
 
   const countFor = (type: GameType | null) =>
     type === null ? byType.length : byType.filter((p) => p.gameType === type).length;
@@ -138,8 +143,9 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
   };
 
   const selectPlatform = (type: GameType | null) => {
-    setGameTypeFilter(type);
-    updateUrlParam("platform", type ? type.toLowerCase() : null);
+    const param = type ? type.toLowerCase() : null;
+    setPlatformOverride({ forParam: param, value: type });
+    updateUrlParam("platform", param);
   };
 
   const submitSearch = (e: React.FormEvent) => {
@@ -147,11 +153,22 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
     updateUrlParam("search", search.trim() || null);
   };
 
+  /** ล้างตัวกรองทั้งหมด — รวม search/platform ใน URL กลับเป็นค่าว่าง */
+  const resetFilters = () => {
+    setSearch("");
+    setSort("sales");
+    setPriceBand(null);
+    setPlatformOverride({ forParam: null, value: null });
+    updateUrlParam("search", null);
+    updateUrlParam("platform", null);
+  };
+
   const sortItem = (key: SortKey, label: string) => (
     <button
       type="button"
       onClick={() => setSort(key)}
-      className={`flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] text-left text-[13px] font-semibold transition-colors lg:min-h-0 ${
+      aria-pressed={sort === key}
+      className={`flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] text-left text-sm font-semibold transition-colors lg:min-h-0 ${
         sort === key
           ? "bg-primary/10 text-primary"
           : "text-muted-foreground hover:bg-card hover:text-foreground"
@@ -168,27 +185,29 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
         <aside className="min-w-0 self-start lg:sticky lg:top-[76px]">
           <div className="flex gap-6 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:block lg:overflow-visible lg:pb-0">
             <div className="mb-5 min-w-[180px] flex-none lg:min-w-0">
-              <h4 className="mb-2 text-[11.5px] font-bold tracking-wider text-muted-foreground/70 uppercase">
+              <h2 className="mb-2 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
                 {t("sidebarPlatform")}
-              </h4>
+              </h2>
               <button
                 type="button"
                 onClick={() => selectPlatform(null)}
-                className={`flex min-h-11 w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] text-[13px] font-semibold transition-colors lg:min-h-0 ${
+                aria-pressed={gameTypeFilter === null}
+                className={`flex min-h-11 w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] text-sm font-semibold transition-colors lg:min-h-0 ${
                   gameTypeFilter === null
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-card hover:text-foreground"
                 }`}
               >
                 {t("filterAll")}
-                <span className="num text-xs text-muted-foreground/70">{countFor(null)}</span>
+                <span className="num text-xs text-muted-foreground-strong">{countFor(null)}</span>
               </button>
               {platformCounts.map(({ type, count }) => (
                 <button
                   key={type}
                   type="button"
                   onClick={() => selectPlatform(type)}
-                  className={`flex min-h-11 w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] text-[13px] font-semibold transition-colors lg:min-h-0 ${
+                  aria-pressed={gameTypeFilter === type}
+                  className={`flex min-h-11 w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] text-sm font-semibold transition-colors lg:min-h-0 ${
                     gameTypeFilter === type
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:bg-card hover:text-foreground"
@@ -198,29 +217,28 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                     <PlatformIcon type={type} className="size-[15px] opacity-80" />
                     {t(platformLabelKey(type))}
                   </span>
-                  <span className="num text-xs text-muted-foreground/70">{count}</span>
+                  <span className="num text-xs text-muted-foreground-strong">{count}</span>
                 </button>
               ))}
             </div>
 
             <div className="mb-5 min-w-[180px] flex-none lg:min-w-0">
-              <h4 className="mb-2 text-[11.5px] font-bold tracking-wider text-muted-foreground/70 uppercase">
+              <h2 className="mb-2 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
                 {t("sidebarSort")}
-              </h4>
+              </h2>
               {sortItem("sales", t("sortSales"))}
-              {sortItem("priceAsc", t("sortPriceAsc"))}
-              {sortItem("priceDesc", t("sortPriceDesc"))}
               {sortItem("newest", t("sortNewest"))}
             </div>
 
             <div className="min-w-[180px] flex-none lg:min-w-0">
-              <h4 className="mb-2 text-[11.5px] font-bold tracking-wider text-muted-foreground/70 uppercase">
+              <h2 className="mb-2 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
                 {t("sidebarPrice")}
-              </h4>
+              </h2>
               <button
                 type="button"
                 onClick={() => setPriceBand(null)}
-                className={`flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] text-left text-[13px] font-semibold transition-colors lg:min-h-0 ${
+                aria-pressed={priceBand === null}
+                className={`flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] text-left text-sm font-semibold transition-colors lg:min-h-0 ${
                   priceBand === null
                     ? "bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-card hover:text-foreground"
@@ -239,7 +257,8 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                   key={band}
                   type="button"
                   onClick={() => setPriceBand(band)}
-                  className={`flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] text-left text-[13px] font-semibold transition-colors lg:min-h-0 ${
+                  aria-pressed={priceBand === band}
+                  className={`flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] text-left text-sm font-semibold transition-colors lg:min-h-0 ${
                     priceBand === band
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:bg-card hover:text-foreground"
@@ -255,7 +274,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
         {/* à¹€à¸™à¸·à¹‰à¸­à¸«à¸² */}
         <div className="min-w-0">
           <h1 className="text-[22px] font-extrabold tracking-tight">{t(copy.titleKey)}</h1>
-          <p className="mt-1 text-[13px] text-muted-foreground">{t(copy.subKey)}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t(copy.subKey)}</p>
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <form onSubmit={submitSearch} className="min-w-0 max-w-[320px] flex-1">
@@ -265,13 +284,13 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={t("searchInCategory")}
-                  className="h-full min-w-0 flex-1 bg-transparent text-[13.5px] text-foreground outline-none placeholder:text-muted-foreground/70"
+                  className="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground/70"
                 />
               </div>
             </form>
             {products.isSuccess && (
-              <span className="num text-xs text-muted-foreground/70">
-                {t("foundCount", { count: filtered.length })}
+              <span className="num text-xs text-muted-foreground-strong">
+                {t(FOUND_KEY_BY_MODE[mode], { count: filtered.length })}
               </span>
             )}
           </div>
@@ -295,7 +314,13 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                 </Button>
               </div>
             ) : filtered.length === 0 ? (
-              <p className="py-16 text-center text-sm text-muted-foreground">{t("emptyTitle")}</p>
+              <div className="py-16 text-center">
+                <p className="text-sm font-semibold text-foreground">{t("emptyTitle")}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{t("emptyDesc")}</p>
+                <Button variant="outline" className="mt-4" onClick={resetFilters}>
+                  {t("clearFilters")}
+                </Button>
+              </div>
             ) : (
               <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-6">
                 {filtered.map((p) => (

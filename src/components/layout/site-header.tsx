@@ -31,6 +31,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { NavSearch } from "./nav-search";
+import { LanguageSwitcher } from "./language-switcher";
 
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -156,6 +157,10 @@ function HeaderInner() {
                     </Link>
                   </>
                 )}
+                <div className="my-2 h-px bg-border/60" />
+                <div className="px-1 pb-1">
+                  <LanguageSwitcher className="w-full justify-center" />
+                </div>
               </nav>
             </SheetContent>
           </Sheet>
@@ -168,10 +173,12 @@ function HeaderInner() {
           </div>
 
           <div className="ml-auto flex items-center gap-1.5">
+            <LanguageSwitcher className="hidden md:inline-flex" />
+
             {user ? (
               <Link
                 href="/dashboard/orders"
-                className="hidden items-center gap-1.5 rounded-[8px] px-2.5 py-2 text-[13px] font-semibold text-muted-foreground transition-colors hover:bg-card hover:text-foreground md:flex"
+                className="hidden items-center gap-1.5 rounded-[8px] px-2.5 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-card hover:text-foreground md:flex"
               >
                 <Package className="size-[15px]" />
                 {t("orders")}
@@ -188,7 +195,7 @@ function HeaderInner() {
                     <span className="grid size-7 place-items-center rounded-full border bg-secondary text-xs font-bold">
                       {user.username.charAt(0).toUpperCase()}
                     </span>
-                    <span className="hidden max-w-[120px] truncate text-[13px] font-semibold lg:inline">
+                    <span className="hidden max-w-[120px] truncate text-sm font-semibold lg:inline">
                       {user.username}
                     </span>
                     <ChevronDown className="size-3.5 text-muted-foreground" />
@@ -256,7 +263,7 @@ function HeaderInner() {
               <Link
                 key={c.href}
                 href={c.href}
-                className={`flex h-full items-center border-b-2 px-3.5 text-[13.5px] font-semibold transition-colors ${
+                className={`flex h-full items-center border-b-2 px-3.5 text-sm font-semibold transition-colors ${
                   isActive(pathname, c.href)
                     ? "border-primary text-foreground"
                     : "border-transparent text-muted-foreground hover:text-foreground"
@@ -278,7 +285,7 @@ function HeaderInner() {
             <Link
               key={c.href}
               href={c.href}
-              className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${
+              className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-sm font-semibold transition-colors ${
                 isActive(pathname, c.href)
                   ? "border-primary/40 bg-primary/10 text-primary"
                   : "border-border/60 text-muted-foreground hover:text-foreground"

@@ -60,11 +60,11 @@ export function OperatorList({
               />
             </div>
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-[13px] font-bold">
+              <span className="block truncate text-sm font-bold">
                 {op.name}
               </span>
               {sellable ? (
-                <span className="num block text-[12px] font-semibold text-primary">
+                <span className="num block text-xs font-semibold text-primary">
                   {t("fromPrice", { price: formatTHB(price) })}
                 </span>
               ) : (

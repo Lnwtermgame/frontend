@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import type { Product } from "@/lib/api/products";
 import { productImage } from "@/lib/product-image";
@@ -10,6 +11,7 @@ const BASE_BY_TYPE: Record<Product["productType"], string> = {
 };
 
 export function ProductTile({ product }: { product: Product }) {
+  const t = useTranslations("home");
   const types = product.types ?? [];
   const minPrice = types.length ? Math.min(...types.map((t) => t.displayPrice)) : null;
 
@@ -28,10 +30,10 @@ export function ProductTile({ product }: { product: Product }) {
         />
       </div>
       <div className="p-2.5">
-        <p className="truncate text-[13px] font-semibold">{product.name}</p>
+        <p className="truncate text-sm font-semibold">{product.name}</p>
         {minPrice !== null && (
           <p className="num mt-0.5 text-xs font-bold text-primary">
-            เริ่มต้น{" "}
+            {t("fromPrice")}{" "}
             {new Intl.NumberFormat("th-TH", {
               style: "currency",
               currency: "THB",

@@ -74,12 +74,13 @@ export function GameCover({
         className="absolute -right-[28%] bottom-[18%] h-[64%] w-[78%] -rotate-[14deg]"
         style={{ background: dna.c2 }}
       />
-      <span className="absolute left-3 top-2.5 text-[17px] font-extrabold leading-none" style={{ color: dna.ink }}>
+      {/* leading-snug — sub รับค่าไทยที่มีสระ/วรรณยุกต์ได้ (เช่น "บัตรเติมเงิน") ต้องไม่ตัดด้วย line-height 1 */}
+      <span className="absolute left-3 top-2.5 text-lg font-extrabold leading-snug" style={{ color: dna.ink }}>
         {dna.mono}
-        <small className="mt-1.5 block text-[10px] font-bold tracking-[0.14em] opacity-70">{dna.sub}</small>
+        <small className="mt-1.5 block text-2xs font-bold tracking-[0.14em] opacity-70">{dna.sub}</small>
       </span>
       {!compact && (
-        <span className="relative truncate bg-black/65 px-2.5 py-1.5 text-[11.5px] font-bold text-[#f3f1f0]">
+        <span className="relative truncate bg-black/65 px-2.5 py-1.5 text-2xs font-bold text-foreground">
           {name}
         </span>
       )}

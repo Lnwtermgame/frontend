@@ -27,6 +27,8 @@ export interface PaymentStatusResult {
   orderId: string;
   status: "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED" | "REFUNDED";
   paymentMethod: string;
+  /** ISO timestamp from the payment service — anchors the pending-page countdown to server truth. */
+  createdAt?: string;
 }
 
 export function getPaymentMethods(): Promise<PaymentMethodOption[]> {

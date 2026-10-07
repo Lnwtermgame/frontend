@@ -14,7 +14,7 @@ function fakeForm() {
   vi.spyOn(document, "createElement").mockImplementation(((tag: string) => {
     if (tag === "form") {
       const form = realCreate("form");
-      let captured: Record<string, string> = {};
+      const captured: Record<string, string> = {};
       Object.defineProperty(form, "appendChild", {
         value(el: HTMLInputElement) {
           if (el instanceof HTMLInputElement) captured[el.name] = el.value;

@@ -1,19 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Check, CircleAlert, CircleCheck, Info, Loader2, Minus, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { DynamicFields, validateRequired } from "./dynamic-fields";
+import { PaymentMethodOptions, estimatePaymentFee } from "./payment-method-options";
 import { usePaymentMethods } from "@/lib/query/hooks";
 import { verifyPlayer, verifyMobileRecharge } from "@/lib/api/products";
 import type { Product, ProductTypePublic, SeagmField } from "@/lib/api/products";
@@ -27,6 +22,10 @@ export interface BuyPayload {
   quantity: number;
   paymentOptionCode?: string;
   paymentMethod: "PROMPTPAY" | "TRUEMONEY" | "LINEPAY" | "CREDIT_CARD" | "BANK_TRANSFER";
+  /** ป้ายชื่อช่องทางที่เลือก — ใช้แสดงในไดอะล็อกยืนยันเท่านั้น */
+  paymentLabel?: string;
+  /** ค่าธรรมเนียมช่องทางที่ประเมินตอนกดซื้อ — ส่งต่อให้ไดอะล็อกยืนยัน */
+  paymentFee?: number;
 }
 
 /* หัวข้อย่อยแบบเดียวกับ "วิธีเติม" ของหน้าแรก — ชิปเลขสี่เหลี่ยมมน ไม่ใช่วงกลม+เส้นเชื่อม
@@ -35,7 +34,7 @@ export interface BuyPayload {
 function StepChip({ n, done, active }: { n: number; done?: boolean; active?: boolean }) {
   return (
     <span
-      className={`num relative grid size-[22px] shrink-0 place-items-center overflow-hidden rounded-[7px] bg-card text-[11.5px] font-bold`}
+      className={`num relative grid size-[22px] shrink-0 place-items-center overflow-hidden rounded-[7px] bg-card text-2xs font-bold`}
     >
       {/* ชั้น tint โปร่งทับบนพื้นทึบ — เส้นเชื่อมถูกบังโดยชั้นพื้น */}
       <span
@@ -83,7 +82,7 @@ export function OrderSummary({
 
   const [values, setValues] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [qty, setQty] = useState(1);
+  const [qty, setQty] = useState(() => (selectedType ? Math.max(selectedType.minAmount, 1) : 1));
   const [verifyState, setVerifyState] = useState<
     "idle" | "checking" | "ok" | "fail" | "skipped" | "unavailable"
   >("idle");
@@ -92,21 +91,18 @@ export function OrderSummary({
   const [optionCode, setOptionCode] = useState<string | null>(null);
   const accountRef = useRef<HTMLDivElement | null>(null);
 
+  const router = useRouter();
   const methods = usePaymentMethods(isAuthenticated);
   const selectedOption = methods.data?.find((m) => m.code === optionCode) ?? methods.data?.[0];
 
-  // reset per selected type
-  useEffect(() => {
-    setValues({});
-    setErrors({});
-    setVerifyState("idle");
-    setVerifyMessage(null);
-    setRevealVerify(false);
-    setQty(selectedType ? Math.max(selectedType.minAmount, 1) : 1);
-  }, [selectedType?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  /* reset เมื่อเปลี่ยนแพ็กเกจทำผ่าน key ที่ parent (product-page) — remount = state
+     ภายในเริ่มใหม่ทั้งชุด ไม่ต้องมี effect รีเซ็ต (กัน cascade render) */
 
   const total = selectedType ? lineTotal(selectedType.displayPrice, qty) : 0;
   const isMobileRecharge = product.productType === "MOBILE_RECHARGE";
+  // ค่าธรรมเนียมช่องทาง (% ของยอด + ค่าคงที่) — ยอดที่ต้องชำระจริงคือ total + fee
+  const fee = estimatePaymentFee(selectedOption, total);
+  const payable = total + fee;
 
   const verified = verifyState === "ok";
   // The backend only blocks an order when the provider answers "supported but
@@ -145,7 +141,7 @@ export function OrderSummary({
 
   const handleVerify = async () => {
     if (!selectedType) return;
-    const errs = validateRequired(fields, values);
+    const errs = validateRequired(fields, values, (f) => t("fieldRequired", { field: f.label }));
     setErrors(errs);
     if (Object.keys(errs).length) return;
     setVerifyState("checking");
@@ -203,12 +199,12 @@ export function OrderSummary({
 
   const handleBuy = () => {
     if (!selectedType) return;
-    const errs = validateRequired(fields, values);
+    const errs = validateRequired(fields, values, (f) => t("fieldRequired", { field: f.label }));
     setErrors(errs);
     if (Object.keys(errs).length) return;
     if (!isAuthenticated) {
-      const current = window.location.pathname;
-      window.location.href = `/login?redirect=${encodeURIComponent(current)}`;
+      // next-intl router = ได้ locale prefix อัตโนมัติ (window.location.href ดิบไม่มี prefix)
+      router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
       return;
     }
     onBuy({
@@ -216,6 +212,8 @@ export function OrderSummary({
       quantity: qty,
       paymentOptionCode: selectedOption?.code,
       paymentMethod: selectedOption?.method ?? "PROMPTPAY",
+      paymentLabel: selectedOption?.label,
+      paymentFee: fee,
     });
   };
 
@@ -250,16 +248,16 @@ export function OrderSummary({
           {/* ขั้น 1 · เลือกแพ็กเกจ */}
           <div className={stepRow}>
             <StepChip n={1} done={Boolean(selectedType)} />
-            <span className="text-[13px] font-bold">{t("selectPackage")}</span>
+            <span className="text-sm font-bold">{t("selectPackage")}</span>
           </div>
           <div className={`mt-2 ${stepBody}`}>
             {selectedType ? (
               <div className="flex items-start justify-between gap-3">
-                <span className="min-w-0 flex-1 text-[12.5px] leading-snug font-medium">
+                <span className="min-w-0 flex-1 text-xs leading-snug font-medium">
                   {selectedType.name}
                   {qty > 1 ? <span className="num text-muted-foreground"> × {qty}</span> : null}
                 </span>
-                <span className="num shrink-0 text-[12.5px] font-bold text-primary">
+                <span className="num shrink-0 text-xs font-bold text-primary">
                   {formatTHB(selectedType.displayPrice)}
                 </span>
               </div>
@@ -273,7 +271,7 @@ export function OrderSummary({
             <>
               <div className={`${stepRow} mt-5`}>
                 <StepChip n={2} done={verified} active={!verified} />
-                <span className="text-[13px] font-bold">{t("accountInfo")}</span>
+                <span className="text-sm font-bold">{t("accountInfo")}</span>
                 {verified ? (
                   <Button
                     type="button"
@@ -358,7 +356,7 @@ export function OrderSummary({
           {/* ขั้น 3 · ชำระเงิน (หัวข้อปิดท้ายเส้นนำสายตา — เนื้อหาต่อด้านล่าง) */}
           <div className={`${stepRow} mt-5`}>
             <StepChip n={3} active={payStepActive} />
-            <span className="text-[13px] font-bold">{t("stepPay")}</span>
+            <span className="text-sm font-bold">{t("stepPay")}</span>
           </div>
         </div>
 
@@ -416,21 +414,14 @@ export function OrderSummary({
                   </button>
                 </p>
               ) : methods.data?.length ? (
-                <Select value={selectedOption?.code ?? ""} onValueChange={setOptionCode}>
-                  <SelectTrigger
-                    id="payment-method"
-                    className="mt-1.5 w-full data-[size=default]:h-11 lg:data-[size=default]:h-8"
-                  >
-                    <SelectValue placeholder={t("paymentMethod")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {methods.data.map((m) => (
-                      <SelectItem key={m.code} value={m.code}>
-                        {m.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <PaymentMethodOptions
+                  idPrefix="payment-method"
+                  options={methods.data}
+                  value={optionCode}
+                  onChange={setOptionCode}
+                  ariaLabel={t("paymentMethod")}
+                  disabled={buying}
+                />
               ) : null}
             </div>
           ) : null}
@@ -439,21 +430,43 @@ export function OrderSummary({
         {/* ── ส่วนยอด: เส้นคั่นแบบใบเสร็จ แล้วปิดด้วยตัวเลขที่ดังที่สุดในแผง ── */}
         <div className="mt-4 border-t border-border pt-3">
           {showLedger ? (
-            <div className="flex items-center justify-between gap-3 text-[12.5px] text-muted-foreground">
+            <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
               <span>{t("unitPrice")}</span>
               <span className="num">
                 {formatTHB(selectedType!.displayPrice)} × {qty}
               </span>
             </div>
           ) : null}
-          <div
-            className={`flex items-baseline justify-between gap-3 ${showLedger ? "mt-2" : ""}`}
-          >
-            <span className="text-[13px] text-muted-foreground">{t("subtotal")}</span>
-            <span className="num text-[22px] leading-none font-extrabold text-primary">
-              {formatTHB(total)}
-            </span>
-          </div>
+          {fee > 0 ? (
+            <>
+              {/* มีค่าธรรมเนียม = ยอดรวมลดเป็นบรรทัดรอง แล้วส่งไม้ให้ "ยอดที่ต้องชำระ" เป็นตัวเด่น */}
+              <div
+                className={`flex items-baseline justify-between gap-3 ${showLedger ? "mt-2" : ""}`}
+              >
+                <span className="text-sm text-muted-foreground">{t("subtotal")}</span>
+                <span className="num text-sm font-semibold">{formatTHB(total)}</span>
+              </div>
+              <div className="mt-1 flex items-baseline justify-between gap-3 text-xs">
+                <span className="text-muted-foreground-strong">{t("paymentFee")}</span>
+                <span className="num font-semibold">+{formatTHB(fee)}</span>
+              </div>
+              <div className="mt-2 flex items-baseline justify-between gap-3">
+                <span className="text-sm font-medium">{t("payableTotal")}</span>
+                <span className="num text-2xl leading-none font-extrabold text-primary">
+                  {formatTHB(payable)}
+                </span>
+              </div>
+            </>
+          ) : (
+            <div
+              className={`flex items-baseline justify-between gap-3 ${showLedger ? "mt-2" : ""}`}
+            >
+              <span className="text-sm text-muted-foreground">{t("subtotal")}</span>
+              <span className="num text-2xl leading-none font-extrabold text-primary">
+                {formatTHB(total)}
+              </span>
+            </div>
+          )}
 
           <Button
             size="lg"
@@ -475,12 +488,12 @@ export function OrderSummary({
           </Button>
 
           {mustVerify && revealVerify ? (
-            <p className="mt-2 text-center text-[11.5px] text-muted-foreground" role="status">
+            <p className="mt-2 text-center text-2xs text-muted-foreground" role="status">
               {t("verifyPendingHint")}
             </p>
           ) : null}
           {verifyUnavailable && !verified ? (
-            <p className="mt-2 text-center text-[11px] text-muted-foreground">
+            <p className="mt-2 text-center text-2xs text-muted-foreground">
               {t("buyAnywayHint")}
             </p>
           ) : null}
@@ -497,9 +510,11 @@ export function OrderSummary({
         <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
           <div className="mx-auto flex w-full max-w-6xl items-center gap-3 px-4 py-2.5">
             <div className="min-w-0 flex-1">
-              <p className="text-[11.5px] leading-tight text-muted-foreground">{t("subtotal")}</p>
+              <p className="text-2xs leading-tight text-muted-foreground">
+                {fee > 0 ? t("payableTotal") : t("subtotal")}
+              </p>
               <p className="num text-lg leading-tight font-extrabold text-primary">
-                {formatTHB(total)}
+                {formatTHB(payable)}
               </p>
             </div>
             <Button

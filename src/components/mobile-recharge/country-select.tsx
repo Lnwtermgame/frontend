@@ -57,10 +57,10 @@ export function CountrySelect({
               />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-[13px] font-bold">
+              <span className="block truncate text-sm font-bold">
                 {name(c)}
               </span>
-              <span className="num block text-[12px] font-semibold text-muted-foreground">
+              <span className="num block text-xs font-semibold text-muted-foreground">
                 +{c.callingCode}
               </span>
             </span>

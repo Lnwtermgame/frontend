@@ -3,12 +3,14 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { PhoneOff } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useRouter } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { usePaymentMethods, useProducts } from "@/lib/query/hooks";
 import { startBuyFlow } from "@/lib/buy-flow";
 import { ApiError } from "@/lib/api/client";
 import { ConfirmOrderDialog } from "@/components/product/confirm-order-dialog";
+import { estimatePaymentFee } from "@/components/product/payment-method-options";
 import { PackageGrid } from "@/components/product/package-grid";
 import { CountrySelect } from "./country-select";
 import { PhoneInput } from "./phone-input";
@@ -44,6 +46,9 @@ export function MobileRechargePage() {
   const [phoneError, setPhoneError] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [buying, setBuying] = useState(false);
+  // ช่องทางชำระเงินที่เลือก (null = ยังไม่เลือก ใช้ตัวแรกของลิสต์) — เคยเป็น select
+  // หลอกที่กดเลือกไม่ได้และส่ง methods.data[0] เสมอ จึงยก state ขึ้นหน้าให้เลือกได้จริง
+  const [optionCode, setOptionCode] = useState<string | null>(null);
 
   const step2Ref = useRef<HTMLDivElement>(null);
   const step3Ref = useRef<HTMLDivElement>(null);
@@ -61,7 +66,12 @@ export function MobileRechargePage() {
   );
   const { countryCode, phone, operator, selectedType } = wizard;
   const country: CountryMeta | null = countryByCode(countryCode) ?? null;
-  const operators = country ? groups.get(country.code) ?? [] : [];
+  /* useMemo ให้ identity คงที่ — operators เป็น dependency ของ effect เลือกค่ายแรก
+     ถ้าสร้าง array ใหม่ทุก render effect จะยิงซ้ำไม่รู้จบ */
+  const operators = useMemo(
+    () => (country ? groups.get(country.code) ?? [] : []),
+    [country, groups],
+  );
 
   // Deep link: /mobile-recharge?operator=<slug>&country=<CODE>
   const operatorParam = searchParams.get("operator");
@@ -99,6 +109,8 @@ export function MobileRechargePage() {
   };
 
   const methods = usePaymentMethods(isAuthenticated);
+  const selectedOption =
+    methods.data?.find((m) => m.code === optionCode) ?? methods.data?.[0];
 
   const handleBuyAttempt = () => {
     setBuyError(null);
@@ -118,8 +130,8 @@ export function MobileRechargePage() {
         {
           playerInfo: buildPlayerInfo(phone, country.callingCode),
           quantity: 1,
-          paymentOptionCode: methods.data?.[0]?.code,
-          paymentMethod: methods.data?.[0]?.method ?? "PROMPTPAY",
+          paymentOptionCode: selectedOption?.code,
+          paymentMethod: selectedOption?.method ?? "PROMPTPAY",
         },
         { productId: operator.id, productTypeId: selectedType.id },
       );
@@ -128,7 +140,17 @@ export function MobileRechargePage() {
         router.push(
           `/payments/pending?orderId=${result.orderId}&referenceNo=${result.referenceNo}`,
         );
+        return;
       }
+      // outcome === "redirected": แท็บนี้กำลังถูกพาไปหน้าชำระเงินของ gateway แล้ว
+      // (buy-flow ใช้ window.location.assign ในแท็บปัจจุบัน) ห้าม router.push ทันที
+      // เพราะจะแย่งจนการนำทางถูกยกเลิก — ตั้งเวลาสำรอง 4 วิ หากหน้ายังไม่ออก
+      // ให้ตกที่หน้า pending (อ่านบริบทจาก sessionStorage) แทนหน้าเป่า
+      setTimeout(() => {
+        router.push(
+          `/payments/pending?orderId=${result.orderId}&referenceNo=${result.referenceNo}`,
+        );
+      }, 4000);
     } catch (err) {
       const info = err instanceof ApiError ? err.infoCode : undefined;
       if (info === "20133" || info === "20093") {
@@ -181,18 +203,18 @@ export function MobileRechargePage() {
   if (availableCountries.length === 0) {
     return (
       <div className="mx-auto w-full max-w-6xl px-4 py-8">
-        <h1 className="text-[22px] font-extrabold tracking-tight">{t("heroTitle")}</h1>
-        <p className="mt-1 text-[13px] text-muted-foreground">{t("heroSubtitle")}</p>
+        <h1 className="text-2xl font-extrabold tracking-tight">{t("heroTitle")}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t("heroSubtitle")}</p>
         <div className="mt-10 flex flex-col items-center gap-3 rounded-[14px] border border-border/60 bg-card px-6 py-16 text-center">
-          <span aria-hidden className="text-4xl">📵</span>
-          <p className="text-[15px] font-semibold">{t("noService")}</p>
-          <p className="max-w-md text-[13px] text-muted-foreground">{t("noServiceHint")}</p>
-          <a
+          <PhoneOff aria-hidden className="size-10 text-muted-foreground" />
+          <p className="text-base font-semibold">{t("noService")}</p>
+          <p className="max-w-md text-sm text-muted-foreground">{t("noServiceHint")}</p>
+          <Link
             href="/"
-            className="mt-3 inline-flex h-10 items-center rounded-[10px] bg-primary px-5 text-[13.5px] font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+            className="mt-3 inline-flex h-10 items-center rounded-[10px] bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             {t("backToHome")}
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -207,15 +229,15 @@ export function MobileRechargePage() {
     children: React.ReactNode,
   ) => (
     <div ref={ref}>
-      <h2 className="text-[13px] font-bold">{title}</h2>
+      <h2 className="text-sm font-bold">{title}</h2>
       <div className="mt-2.5">{children}</div>
     </div>
   );
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8">
-      <h1 className="text-[22px] font-extrabold tracking-tight">{t("heroTitle")}</h1>
-      <p className="mt-1 text-[13px] text-muted-foreground">{t("heroSubtitle")}</p>
+      <h1 className="text-2xl font-extrabold tracking-tight">{t("heroTitle")}</h1>
+      <p className="mt-1 text-sm text-muted-foreground">{t("heroSubtitle")}</p>
 
       {/* minmax(0,1fr) บน mobile track — grid auto track มีพื้น min-content เท่าการ์ดสรุป
           (ชื่อค่ายยาวอย่าง Globe Telecom Philippines ดันหน้ากว้าง 324px ในจอ 320px);
@@ -223,7 +245,7 @@ export function MobileRechargePage() {
       <div className="mt-6 grid grid-cols-[minmax(0,1fr)] items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="flex flex-col gap-5">
           <div>
-            <h2 className="text-[13px] font-bold">{t("stepCountry")}</h2>
+            <h2 className="text-sm font-bold">{t("stepCountry")}</h2>
             <div className="mt-2.5">
               <CountrySelect
                 countries={availableCountries}
@@ -284,6 +306,8 @@ export function MobileRechargePage() {
           buying={buying}
           buyError={buyError}
           phoneInvalid={phoneError}
+          paymentOptionCode={optionCode}
+          onSelectPaymentOption={setOptionCode}
           onBuyAttempt={handleBuyAttempt}
           onGoToStep={(n) => (n === 1 ? undefined : goToStep(n as 2 | 3 | 4))}
         />
@@ -300,6 +324,14 @@ export function MobileRechargePage() {
         packageName={selectedType?.name ?? operator?.name ?? ""}
         quantity={1}
         total={selectedType?.displayPrice ?? 0}
+        fee={estimatePaymentFee(selectedOption, selectedType?.displayPrice ?? 0)}
+        paymentLabel={selectedOption?.label}
+        reviewRows={[
+          ...(country && phone
+            ? [{ label: t("summaryPhone"), value: `+${country.callingCode} ${phone}` }]
+            : []),
+          ...(operator ? [{ label: t("summaryOperator"), value: operator.name }] : []),
+        ]}
         buying={buying}
         onConfirm={() => void handleBuy()}
       />

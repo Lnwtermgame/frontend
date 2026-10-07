@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Badge } from "@/components/ui/badge";
 import { formatTHB } from "@/lib/pricing";
 import type { ProductTypePublic } from "@/lib/api/products";
 
@@ -25,12 +26,14 @@ function DenomCard({
   selected: boolean;
   onSelect: (t: ProductTypePublic) => void;
 }) {
+  const t = useTranslations("mobileRecharge");
   return (
     <button
       type="button"
       role="radio"
       aria-checked={selected}
       disabled={!type.hasStock}
+      aria-disabled={!type.hasStock}
       onClick={() => onSelect(type)}
       className={`rounded-[6px] p-3 text-left transition-shadow disabled:cursor-not-allowed disabled:opacity-50 ${
         !type.hasStock
@@ -40,12 +43,20 @@ function DenomCard({
             : "bg-muted/60 hover:bg-muted"
       }`}
     >
-      <span className="line-clamp-2 min-h-[2.4em] text-[12.5px] leading-[1.2em] font-bold">
+      <span className="line-clamp-2 min-h-[2.4em] text-xs leading-[1.2em] font-bold">
         {type.name}
       </span>
-      <span className="num mt-1.5 block text-[13px] font-bold text-primary">
-        {formatTHB(type.displayPrice)}
-      </span>
+      {type.hasStock ? (
+        <span className="num mt-1.5 block text-sm font-bold text-primary">
+          {formatTHB(type.displayPrice)}
+        </span>
+      ) : (
+        // หมดstock = บอกเหตุชัดแทนแค่หรี่การ์ด (กดไม่ได้ทำไมราคายังอยู่) —
+        // ป้ายเดียวกับ operator-list ให้อ่านเป็นระบบเดียวกัน แคบก็ตัดด้วย ellipsis
+        <Badge variant="secondary" className="mt-1.5 max-w-full truncate">
+          {t("temporarilyUnavailable")}
+        </Badge>
+      )}
     </button>
   );
 }
@@ -85,7 +96,7 @@ export function PackageGrid({
     const foldable = items.length > FOLD_COUNT;
     return (
       <section>
-        <h3 className="text-[13px] font-bold">{label}</h3>
+        <h3 className="text-sm font-bold">{label}</h3>
         <div className="mt-2 grid grid-cols-2 gap-2.5" role="radiogroup" aria-label={label}>
           {visible.map((ty) => (
             <DenomCard
@@ -101,7 +112,7 @@ export function PackageGrid({
             type="button"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
-            className="mt-2.5 flex h-11 w-full items-center justify-center gap-1 text-[12.5px] font-semibold text-primary underline-offset-4 hover:underline"
+            className="mt-2.5 flex h-11 w-full items-center justify-center gap-1 text-xs font-semibold text-primary underline-offset-4 hover:underline"
           >
             {open ? t("showLess") : t("showMore", { count: items.length })}
             <ChevronDown

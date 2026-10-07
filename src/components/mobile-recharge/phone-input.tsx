@@ -34,7 +34,7 @@ export function PhoneInput({
         } lg:h-10`}
       >
         <span
-          className={`num flex items-center border-r border-border/60 px-3.5 text-[14px] font-semibold select-none ${
+          className={`num flex items-center border-r border-border/60 px-3.5 text-sm font-semibold select-none ${
             invalid ? "text-destructive" : "text-foreground/80"
           }`}
         >
@@ -49,7 +49,7 @@ export function PhoneInput({
           value={value}
           onChange={(e) => onChange(normalizePhone(e.target.value, country.callingCode))}
           placeholder={t("phonePlaceholder")}
-          className="num h-full min-w-0 flex-1 bg-transparent px-3 text-[14px] outline-none placeholder:text-muted-foreground"
+          className="num h-full min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-muted-foreground"
         />
       </label>
       {invalid ? (

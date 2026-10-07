@@ -12,10 +12,14 @@ import {
 } from "@/components/ui/select";
 import type { SeagmField } from "@/lib/api/products";
 
-/* placeholder จาก backend เป็นอังกฤษ ("Please enter User ID") — แปลงเป็นไทยตาม label */
-function thaiPlaceholder(field: SeagmField): string | undefined {
+/* placeholder จาก backend เป็นอังกฤษ ("Please enter User ID") — แปลงเป็นไทยตาม label
+ * (แปลผ่าน product.fieldPlaceholder เพื่อให้ข้อความอยู่ใน messages/th.json) */
+function thaiPlaceholder(
+  field: SeagmField,
+  t: (key: string, values: { field: string }) => string,
+): string | undefined {
   if (field.placeholder && /^please enter/i.test(field.placeholder)) {
-    return `กรอก ${field.label}`;
+    return t("fieldPlaceholder", { field: field.label });
   }
   return field.placeholder;
 }
@@ -60,14 +64,16 @@ export function DynamicFields({
                 value={values[field.name] ?? ""}
                 onValueChange={(v) => onChange(field.name, v)}
                 disabled={disabled}
+                required={field.required}
               >
                 <SelectTrigger
                   id={`field-${field.name}`}
                   aria-invalid={Boolean(error)}
+                  aria-required={field.required || undefined}
                   aria-describedby={error ? errorId : undefined}
                   className="data-[size=default]:h-11 lg:data-[size=default]:h-8"
                 >
-                  <SelectValue placeholder={disabled ? undefined : thaiPlaceholder(field)} />
+                  <SelectValue placeholder={disabled ? undefined : thaiPlaceholder(field, t)} />
                 </SelectTrigger>
                 <SelectContent>
                   {field.options.map((opt) => (
@@ -81,10 +87,12 @@ export function DynamicFields({
               <textarea
                 id={`field-${field.name}`}
                 className="min-h-[80px] rounded-[10px] border bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-60 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20"
-                placeholder={thaiPlaceholder(field)}
+                placeholder={thaiPlaceholder(field, t)}
                 value={values[field.name] ?? ""}
                 onChange={(e) => onChange(field.name, e.target.value)}
                 disabled={disabled}
+                required={field.required}
+                aria-required={field.required || undefined}
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? errorId : undefined}
               />
@@ -92,9 +100,11 @@ export function DynamicFields({
               <Input
                 id={`field-${field.name}`}
                 value={values[field.name] ?? ""}
-                placeholder={disabled ? undefined : thaiPlaceholder(field)}
+                placeholder={disabled ? undefined : thaiPlaceholder(field, t)}
                 onChange={(e) => onChange(field.name, e.target.value)}
                 disabled={disabled}
+                required={field.required}
+                aria-required={field.required || undefined}
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? errorId : undefined}
                 className="num h-11 disabled:opacity-60 lg:h-8"
@@ -110,21 +120,23 @@ export function DynamicFields({
       })}
       {disabled ? (
         // ไม่ลด opacity: muted-foreground @70% บน bg-card ตกไป ~3.9:1 (ต่ำกว่า 4.5:1)
-        <p className="text-[11px] text-muted-foreground">{t("lockedHint")}</p>
+        <p className="text-2xs text-muted-foreground">{t("lockedHint")}</p>
       ) : null}
     </div>
   );
 }
 
 // Standalone validator (no hooks): returns {fieldName: thaiErrorMessage} for missing required fields.
+// messageFor แปลข้อความจาก messages/th.json (product.fieldRequired) — ผู้เรียกส่ง t เข้ามา
 export function validateRequired(
   fields: SeagmField[],
   values: Record<string, string>,
+  messageFor: (field: SeagmField) => string,
 ): Record<string, string> {
   const errors: Record<string, string> = {};
   for (const f of fields) {
     if (f.required && !(values[f.name] ?? "").trim()) {
-      errors[f.name] = `กรุณากรอก${f.label}`;
+      errors[f.name] = messageFor(f);
     }
   }
   return errors;

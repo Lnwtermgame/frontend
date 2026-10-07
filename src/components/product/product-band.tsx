@@ -9,10 +9,11 @@ import { extractDominantColor, shadeDarker } from "@/lib/color-extract";
 import { assetUrl } from "@/lib/asset-url";
 import type { Product } from "@/lib/api/products";
 
-const FALLBACK_SUB: Record<Product["productType"], string> = {
-  DIRECT_TOPUP: "เติมตรง",
-  CARD: "บัตรเติมเงิน",
-  MOBILE_RECHARGE: "เติมมือถือ",
+/** คีย์ป้ายประเภทสินค้าต่อ productType (แปลผ่าน product.type_*) */
+const TYPE_LABEL_KEY: Record<Product["productType"], "type_DIRECT_TOPUP" | "type_CARD" | "type_MOBILE_RECHARGE"> = {
+  DIRECT_TOPUP: "type_DIRECT_TOPUP",
+  CARD: "type_CARD",
+  MOBILE_RECHARGE: "type_MOBILE_RECHARGE",
 };
 
 /** แถบสีประจำเกมเต็มความกว้างใต้ header — สีมาจากระบบปก (coverDnaFor)
@@ -33,19 +34,23 @@ export function ProductBand({
   onCopyLink: () => void;
 }) {
   const t = useTranslations("product");
-  const dna = coverDnaFor(product.name, FALLBACK_SUB[product.productType]);
+  const fallbackSub = t(TYPE_LABEL_KEY[product.productType]);
+  const dna = coverDnaFor(product.name, fallbackSub);
   const details = product.gameDetails;
 
   // มีรูปจริง → ดึงสีเด่นจากรูปมาใช้แทนสี DNA (DNA คือค่าเริ่มต้น + fallback
   // เมื่อรูปเป็นขาวดำหรืออ่านไม่ได้)
-  const [accent, setAccent] = useState<string | null>(null);
+  /* accent ผูกกับ imageUrl ที่คำนวณได้ — derive ตอน render แทนการ reset ใน effect
+     (รูปเปลี่ยน = accent เดิตหมดอายุทันที ไม่ flash สีเก่า) */
+  const [accentEntry, setAccentEntry] = useState<{ img: string; color: string | null } | null>(null);
+  const accent = accentEntry && accentEntry.img === product.imageUrl ? accentEntry.color : null;
   useEffect(() => {
-    setAccent(null);
-    if (!product.imageUrl) return;
+    const img = product.imageUrl;
+    if (!img) return;
     let alive = true;
-    extractDominantColor(assetUrl(product.imageUrl))
+    extractDominantColor(assetUrl(img))
       .then((hex) => {
-        if (alive) setAccent(hex);
+        if (alive) setAccentEntry({ img, color: hex });
       })
       .catch(() => {});
     return () => {
@@ -87,32 +92,32 @@ export function ProductBand({
           <GameCover
             name={product.name}
             imageUrl={product.imageUrl}
-            fallbackSub={FALLBACK_SUB[product.productType]}
+            fallbackSub={fallbackSub}
             sizes="92px"
           />
         </div>
         <div className="min-w-0 flex-1">
-          <h1 className="text-[22px] font-extrabold tracking-tight sm:text-2xl">
+          <h1 className="text-2xl font-extrabold tracking-tight">
             {product.name}
           </h1>
-          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[12.5px] text-muted-foreground">
-            <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-[11.5px] font-bold text-primary">
-              {FALLBACK_SUB[product.productType]}
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+            <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-2xs font-bold text-primary">
+              {fallbackSub}
             </span>
             {product.category?.name ? (
-              <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[11.5px] font-bold text-muted-foreground">
+              <span className="rounded-full bg-secondary px-2.5 py-0.5 text-2xs font-bold text-muted-foreground">
                 {product.category.name}
               </span>
             ) : null}
             {product.isBestseller ? (
-              <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[11.5px] font-bold text-muted-foreground">
-                ขายดี
+              <span className="rounded-full bg-secondary px-2.5 py-0.5 text-2xs font-bold text-muted-foreground">
+                {t("bestseller")}
               </span>
             ) : null}
             <span>{t("autoDelivery")}</span>
           </div>
           {metaItems.length > 0 ? (
-            <div className="mt-3 hidden flex-wrap gap-x-5 gap-y-1 text-[11.5px] text-muted-foreground/70 sm:flex">
+            <div className="mt-3 hidden flex-wrap gap-x-5 gap-y-1 text-2xs text-muted-foreground-strong sm:flex">
               {metaItems.map((m) => (
                 <span key={m.label}>
                   {m.label}
@@ -132,7 +137,7 @@ export function ProductBand({
             className={`min-h-11 gap-1.5 text-xs md:min-h-7 ${isFavorite ? "border-primary text-primary" : ""}`}
           >
             <Heart className={`size-4 ${isFavorite ? "fill-primary text-primary" : ""}`} />
-            <span>{isFavorite ? "ถูกใจแล้ว" : "ถูกใจ"}</span>
+            <span>{isFavorite ? t("favorited") : t("favorite")}</span>
           </Button>
           <Button
             variant="outline"
@@ -141,7 +146,7 @@ export function ProductBand({
             className="min-h-11 gap-1.5 text-xs md:min-h-7"
           >
             {copied ? <Check className="size-4 text-status-success" /> : <Share2 className="size-4" />}
-            <span>{copied ? "คัดลอกแล้ว" : "แชร์"}</span>
+            <span>{copied ? t("copied") : t("share")}</span>
           </Button>
         </div>
       </div>

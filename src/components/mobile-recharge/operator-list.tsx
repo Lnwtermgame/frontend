@@ -46,7 +46,7 @@ export function OperatorList({
               !sellable
                 ? "bg-muted/30"
                 : selected
-                  ? "bg-muted/60 ring-2 ring-primary ring-inset"
+                  ? "bg-muted/60 inset-ring-2 inset-ring-primary"
                   : "bg-muted/60 hover:bg-muted"
             }`}
           >

@@ -46,7 +46,7 @@ function DenomCard({
         !type.hasStock
           ? "border-dashed border-border/70 opacity-50"
           : selected
-            ? "border-primary bg-primary/5 ring-2 ring-primary ring-inset"
+            ? "border-primary bg-primary/5 inset-ring-2 inset-ring-primary"
             : "border-border hover:border-primary/40 hover:bg-primary/5"
       }`}
     >

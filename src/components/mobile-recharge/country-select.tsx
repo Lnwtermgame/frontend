@@ -43,7 +43,7 @@ export function CountrySelect({
             onClick={() => onChange(c.code)}
             className={`flex items-center gap-3 rounded-[6px] p-2.5 text-left transition-shadow disabled:cursor-not-allowed disabled:opacity-50 ${
               selected
-                ? "bg-muted/60 ring-2 ring-primary ring-inset"
+                ? "bg-muted/60 inset-ring-2 inset-ring-primary"
                 : "bg-muted/60 hover:bg-muted"
             }`}
           >

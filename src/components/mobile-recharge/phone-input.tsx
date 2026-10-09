@@ -29,8 +29,8 @@ export function PhoneInput({
   return (
     <div className="flex flex-col gap-1.5">
       <label
-        className={`flex h-12 items-stretch overflow-hidden rounded-[6px] bg-muted/60 transition-colors focus-within:ring-2 focus-within:ring-ring/40 ${
-          invalid ? "ring-2 ring-destructive/60" : ""
+        className={`flex h-12 items-stretch overflow-hidden rounded-[6px] bg-muted/60 transition-colors focus-within:inset-ring-2 focus-within:inset-ring-ring/40 ${
+          invalid ? "inset-ring-2 inset-ring-destructive/60" : ""
         } lg:h-10`}
       >
         <span

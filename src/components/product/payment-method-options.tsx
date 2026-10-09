@@ -112,7 +112,7 @@ export function PaymentMethodOptions({
             onClick={() => onChange(m.code)}
             className={`flex h-11 w-full items-center gap-2 rounded-[10px] border px-3 text-left transition-colors lg:h-9 ${
               selected
-                ? "border-primary bg-primary/5 ring-2 ring-primary ring-inset"
+                ? "border-primary bg-primary/5 inset-ring-2 inset-ring-primary"
                 : "border-border hover:bg-muted/60"
             }`}
           >

@@ -197,7 +197,14 @@ export function ProductPage({ route }: { route: ProductRoute }) {
           .slice()
           .sort((a, b) => a.position - b.position)
           .filter((f) => (pendingPayload.playerInfo[f.name] ?? "").trim())
-          .map((f) => ({ label: f.label, value: pendingPayload.playerInfo[f.name] ?? "" }))
+          .map((f) => {
+            const rawVal = pendingPayload.playerInfo[f.name] ?? "";
+            const optLabel =
+              f.type === "select"
+                ? f.options?.find((o) => o.value === rawVal)?.label
+                : undefined;
+            return { label: f.label, value: optLabel || rawVal };
+          })
       : [];
 
   // Filter out current product from recommendations

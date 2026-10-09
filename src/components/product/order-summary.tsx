@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Check, CircleAlert, CircleCheck, Info, Loader2, Minus, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
@@ -80,7 +80,17 @@ export function OrderSummary({
     return selectedType.fields ?? [];
   }, [selectedType]);
 
-  const [values, setValues] = useState<Record<string, string>>({});
+  const [values, setValues] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    if (selectedType?.fields) {
+      for (const f of selectedType.fields) {
+        if (f.type === "select" && f.options && f.options.length > 0) {
+          initial[f.name] = f.options[0].value;
+        }
+      }
+    }
+    return initial;
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [qty, setQty] = useState(() => (selectedType ? Math.max(selectedType.minAmount, 1) : 1));
   const [verifyState, setVerifyState] = useState<
@@ -139,9 +149,22 @@ export function OrderSummary({
     handleBuy();
   };
 
+  const handleFieldChange = useCallback((name: string, value: string) => {
+    setValues((prev) => {
+      if (prev[name] === value) return prev;
+      return { ...prev, [name]: value };
+    });
+    setVerifyState("idle");
+    setVerifyMessage(null);
+  }, []);
+
   const handleVerify = async () => {
     if (!selectedType) return;
-    const errs = validateRequired(fields, values, (f) => t("fieldRequired", { field: f.label }));
+    const errs = validateRequired(fields, values, (f) =>
+      f.type === "select"
+        ? t("fieldSelectRequired", { field: f.label })
+        : t("fieldRequired", { field: f.label }),
+    );
     setErrors(errs);
     if (Object.keys(errs).length) return;
     setVerifyState("checking");
@@ -172,7 +195,14 @@ export function OrderSummary({
       const emptyFields = fields.filter((f) => !(values[f.name] ?? "").trim());
       if (outcome.state === "fail" && emptyFields.length) {
         setErrors(
-          Object.fromEntries(emptyFields.map((f) => [f.name, t("fieldRequired", { field: f.label })])),
+          Object.fromEntries(
+            emptyFields.map((f) => [
+              f.name,
+              f.type === "select"
+                ? t("fieldSelectRequired", { field: f.label })
+                : t("fieldRequired", { field: f.label }),
+            ]),
+          ),
         );
         setVerifyMessage(null);
         return;
@@ -304,11 +334,7 @@ export function OrderSummary({
                   values={values}
                   errors={errors}
                   disabled={accountLocked}
-                  onChange={(name, value) => {
-                    setValues((prev) => ({ ...prev, [name]: value }));
-                    setVerifyState("idle");
-                    setVerifyMessage(null);
-                  }}
+                  onChange={handleFieldChange}
                 />
                 {verified ? null : (
                   <Button

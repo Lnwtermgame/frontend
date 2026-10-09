@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,13 +13,19 @@ import {
 } from "@/components/ui/select";
 import type { SeagmField } from "@/lib/api/products";
 
-/* placeholder จาก backend เป็นอังกฤษ ("Please enter User ID") — แปลงเป็นไทยตาม label
- * (แปลผ่าน product.fieldPlaceholder เพื่อให้ข้อความอยู่ใน messages/th.json) */
+/* placeholder จาก backend เป็นอังกฤษ ("Please enter User ID" หรือ "Please select Server")
+ * — แปลงเป็นไทยตาม label (แปลผ่าน product.fieldPlaceholder หรือ fieldSelectPlaceholder) */
 function thaiPlaceholder(
   field: SeagmField,
   t: (key: string, values: { field: string }) => string,
 ): string | undefined {
-  if (field.placeholder && /^please enter/i.test(field.placeholder)) {
+  if (field.type === "select") {
+    if (!field.placeholder || /^please (select|enter)/i.test(field.placeholder)) {
+      return t("fieldSelectPlaceholder", { field: field.label });
+    }
+    return field.placeholder;
+  }
+  if (!field.placeholder || /^please enter/i.test(field.placeholder)) {
     return t("fieldPlaceholder", { field: field.label });
   }
   return field.placeholder;
@@ -48,6 +55,19 @@ export function DynamicFields({
   const t = useTranslations("product");
   const sorted = [...fields].sort((a, b) => a.position - b.position);
 
+  // เมื่อมีฟิลด์ select แต่ยังไม่มีค่า ให้เลือกตัวเลือกแรกเป็นค่าเริ่มต้นอัตโนมัติ
+  useEffect(() => {
+    sorted.forEach((field) => {
+      if (
+        field.type === "select" &&
+        field.options?.length &&
+        (!values[field.name] || !field.options.some((o) => o.value === values[field.name]))
+      ) {
+        onChange(field.name, field.options[0].value);
+      }
+    });
+  }, [sorted, values, onChange]);
+
   return (
     <div className="flex flex-col gap-3">
       {sorted.map((field) => {
@@ -61,7 +81,7 @@ export function DynamicFields({
             </Label>
             {field.type === "select" && field.options?.length ? (
               <Select
-                value={values[field.name] ?? ""}
+                value={values[field.name] || (field.options[0]?.value ?? "")}
                 onValueChange={(v) => onChange(field.name, v)}
                 disabled={disabled}
                 required={field.required}
@@ -71,7 +91,7 @@ export function DynamicFields({
                   aria-invalid={Boolean(error)}
                   aria-required={field.required || undefined}
                   aria-describedby={error ? errorId : undefined}
-                  className="data-[size=default]:h-11 lg:data-[size=default]:h-8"
+                  className="h-11 disabled:opacity-60 lg:h-8"
                 >
                   <SelectValue placeholder={disabled ? undefined : thaiPlaceholder(field, t)} />
                 </SelectTrigger>

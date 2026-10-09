@@ -9,8 +9,10 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/80",
+        // bg-clip-border: พื้นปุ่มต้องรองใต้ขอบด้วย — ถ้า clip ที่ padding พื้นหลังเข้ม (เช่นแถบสีเกม)
+        // จะรั่วผ่านรอยต่อ anti-alias ระหว่างขอบกับพื้นตรงมุมโค้ง กลายเป็นจุดดำที่มุม
         outline:
-          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground",
+          "border-border bg-background bg-clip-border hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:

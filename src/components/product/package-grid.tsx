@@ -42,12 +42,14 @@ function DenomCard({
       disabled={!type.hasStock}
       aria-disabled={!type.hasStock}
       onClick={() => onSelect(type)}
-      className={`flex min-w-0 items-center gap-3 rounded-[10px] border p-2.5 pr-3.5 text-left transition-[border-color,background-color] duration-150 ease-soft disabled:cursor-not-allowed ${
+      // กรอบชั้นเดียว (inset-ring) ทุก state — ห้ามซ้อน border + inset-ring เพราะ anti-alias
+      // ของสองชั้นที่มุมโค้งไม่ตรงกัน เกิดเส้นขาวรั่วที่มุม; dashed ใช้ outline (ไม่กินพื้นที่) ขนาดเท่ากันทุก state
+      className={`flex min-w-0 items-center gap-3 rounded-[10px] p-2.5 pr-3.5 text-left transition-[box-shadow,background-color] duration-150 ease-soft disabled:cursor-not-allowed ${
         !type.hasStock
-          ? "border-dashed border-border/70 opacity-50"
+          ? "outline-1 outline-dashed -outline-offset-1 outline-border/70 opacity-50"
           : selected
-            ? "border-primary bg-primary/5 inset-ring-2 inset-ring-primary"
-            : "border-border hover:border-primary/40 hover:bg-primary/5"
+            ? "bg-primary/5 inset-ring-2 inset-ring-primary"
+            : "inset-ring inset-ring-border hover:bg-primary/5 hover:inset-ring-primary/40"
       }`}
     >
       {img && (

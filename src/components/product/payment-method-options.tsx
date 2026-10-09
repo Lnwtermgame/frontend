@@ -110,10 +110,11 @@ export function PaymentMethodOptions({
             tabIndex={selected ? 0 : -1}
             disabled={disabled}
             onClick={() => onChange(m.code)}
-            className={`flex h-11 w-full items-center gap-2 rounded-[10px] border px-3 text-left transition-colors lg:h-9 ${
+            // กรอบชั้นเดียว (inset-ring) — ซ้อน border + inset-ring แล้วมุมโค้งมีเส้นขาวรั่ว
+            className={`flex h-11 w-full items-center gap-2 rounded-[10px] px-3 text-left transition-[box-shadow,background-color] lg:h-9 ${
               selected
-                ? "border-primary bg-primary/5 inset-ring-2 inset-ring-primary"
-                : "border-border hover:bg-muted/60"
+                ? "bg-primary/5 inset-ring-2 inset-ring-primary"
+                : "inset-ring inset-ring-border hover:bg-muted/60"
             }`}
           >
             <span className="min-w-0 flex-1 truncate text-xs font-semibold">{m.label}</span>

@@ -9,12 +9,12 @@ export interface AuthUser {
   emailVerified?: boolean;
 }
 
-export interface AuthResult {
+interface AuthResult {
   user: AuthUser;
   tokens: { accessToken: string; refreshToken?: string; expiresIn: number };
 }
 
-export interface OAuthProviderInfo {
+interface OAuthProviderInfo {
   name: string;
   displayName: string;
   iconUrl?: string | null;
@@ -38,10 +38,6 @@ export function register(username: string, email: string, password: string) {
 
 export function logout() {
   return apiFetch<{ message?: string }>("/api/auth/logout", { method: "POST" });
-}
-
-export function getProfile() {
-  return apiFetch<AuthUser>("/api/auth/profile");
 }
 
 export function getOAuthProviders() {

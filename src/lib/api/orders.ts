@@ -40,7 +40,7 @@ export interface Order {
   updatedAt: string;
 }
 
-export interface CreateOrderInput {
+interface CreateOrderInput {
   items: {
     productId: string;
     productTypeId?: string;

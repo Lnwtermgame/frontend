@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { assetUrl } from "@/lib/asset-url";
 
-export type CoverDna = {
+type CoverDna = {
   c1: string;
   c2: string;
   ink: string;
@@ -47,6 +47,7 @@ export function GameCover({
   fallbackSub,
   sizes,
   compact = false,
+  flush = false,
 }: {
   name: string;
   imageUrl?: string | null;
@@ -54,10 +55,13 @@ export function GameCover({
   sizes: string;
   /** ขนาดเล็ก (แถวรายการ) — ซ่อนแถบชื่อล่างเมื่อชื่อแสดงอยู่ข้างปกแล้ว */
   compact?: boolean;
+  /** ปกเต็มขอบการ์ดแม่ (full-bleed) — มุมตรง ไม่มีรัศมีซ้ำกับการ์ดที่คลิปเอง */
+  flush?: boolean;
 }) {
+  const radius = flush ? "rounded-none" : "rounded-xl";
   if (imageUrl) {
     return (
-      <div className="relative aspect-square overflow-hidden rounded-xl">
+      <div className={`relative aspect-square overflow-hidden ${radius}`}>
         <Image src={assetUrl(imageUrl)} alt={name} fill sizes={sizes} className="object-cover" />
       </div>
     );
@@ -66,7 +70,7 @@ export function GameCover({
   const dna = coverDnaFor(name, fallbackSub);
   return (
     <div
-      className="relative flex aspect-square flex-col justify-end overflow-hidden rounded-xl"
+      className={`relative flex aspect-square flex-col justify-end overflow-hidden ${radius}`}
       style={{ background: dna.c1, color: dna.ink }}
     >
       <span
@@ -80,7 +84,8 @@ export function GameCover({
         <small className="mt-1.5 block text-2xs font-bold tracking-[0.14em] opacity-70">{dna.sub}</small>
       </span>
       {!compact && (
-        <span className="relative truncate bg-black/65 px-2.5 py-1.5 text-2xs font-bold text-foreground">
+        // ป้ายบนแถบดำทับปก — ขาวตรง ๆ ไม่ใช้ text-foreground (ธีมสว่าง foreground เข้ม จมกับแถบดำ)
+        <span className="relative truncate bg-black/65 px-2.5 py-1.5 text-2xs font-bold text-white">
           {name}
         </span>
       )}

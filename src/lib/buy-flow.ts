@@ -4,13 +4,13 @@ import { createOrder } from "@/lib/api/orders";
 import { createPaymentIntent } from "@/lib/api/payments";
 import type { BuyPayload } from "@/components/product/order-summary";
 
-export interface BuyFlowResult {
+interface BuyFlowResult {
   outcome: "redirected" | "qr";
   orderId: string;
   referenceNo: string;
 }
 
-export interface PendingOrderContext {
+interface PendingOrderContext {
   orderId: string;
   referenceNo: string;
   amount?: number;

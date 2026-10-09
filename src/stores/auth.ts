@@ -8,9 +8,9 @@ import {
   setAccessToken,
 } from "@/lib/api/client";
 
-export const AUTH_STORAGE_KEY = "gtp-new-user";
+const AUTH_STORAGE_KEY = "gtp-new-user";
 
-export type AuthStatus = "bootstrapping" | "authenticated" | "guest";
+type AuthStatus = "bootstrapping" | "authenticated" | "guest";
 
 interface OAuthSessionPayload {
   backendTokens?: { accessToken: string; expiresIn: number } | null;

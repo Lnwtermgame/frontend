@@ -18,18 +18,27 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
     // -mb-12 ทดของ footer (mt-12) เฉพาะหน้า auth — แผงแบรนด์เป็นบล็อกสีเต็มความกว้าง
     // ถ้ามีช่องว่างคั่นก่อน footer จะดูเหมือนการ์ดหลุดจากผัง
     <div className="grid min-h-[calc(100vh-6.5rem)] lg:-mb-12 lg:grid-cols-2">
-      {/* แผงแบรนด์ — มือถือ: ส่วนหัวบาง / เดสก์ท็อป: เต็มความสูง */}
+      {/* แผงแบรนด์ — มือถือ: ส่วนหัวบาง / เดสก์ท็อป: เต็มความสูง
+          พาสเทลส้มไล่เข้าขาว (ผสม primary ลง white) ตามธีม Daylight — ตัวหนังสือหมึกเข้ม */}
       <div
         className="relative overflow-hidden px-6 py-8 lg:flex lg:flex-col lg:justify-center lg:px-12 lg:py-12"
-        style={{ background: "linear-gradient(160deg, #3a1c0a, #1d1206 70%)" }}
+        style={{
+          background:
+            "linear-gradient(160deg, color-mix(in oklab, var(--primary) 16%, white), color-mix(in oklab, var(--primary) 6%, white) 62%, white)",
+        }}
       >
         <span
           aria-hidden
           className="absolute -top-24 -left-24 size-[420px] rounded-full"
           style={{
             background:
-              "radial-gradient(circle, color-mix(in oklab, var(--primary) 22%, transparent), transparent 70%)",
+              "radial-gradient(circle, color-mix(in oklab, var(--primary) 18%, transparent), transparent 70%)",
           }}
+        />
+        <span
+          aria-hidden
+          className="absolute -right-[8%] -bottom-[30%] h-[150%] w-[30%] rotate-[16deg]"
+          style={{ background: "color-mix(in srgb, var(--primary) 8%, transparent)" }}
         />
         <div className="relative">
           <Image

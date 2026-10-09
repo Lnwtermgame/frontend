@@ -65,14 +65,6 @@ export function useBestsellers(limit = 8) {
   });
 }
 
-export function useCategories() {
-  return useQuery({
-    queryKey: qk.categories(),
-    queryFn: () => productsApi.getCategories(),
-    staleTime: 10 * 60_000,
-  });
-}
-
 export function useProductBySlug(slug: string) {
   return useQuery({
     queryKey: qk.product(slug),
@@ -133,14 +125,6 @@ export function useOrderDetail(id: string) {
     queryKey: qk.order(id),
     queryFn: () => dashApi.getOrderDetail(id),
     enabled: Boolean(id),
-    staleTime: 30_000,
-  });
-}
-
-export function useDeliveries(params: dashApi.ListParams = {}) {
-  return useQuery({
-    queryKey: qk.deliveries(params),
-    queryFn: () => dashApi.listDeliveries(params),
     staleTime: 30_000,
   });
 }
@@ -223,15 +207,6 @@ export function useFaqCategories() {
   });
 }
 
-export function useFaqCategoryBySlug(slug: string) {
-  return useQuery({
-    queryKey: qk.faqCategory(slug),
-    queryFn: () => supportApi.getFaqCategoryBySlug(slug),
-    enabled: Boolean(slug),
-    staleTime: 10 * 60_000,
-  });
-}
-
 export function useFaqArticles(params: { categoryId?: string; page?: number; limit?: number } = {}) {
   return useQuery({
     queryKey: qk.faqArticles(params),
@@ -263,15 +238,6 @@ export function useTicketDetail(id: string) {
     queryFn: () => supportApi.getTicketDetail(id),
     enabled: Boolean(id),
     staleTime: 30_000,
-  });
-}
-
-export function useCmsPage(slug: string) {
-  return useQuery({
-    queryKey: qk.cmsPage(slug),
-    queryFn: () => supportApi.getCmsPage(slug),
-    enabled: Boolean(slug),
-    staleTime: 10 * 60_000,
   });
 }
 

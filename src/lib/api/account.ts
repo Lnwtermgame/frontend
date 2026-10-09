@@ -1,14 +1,8 @@
 import { apiFetch, apiFetchWithMeta } from "./client";
-import type { AuthUser } from "./auth";
 
 // ============ Account & Profile Types ============
 
-export interface UpdateProfileInput {
-  username?: string;
-  email?: string;
-}
-
-export interface ChangePasswordInput {
+interface ChangePasswordInput {
   currentPassword: string;
   newPassword: string;
 }
@@ -17,7 +11,7 @@ export interface ChangePasswordInput {
 
 export type NotificationType = "ORDER" | "PAYMENT" | "PROMOTION" | "SYSTEM";
 
-export interface NotificationItem {
+interface NotificationItem {
   id: string;
   userId: string;
   title: string;
@@ -39,13 +33,6 @@ export interface NotificationPreferences {
 // ============ API Functions ============
 
 // Profile & Account
-export function updateProfile(data: UpdateProfileInput): Promise<AuthUser> {
-  return apiFetch("/api/auth/profile", {
-    method: "PUT",
-    body: data,
-  });
-}
-
 export function changePassword(data: ChangePasswordInput): Promise<{ message: string }> {
   return apiFetch("/api/auth/change-password", {
     method: "PUT",

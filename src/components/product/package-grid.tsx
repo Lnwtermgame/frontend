@@ -35,25 +35,26 @@ function DenomCard({
       disabled={!type.hasStock}
       aria-disabled={!type.hasStock}
       onClick={() => onSelect(type)}
-      className={`rounded-[6px] p-3 text-left transition-shadow disabled:cursor-not-allowed disabled:opacity-50 ${
+      className={`rounded-[10px] border p-3 text-left transition-[border-color,background-color] duration-150 ease-soft disabled:cursor-not-allowed ${
         !type.hasStock
-          ? "bg-muted/30"
+          ? "border-dashed border-border/70 opacity-50"
           : selected
-            ? "bg-muted/60 ring-2 ring-primary ring-inset"
-            : "bg-muted/60 hover:bg-muted"
+            ? "border-primary bg-primary/5 ring-2 ring-primary ring-inset"
+            : "border-border hover:border-primary/40 hover:bg-primary/5"
       }`}
     >
-      <span className="line-clamp-2 min-h-[2.4em] text-xs leading-[1.2em] font-bold">
+      {/* Thai ต้อง leading สูงกว่า 1.2 — สระ/วรรณยุกต์บน-ล่างโดนตัดถ้าแน่นเกิน */}
+      <span className="line-clamp-2 min-h-[2.9em] text-xs leading-[1.45em] font-semibold">
         {type.name}
       </span>
       {type.hasStock ? (
-        <span className="num mt-1.5 block text-sm font-bold text-primary">
+        <span className="num mt-2 block text-sm font-bold text-primary">
           {formatTHB(type.displayPrice)}
         </span>
       ) : (
         // หมดstock = บอกเหตุชัดแทนแค่หรี่การ์ด (กดไม่ได้ทำไมราคายังอยู่) —
         // ป้ายเดียวกับ operator-list ให้อ่านเป็นระบบเดียวกัน แคบก็ตัดด้วย ellipsis
-        <Badge variant="secondary" className="mt-1.5 max-w-full truncate">
+        <Badge variant="secondary" className="mt-2 max-w-full truncate">
           {t("temporarilyUnavailable")}
         </Badge>
       )}
@@ -90,14 +91,29 @@ export function PackageGrid({
     label: string,
     open: boolean,
     setOpen: (v: boolean) => void,
+    // หัวกลุ่มโผล่เฉพาะเมื่อมีสองกลุ่มจริง (credits + data) — กลุ่มเดียวหัวเป็น noise
+    // และป้ายจาก namespace mobileRecharge ("เติมเงินโทรศัพท์") อ่านผิดบริบทบนหน้าเกม
+    showHeader: boolean,
   ) => {
     if (!items.length) return null;
     const visible = open ? items : items.slice(0, FOLD_COUNT);
     const foldable = items.length > FOLD_COUNT;
     return (
       <section>
-        <h3 className="text-sm font-bold">{label}</h3>
-        <div className="mt-2 grid grid-cols-2 gap-2.5" role="radiogroup" aria-label={label}>
+        {showHeader ? (
+          <h3 className="flex items-center gap-2 text-sm font-bold">
+            {label}
+            {/* จำนวนแพ็กเกจจริงในกลุ่ม — ชิปขอบเพราะ bg-muted ทับ bg-card มองไม่เห็น */}
+            <span className="num rounded-full border border-border/80 px-1.5 text-2xs leading-4 font-semibold text-muted-foreground">
+              {items.length}
+            </span>
+          </h3>
+        ) : null}
+        <div
+          className={showHeader ? "mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-4" : "grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-4"}
+          role="radiogroup"
+          aria-label={showHeader ? label : undefined}
+        >
           {visible.map((ty) => (
             <DenomCard
               key={ty.id}
@@ -112,7 +128,7 @@ export function PackageGrid({
             type="button"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
-            className="mt-2.5 flex h-11 w-full items-center justify-center gap-1 text-xs font-semibold text-primary underline-offset-4 hover:underline"
+            className="mt-3 flex h-10 w-full items-center justify-center gap-1.5 rounded-[10px] border border-transparent text-xs font-semibold text-primary transition-colors hover:border-border hover:bg-primary/10"
           >
             {open ? t("showLess") : t("showMore", { count: items.length })}
             <ChevronDown
@@ -134,9 +150,9 @@ export function PackageGrid({
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      {group(credits, t("groupCredits"), creditsOpen, setCreditsOpen)}
-      {group(data, t("groupData"), dataOpen, setDataOpen)}
+    <div className="flex flex-col gap-6">
+      {group(credits, t("groupCredits"), creditsOpen, setCreditsOpen, data.length > 0)}
+      {group(data, t("groupData"), dataOpen, setDataOpen, credits.length > 0)}
     </div>
   );
 }

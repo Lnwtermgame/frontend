@@ -50,7 +50,7 @@ export function BannerCarousel() {
     >
       {/* h1 เดียวของหน้าแรก — sr-only เพราะสไลด์โชว์ชื่อโปรโมชั่นเป็น h2 อยู่แล้ว */}
       <h1 className="sr-only">{th("srHeading")}</h1>
-      <div className="relative h-[280px] overflow-hidden rounded-[14px] md:h-[230px]">
+      <div className="relative h-[280px] overflow-hidden rounded-2xl shadow-(--shadow-tile) md:h-[230px]">
         {slides.map((s, i) => (
           <div
             key={s.href}
@@ -62,6 +62,12 @@ export function BannerCarousel() {
             }`}
             style={{ background: s.b1 }}
           >
+            {/* นีออนซอฟต์มุมบนซ้าย — ให้พื้นสีเข้มมีมิติ ไม่ใช่แผ่นสีแบนราบ */}
+            <span
+              aria-hidden
+              className="absolute -top-[60%] -left-[10%] h-[130%] w-[55%] rounded-full"
+              style={{ background: `radial-gradient(closest-side, ${s.b3}, transparent)`, opacity: 0.35 }}
+            />
             <span aria-hidden className="absolute -top-[30%] -right-[6%] h-[170%] w-[46%] rotate-[16deg]" style={{ background: s.b2 }} />
             <span aria-hidden className="absolute right-[22%] -bottom-[64%] h-[120%] w-[18%] rotate-[16deg]" style={{ background: s.b2 }} />
             <span aria-hidden className="absolute -bottom-[70%] -left-[4%] h-[110%] w-[30%] rotate-[16deg]" style={{ background: s.b3 }} />

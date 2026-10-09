@@ -15,13 +15,14 @@ import { ConfirmOrderDialog, type ConfirmReviewRow } from "./confirm-order-dialo
 import { ProductBand } from "./product-band";
 import { ShelfTile } from "./shelf-tile";
 import { Markdown } from "@/components/markdown";
+import { Reveal } from "@/components/ui/reveal";
 import { startBuyFlow } from "@/lib/buy-flow";
 import { ApiError } from "@/lib/api/client";
 import { lineTotal } from "@/lib/pricing";
 import { decodeRouteParam } from "@/lib/route-param";
 import type { ProductTypePublic } from "@/lib/api/products";
 
-export type ProductRoute = "games" | "card" | "mobile";
+type ProductRoute = "games" | "card" | "mobile";
 
 const FIELD_BY_ROUTE: Record<ProductRoute, string> = {
   games: "gameId",
@@ -218,39 +219,43 @@ export function ProductPage({ route }: { route: ProductRoute }) {
 
       <div className="mx-auto w-full max-w-6xl px-4 pt-6">
         <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-          <section className="rounded-[14px] border border-border/60 bg-card p-5">
-            <h2 className="mb-3.5 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
-              {t("selectPackage")}
-            </h2>
-            {types.length === 0 ? (
-              <p className="py-6 text-center text-sm text-muted-foreground">
-                {t("outOfStock")}
-              </p>
-            ) : (
-              <PackageGrid
-                types={types}
-                selectedId={selected?.id ?? null}
-                onSelect={(ty) => setSelected(ty)}
-              />
-            )}
-            {buyError ? (
-              <p
-                role="alert"
-                className="mt-4 rounded-[10px] border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive"
-              >
-                {buyError}
-              </p>
-            ) : null}
+          {/* ซ้าย = สองการ์ดแยกโซนชัด (เลือกแพ็กเกจ / รายละเอียด) แทนการ์ดเดียวสูงเป็นพัน px —
+              ช่องไฟภายในยึดสเกลเดียว: หัวข้อ→เนื้อหา 4, กลุ่ม→กริด 3, ระหว่างการ์ด 4 */}
+          <div className="flex min-w-0 flex-col gap-4">
+            <section className="rounded-[14px] border border-border/60 bg-card p-5 shadow-(--shadow-tile) sm:p-6">
+              <h2 className="mb-4 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
+                {t("selectPackage")}
+              </h2>
+              {types.length === 0 ? (
+                <p className="py-6 text-center text-sm text-muted-foreground">
+                  {t("outOfStock")}
+                </p>
+              ) : (
+                <PackageGrid
+                  types={types}
+                  selectedId={selected?.id ?? null}
+                  onSelect={(ty) => setSelected(ty)}
+                />
+              )}
+              {buyError ? (
+                <p
+                  role="alert"
+                  className="mt-4 rounded-[10px] border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive"
+                >
+                  {buyError}
+                </p>
+              ) : null}
+            </section>
 
             {product.description ? (
-              <>
-                <h2 className="mt-6 mb-3 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
+              <section className="rounded-[14px] border border-border/60 bg-card p-5 shadow-(--shadow-tile) sm:p-6">
+                <h2 className="mb-4 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
                   {t("detailsTitle")}
                 </h2>
                 <Markdown>{product.description}</Markdown>
-              </>
+              </section>
             ) : null}
-          </section>
+          </div>
 
           {/* key = id ของแพ็กเกจที่เลือก — เปลี่ยนแพ็กเกจ = remount สรุปคำส่งซื้อ
               state ภายใน (ค่าที่กรอก/ยอด/verify) เริ่มใหม่ทั้งชุด ไม่ต้องมี effect รีเซ็ต */}
@@ -270,14 +275,16 @@ export function ProductPage({ route }: { route: ProductRoute }) {
         {/* Related / Recommended Products */}
         {relatedProducts.length > 0 ? (
           <section className="pt-8">
-            <h2 className="mb-4 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
-              {t("relatedTitle")}
-            </h2>
-            <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-5">
-              {relatedProducts.map((p) => (
-                <ShelfTile key={p.id} product={p} />
-              ))}
-            </div>
+            <Reveal>
+              <h2 className="mb-4 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
+                {t("relatedTitle")}
+              </h2>
+              <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-5">
+                {relatedProducts.map((p) => (
+                  <ShelfTile key={p.id} product={p} />
+                ))}
+              </div>
+            </Reveal>
           </section>
         ) : null}
       </div>

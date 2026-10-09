@@ -2,7 +2,7 @@ import { apiFetch, apiFetchWithMeta } from "./client";
 import type { Order, OrderStatus } from "./orders";
 import type { Product } from "./products";
 
-export interface OrderDetail {
+interface OrderDetail {
   id: string;
   orderNumber: string;
   status: OrderStatus;
@@ -37,9 +37,9 @@ export interface OrderDetail {
   } | null;
 }
 
-export type DeliveryState = "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED";
+type DeliveryState = "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED";
 
-export interface DeliveryItemDetail {
+interface DeliveryItemDetail {
   id: string;
   productId: string;
   productName: string;
@@ -53,7 +53,7 @@ export interface DeliveryItemDetail {
   resentCount: number;
 }
 
-export interface DeliveryStatus {
+interface DeliveryStatus {
   orderId: string;
   orderNumber: string;
   status: DeliveryState;
@@ -63,7 +63,7 @@ export interface DeliveryStatus {
   completedAt?: string;
 }
 
-export interface Invoice {
+interface Invoice {
   id: string;
   invoiceNumber: string;
   orderId: string;
@@ -83,7 +83,7 @@ export interface Invoice {
   }[];
 }
 
-export interface Coupon {
+interface Coupon {
   id: string;
   code: string;
   description?: string;
@@ -99,13 +99,13 @@ export interface Coupon {
   userCouponId?: string;
 }
 
-export interface FavoriteItem {
+interface FavoriteItem {
   id: string;
   product: Product;
   createdAt: string;
 }
 
-export interface CreditTransaction {
+interface CreditTransaction {
   id: string;
   amount: number;
   type: "TOPUP" | "PURCHASE" | "REFUND" | "BONUS";
@@ -140,10 +140,6 @@ export function getOrderDetail(id: string): Promise<OrderDetail> {
 
 export function cancelOrderById(id: string): Promise<Order> {
   return apiFetch<Order>(`/api/orders/${id}/cancel`, { method: "PUT" });
-}
-
-export function listDeliveries(params: ListParams = {}) {
-  return apiFetchWithMeta<DeliveryStatus[]>(`/api/deliveries${query(params)}`);
 }
 
 export function getDeliveryStatus(orderId: string): Promise<DeliveryStatus> {

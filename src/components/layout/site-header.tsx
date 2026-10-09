@@ -67,7 +67,8 @@ function HeaderInner() {
         className="h-8 w-auto"
         priority
       />
-      <span className="whitespace-nowrap text-sm font-extrabold tracking-wide">
+      {/* จอแคบกว่า 360px ซ่อน wordmark กันปุ่มขวาทับตัวหนังสือ (nowrap หดไม่ได้) */}
+      <span className="hidden whitespace-nowrap text-sm font-extrabold tracking-wide min-[360px]:inline">
         LNW<span className="text-primary">TERMGAME</span>
       </span>
     </Link>
@@ -173,7 +174,11 @@ function HeaderInner() {
           </div>
 
           <div className="ml-auto flex items-center gap-1.5">
-            <LanguageSwitcher className="hidden md:inline-flex" />
+            {/* ต้องห่อ wrapper — root ของ switcher มี inline-flex ของตัวเอง ยัด hidden ผ่าน
+                className ตรง ๆ แพ้ cascade (สอง display utility ชนกัน) ปุ่มเลยลอยทับโลโก้บนมือถือ */}
+            <div className="hidden md:inline-flex">
+              <LanguageSwitcher />
+            </div>
 
             {user ? (
               <Link

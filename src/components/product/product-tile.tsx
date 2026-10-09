@@ -18,7 +18,7 @@ export function ProductTile({ product }: { product: Product }) {
   return (
     <Link
       href={`${BASE_BY_TYPE[product.productType]}/${product.slug}`}
-      className="group block overflow-hidden rounded-[14px] border bg-card shadow-(--shadow-tile) transition-[transform,border-color] duration-150 hover:-translate-y-0.5 hover:border-primary"
+      className="group block overflow-hidden rounded-[14px] border bg-card shadow-(--shadow-tile) transition-[border-color] duration-150 ease-soft hover:border-primary"
     >
       <div className="relative aspect-square">
         <Image

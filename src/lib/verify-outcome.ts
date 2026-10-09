@@ -9,7 +9,7 @@ import type { VerifyPlayerResult } from "@/lib/api/products";
  * must stay non-blocking, otherwise a platform outage looks like a customer's
  * bad game ID.
  */
-export type VerifyOutcome =
+type VerifyOutcome =
   | { state: "ok"; accountName?: string }
   | { state: "unavailable"; messageKey: "verifyUnavailable" | "verifyUnsupported" }
   | {

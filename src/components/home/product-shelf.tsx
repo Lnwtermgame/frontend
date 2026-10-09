@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/ui/reveal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShelfTile } from "@/components/product/shelf-tile";
 import type { Product } from "@/lib/api/products";
@@ -37,32 +38,35 @@ export function ProductShelf({
         </Link>
       </div>
 
-      {isLoading ? (
-        <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="flex flex-col gap-1.5">
-              <Skeleton className="aspect-square rounded-xl" />
-              <Skeleton className="h-3.5 w-3/4 rounded-md" />
-              <Skeleton className="h-3 w-1/2 rounded-md" />
-            </div>
-          ))}
-        </div>
-      ) : isError ? (
-        <div className="rounded-[14px] border bg-card p-10 text-center">
-          <p className="font-semibold">{tc("error")}</p>
-          <Button variant="outline" className="mt-3" onClick={onRetry}>
-            {tc("retry")}
-          </Button>
-        </div>
-      ) : !products?.length ? (
-        <p className="py-12 text-center text-sm text-muted-foreground">{tc("emptyTitle")}</p>
-      ) : (
-        <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {products.map((p) => (
-            <ShelfTile key={p.id} product={p} />
-          ))}
-        </div>
-      )}
+      {/* entrance แบบ Whisper — ชั้นละครั้ง fade ยกเบา ๆ ไม่ไล่รายการ์ด */}
+      <Reveal>
+        {isLoading ? (
+          <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex flex-col gap-1.5">
+                <Skeleton className="aspect-square rounded-xl" />
+                <Skeleton className="h-3.5 w-3/4 rounded-md" />
+                <Skeleton className="h-3 w-1/2 rounded-md" />
+              </div>
+            ))}
+          </div>
+        ) : isError ? (
+          <div className="rounded-[14px] border bg-card p-10 text-center">
+            <p className="font-semibold">{tc("error")}</p>
+            <Button variant="outline" className="mt-3" onClick={onRetry}>
+              {tc("retry")}
+            </Button>
+          </div>
+        ) : !products?.length ? (
+          <p className="py-12 text-center text-sm text-muted-foreground">{tc("emptyTitle")}</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            {products.map((p) => (
+              <ShelfTile key={p.id} product={p} />
+            ))}
+          </div>
+        )}
+      </Reveal>
     </section>
   );
 }

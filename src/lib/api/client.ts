@@ -1,7 +1,7 @@
 export const GATEWAY_URL =
   process.env.NEXT_PUBLIC_GATEWAY_URL || "http://localhost:3000";
 
-export interface ApiEnvelope<T> {
+interface ApiEnvelope<T> {
   success: boolean;
   data?: T;
   message?: string;
@@ -12,7 +12,7 @@ export interface ApiEnvelope<T> {
   };
 }
 
-export type ApiOptions = {
+type ApiOptions = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
   /** auth endpoints: skip token bootstrap + refresh retry */
@@ -49,7 +49,7 @@ export function getAccessToken(): string | null {
 }
 
 // ── auth seam injected by the auth store (avoids circular imports) ──
-export interface AuthSyncHooks {
+interface AuthSyncHooks {
   hasStoredUser(): boolean;
   onSessionExpired(): void;
 }
@@ -62,7 +62,7 @@ export function configureAuthSync(hooks: AuthSyncHooks) {
 let csrfToken: string | null = null;
 let csrfFetch: Promise<string> | null = null;
 
-export async function ensureCsrfToken(): Promise<string> {
+async function ensureCsrfToken(): Promise<string> {
   if (csrfToken) return csrfToken;
   if (!csrfFetch) {
     csrfFetch = fetch(`${GATEWAY_URL}/api/csrf-token`, { credentials: "include" })
@@ -232,7 +232,7 @@ export async function apiFetch<T>(path: string, opts: ApiOptions = {}): Promise<
 
 // ── Envelope-meta variant (dashboard lists need pagination meta) ──
 
-export interface PageMeta {
+interface PageMeta {
   page: number;
   limit: number;
   total: number;

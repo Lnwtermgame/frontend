@@ -11,7 +11,7 @@ import { ShelfTile } from "@/components/product/shelf-tile";
 import { PlatformIcon } from "@/components/catalog/platform-icons";
 import type { GameType, Product } from "@/lib/api/products";
 
-export type CatalogMode = "games" | "card" | "mobile";
+type CatalogMode = "games" | "card" | "mobile";
 
 const TYPE_BY_MODE: Record<CatalogMode, Product["productType"]> = {
   games: "DIRECT_TOPUP",

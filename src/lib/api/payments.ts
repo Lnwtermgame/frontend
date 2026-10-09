@@ -14,7 +14,7 @@ export interface PaymentMethodOption {
   sampleTotal: number;
 }
 
-export interface PaymentIntentResponse {
+interface PaymentIntentResponse {
   qrCodeUrl?: string;
   paymentFormHtml?: string;
   redirectUrl?: string;

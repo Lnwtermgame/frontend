@@ -42,18 +42,22 @@ export function ShelfTile({ product }: { product: Product }) {
   return (
     <Link
       href={`${BASE_BY_TYPE[product.productType]}/${product.slug}`}
-      className="group flex min-w-0 flex-col gap-1.5"
+      className="group block min-w-0 overflow-hidden rounded-[14px] border border-border/60 bg-card shadow-(--shadow-tile) transition-[border-color] duration-150 ease-soft hover:border-primary/45"
     >
-      <div className="relative transition-transform duration-150 group-hover:-translate-y-1">
+      {/* แบบ C · ราคาบนปก — pill ราคาลอยมุมล่างซ้ายบนปก (ขาวโปร่ง → hover ส้มทึบ)
+          ให้ราคาถูกเห็นก่อนชื่อ ตัดสินใจจากราคาได้โดยไม่ต้องอ่านตัวหนังสือ */}
+      <div className="relative">
         <GameCover
           name={product.name}
           imageUrl={product.imageUrl}
           fallbackSub={tp(TYPE_LABEL_KEY[product.productType])}
           sizes="(max-width: 640px) 30vw, (max-width: 1024px) 25vw, 160px"
+          flush
+          compact
         />
         {showFlag && product.region && (
           <span
-            className="absolute right-1.5 top-1.5 inline-flex items-center justify-center overflow-hidden rounded-[4px] shadow-sm transition-transform group-hover:scale-105"
+            className="absolute top-1.5 right-1.5 z-10 inline-flex items-center justify-center overflow-hidden rounded-[4px] shadow-sm transition-transform group-hover:scale-105"
             title={product.region}
           >
             {/* กำหนดความกว้างอย่างเดียว ความสูงคิดตามสัดส่วนจริงของธง (5:4) ให้เอง
@@ -62,24 +66,26 @@ export function ShelfTile({ product }: { product: Product }) {
             <RegionFlag region={product.region} className="h-auto w-[18px]" />
           </span>
         )}
+        {cheapest && (
+          <span
+            className="num absolute bottom-2 left-2 z-10 inline-flex max-w-[calc(100%-16px)] items-baseline gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[13px] leading-none font-extrabold text-primary shadow-[0_2px_8px_rgb(16_24_40/0.18)] backdrop-blur-sm transition-colors duration-150 group-hover:bg-primary group-hover:text-primary-foreground"
+          >
+            <span className="truncate">{THB.format(cheapest.displayPrice)}</span>
+            {cheapest.originPrice &&
+              Math.round(cheapest.originPrice) > Math.round(cheapest.displayPrice) && (
+                <span className="num text-2xs font-semibold line-through opacity-70">
+                  {THB.format(cheapest.originPrice)}
+                </span>
+              )}
+            <span className="text-2xs font-semibold opacity-75">{t("andUp")}</span>
+          </span>
+        )}
       </div>
-      <div className="min-w-0">
+      <div className="min-w-0 p-2.5 pb-3">
         <p className="truncate text-xs font-semibold">{product.name}</p>
         <p className="truncate text-2xs text-muted-foreground">
           {product.gameType ?? product.category?.name ?? tp(TYPE_LABEL_KEY[product.productType])}
         </p>
-        {cheapest && (
-          <p className="num mt-0.5 text-xs font-bold text-primary">
-            {THB.format(cheapest.displayPrice)}
-            {cheapest.originPrice &&
-              Math.round(cheapest.originPrice) > Math.round(cheapest.displayPrice) && (
-                <span className="num ml-1.5 text-2xs font-semibold text-muted-foreground-strong line-through">
-                  {THB.format(cheapest.originPrice)}
-                </span>
-              )}
-            <span className="ml-1 text-xs font-semibold text-muted-foreground-strong">{t("andUp")}</span>
-          </p>
-        )}
       </div>
     </Link>
   );

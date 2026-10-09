@@ -2,7 +2,7 @@ import { apiFetch, apiFetchWithMeta } from "./client";
 
 // ============ FAQ Types ============
 
-export interface FaqCategory {
+interface FaqCategory {
   id: string;
   name: string;
   slug: string;
@@ -41,7 +41,7 @@ export type TicketCategory =
   | "REFUND_REQUEST"
   | "GENERAL_INQUIRY";
 
-export type TicketStatus =
+type TicketStatus =
   | "OPEN"
   | "IN_PROGRESS"
   | "WAITING_USER"
@@ -49,9 +49,9 @@ export type TicketStatus =
   | "RESOLVED"
   | "CLOSED";
 
-export type TicketPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+type TicketPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 
-export interface TicketMessage {
+interface TicketMessage {
   id: string;
   ticketId: string;
   userId?: string | null;
@@ -81,7 +81,7 @@ export interface Ticket {
   messages?: TicketMessage[];
 }
 
-export interface CreateTicketInput {
+interface CreateTicketInput {
   category: TicketCategory;
   subject: string;
   description: string;
@@ -90,7 +90,7 @@ export interface CreateTicketInput {
 
 // ============ CMS & News Types ============
 
-export interface CmsPage {
+interface CmsPage {
   id: string;
   slug: string;
   title: string;
@@ -100,7 +100,7 @@ export interface CmsPage {
   updatedAt: string;
 }
 
-export interface NewsArticle {
+interface NewsArticle {
   id: string;
   slug: string;
   title: string;
@@ -121,10 +121,6 @@ export function getFaqCategories(): Promise<FaqCategory[]> {
   return apiFetch("/api/support/faq/categories");
 }
 
-export function getFaqCategoryBySlug(slug: string): Promise<FaqCategory> {
-  return apiFetch(`/api/support/faq/categories/${encodeURIComponent(slug)}`);
-}
-
 export function getFaqArticles(params: { categoryId?: string; page?: number; limit?: number } = {}) {
   const search = new URLSearchParams();
   if (params.categoryId) search.append("categoryId", params.categoryId);
@@ -143,10 +139,6 @@ export function markFaqHelpful(articleId: string, isHelpful: boolean): Promise<{
     method: "POST",
     body: { isHelpful },
   });
-}
-
-export function searchFaq(q: string): Promise<FaqArticle[]> {
-  return apiFetch(`/api/support/faq/search?q=${encodeURIComponent(q)}`);
 }
 
 // Tickets (Auth-gated)

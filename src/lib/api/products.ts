@@ -38,6 +38,8 @@ export interface ProductTypePublic {
   maxAmount: number;
   isActive: boolean;
   discountRate?: number;
+  /** รูปค่าเงินประจำแพ็กเกจ (เช่น รูปเพชร ML) — null = ไม่แสดงรูป (ไม่มี placeholder) */
+  imageUrl?: string | null;
   fields?: SeagmField[];
 }
 

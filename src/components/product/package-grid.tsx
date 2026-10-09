@@ -1,13 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useMemo } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
+import { assetUrl } from "@/lib/asset-url";
 import { formatTHB } from "@/lib/pricing";
 import type { ProductTypePublic } from "@/lib/api/products";
-
-const FOLD_COUNT = 12;
 
 /**
  * แยกกลุ่มนิยามแบบ SEAGM: "เติมเงินโทรศัพท์" (credits) / "ชุดข้อมูล" (data/internet)
@@ -27,6 +26,14 @@ function DenomCard({
   onSelect: (t: ProductTypePublic) => void;
 }) {
   const t = useTranslations("mobileRecharge");
+  // ราคาเดิมโชว์ขีดฆ่าใต้ราคาขาย เมื่อต่างกันจริง (ปัดเศษก่อนเทียบกัน noise ทศนิยม)
+  const strike =
+    type.originPrice &&
+    Math.round(type.originPrice) > Math.round(type.displayPrice);
+
+  // รูปค่าเงินประจำแพ็กเกจ — ไม่มีรูป = ไม่มี element รูปเลย (ไม่ใช้ placeholder)
+  const img = type.imageUrl ?? null;
+
   return (
     <button
       type="button"
@@ -35,7 +42,7 @@ function DenomCard({
       disabled={!type.hasStock}
       aria-disabled={!type.hasStock}
       onClick={() => onSelect(type)}
-      className={`rounded-[10px] border p-3 text-left transition-[border-color,background-color] duration-150 ease-soft disabled:cursor-not-allowed ${
+      className={`flex min-w-0 items-center gap-3 rounded-[10px] border p-2.5 pr-3.5 text-left transition-[border-color,background-color] duration-150 ease-soft disabled:cursor-not-allowed ${
         !type.hasStock
           ? "border-dashed border-border/70 opacity-50"
           : selected
@@ -43,28 +50,44 @@ function DenomCard({
             : "border-border hover:border-primary/40 hover:bg-primary/5"
       }`}
     >
-      {/* Thai ต้อง leading สูงกว่า 1.2 — สระ/วรรณยุกต์บน-ล่างโดนตัดถ้าแน่นเกิน */}
-      <span className="line-clamp-2 min-h-[2.9em] text-xs leading-[1.45em] font-semibold">
+      {img && (
+        <span className="relative size-12 shrink-0 overflow-hidden rounded-lg border border-border/60 bg-card">
+          <Image
+            src={assetUrl(img)}
+            alt=""
+            fill
+            sizes="48px"
+            className="object-cover"
+          />
+        </span>
+      )}
+      <span className="min-w-0 flex-1 text-[13px] leading-snug font-semibold line-clamp-2">
         {type.name}
       </span>
-      {type.hasStock ? (
-        <span className="num mt-2 block text-sm font-bold text-primary">
-          {formatTHB(type.displayPrice)}
-        </span>
-      ) : (
-        // หมดstock = บอกเหตุชัดแทนแค่หรี่การ์ด (กดไม่ได้ทำไมราคายังอยู่) —
-        // ป้ายเดียวกับ operator-list ให้อ่านเป็นระบบเดียวกัน แคบก็ตัดด้วย ellipsis
-        <Badge variant="secondary" className="mt-2 max-w-full truncate">
+      {!type.hasStock ? (
+        // หมดstock = บอกเหตุชัดแทนราคา (กดไม่ได้ทำไมราคายังอยู่) — ป้ายเดียวกับ operator-list
+        <Badge variant="secondary" className="max-w-[9rem] shrink-0 truncate">
           {t("temporarilyUnavailable")}
         </Badge>
+      ) : (
+        <span className="flex shrink-0 flex-col items-end">
+          <span className="num text-sm font-bold text-primary">
+            {formatTHB(type.displayPrice)}
+          </span>
+          {strike && type.originPrice !== undefined && (
+            <span className="num text-2xs font-semibold text-muted-foreground line-through">
+              {formatTHB(type.originPrice)}
+            </span>
+          )}
+        </span>
       )}
     </button>
   );
 }
 
 /**
- * ขั้น 4 — เลือกนิยาม (SEAGM-style)
- * Grid 2 คอลัมน์ แบ่งกลุ่ม credits/data แต่ละกลุ่มพับได้ที่ 12 การ์ดแรก
+ * เลือกนิยาม (SEAGM-style) — แถวแนวนอน 2 การ์ดต่อแถว แสดงครบทุกแพ็กเกจ ไม่มีการย่อ
+ * รูปค่าเงินแสดงเฉพาะแพ็กเกจที่แอดมินใส่รูปไว้เท่านั้น
  */
 export function PackageGrid({
   types,
@@ -76,8 +99,6 @@ export function PackageGrid({
   onSelect: (t: ProductTypePublic) => void;
 }) {
   const t = useTranslations("mobileRecharge");
-  const [creditsOpen, setCreditsOpen] = useState(false);
-  const [dataOpen, setDataOpen] = useState(false);
 
   const { credits, data } = useMemo(() => {
     const credits: ProductTypePublic[] = [];
@@ -89,15 +110,11 @@ export function PackageGrid({
   const group = (
     items: ProductTypePublic[],
     label: string,
-    open: boolean,
-    setOpen: (v: boolean) => void,
     // หัวกลุ่มโผล่เฉพาะเมื่อมีสองกลุ่มจริง (credits + data) — กลุ่มเดียวหัวเป็น noise
     // และป้ายจาก namespace mobileRecharge ("เติมเงินโทรศัพท์") อ่านผิดบริบทบนหน้าเกม
     showHeader: boolean,
   ) => {
     if (!items.length) return null;
-    const visible = open ? items : items.slice(0, FOLD_COUNT);
-    const foldable = items.length > FOLD_COUNT;
     return (
       <section>
         {showHeader ? (
@@ -110,11 +127,11 @@ export function PackageGrid({
           </h3>
         ) : null}
         <div
-          className={showHeader ? "mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-4" : "grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-4"}
+          className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2"
           role="radiogroup"
           aria-label={showHeader ? label : undefined}
         >
-          {visible.map((ty) => (
+          {items.map((ty) => (
             <DenomCard
               key={ty.id}
               type={ty}
@@ -123,20 +140,6 @@ export function PackageGrid({
             />
           ))}
         </div>
-        {foldable ? (
-          <button
-            type="button"
-            onClick={() => setOpen(!open)}
-            aria-expanded={open}
-            className="mt-3 flex h-10 w-full items-center justify-center gap-1.5 rounded-[10px] border border-transparent text-xs font-semibold text-primary transition-colors hover:border-border hover:bg-primary/10"
-          >
-            {open ? t("showLess") : t("showMore", { count: items.length })}
-            <ChevronDown
-              aria-hidden
-              className={`size-3.5 transition-transform ${open ? "rotate-180" : ""}`}
-            />
-          </button>
-        ) : null}
       </section>
     );
   };
@@ -151,8 +154,8 @@ export function PackageGrid({
 
   return (
     <div className="flex flex-col gap-6">
-      {group(credits, t("groupCredits"), creditsOpen, setCreditsOpen, data.length > 0)}
-      {group(data, t("groupData"), dataOpen, setDataOpen, credits.length > 0)}
+      {group(credits, t("groupCredits"), data.length > 0)}
+      {group(data, t("groupData"), credits.length > 0)}
     </div>
   );
 }

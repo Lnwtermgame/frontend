@@ -44,7 +44,7 @@ export function OAuthSection({ dividerLabel }: { dividerLabel: string }) {
             key={provider.name}
             type="button"
             onClick={() => signIn(provider.name, { callbackUrl: `/${locale}` })}
-            className="flex h-11 w-full items-center justify-center gap-2.5 rounded-[10px] border border-border bg-secondary text-sm font-semibold transition-colors hover:border-muted-foreground/40 hover:bg-accent"
+            className="flex h-11 w-full items-center justify-center gap-2.5 rounded-[8px] border border-border bg-secondary text-sm font-semibold transition-colors hover:border-muted-foreground/40 hover:bg-accent"
           >
             {ICONS[provider.name] ?? null}
             {provider.displayName}

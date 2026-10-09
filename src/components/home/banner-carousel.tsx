@@ -81,7 +81,7 @@ export function BannerCarousel() {
               <p className="mt-2 text-sm text-white/85">{s.desc}</p>
               <Link
                 href={s.href}
-                className="mt-4 inline-flex h-11 items-center gap-2 rounded-[10px] bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 md:h-10"
+                className="mt-4 inline-flex h-11 items-center gap-2 rounded-[8px] bg-primary px-5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 md:h-10"
                 tabIndex={i === index ? 0 : -1}
               >
                 {s.cta}

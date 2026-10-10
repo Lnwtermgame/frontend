@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -184,7 +184,8 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
         {/* sidebar â€” sticky à¸šà¸™à¹€à¸”à¸ªà¸à¹Œà¸—à¹‡à¸­à¸›, à¹à¸–à¸šà¹€à¸¥à¸·à¹ˆà¸­à¸™à¹à¸™à¸§à¸™à¸­à¸™à¸šà¸™à¸¡à¸·à¸­à¸–à¸·à¸­ */}
         <aside className="min-w-0 self-start lg:sticky lg:top-[76px]">
           <div className="flex gap-6 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:block lg:overflow-visible lg:pb-0">
-            <div className="mb-5 min-w-[180px] flex-none lg:min-w-0">
+            {/* flex-col gap-1 — ปุ่มแนบกันแล้วพื้น active/hover ชนขอบมุมโค้งกันเป็นก้อนเดียว */}
+            <div className="mb-5 flex min-w-[180px] flex-none flex-col gap-1 lg:min-w-0">
               <h2 className="mb-2 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
                 {t("sidebarPlatform")}
               </h2>
@@ -222,7 +223,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
               ))}
             </div>
 
-            <div className="mb-5 min-w-[180px] flex-none lg:min-w-0">
+            <div className="mb-5 flex min-w-[180px] flex-none flex-col gap-1 lg:min-w-0">
               <h2 className="mb-2 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
                 {t("sidebarSort")}
               </h2>
@@ -230,7 +231,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
               {sortItem("newest", t("sortNewest"))}
             </div>
 
-            <div className="min-w-[180px] flex-none lg:min-w-0">
+            <div className="flex min-w-[180px] flex-none flex-col gap-1 lg:min-w-0">
               <h2 className="mb-2 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
                 {t("sidebarPrice")}
               </h2>
@@ -273,7 +274,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
 
         {/* à¹€à¸™à¸·à¹‰à¸­à¸«à¸² */}
         <div className="min-w-0">
-          <h1 className="text-[22px] font-extrabold tracking-tight">{t(copy.titleKey)}</h1>
+          <h1 className="text-[22px] font-bold tracking-tight">{t(copy.titleKey)}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{t(copy.subKey)}</p>
 
           <div className="mt-4 flex flex-wrap items-center gap-3">

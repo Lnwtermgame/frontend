@@ -1,9 +1,10 @@
 @import "tailwindcss";
-@import "@fontsource/noto-sans-thai/400.css";
-@import "@fontsource/noto-sans-thai/500.css";
-@import "@fontsource/noto-sans-thai/600.css";
-@import "@fontsource/noto-sans-thai/700.css";
-@import "@fontsource/noto-sans-thai/800.css";
+/* Anuphan — ชุดนี้มีน้ำหนักสูงสุด 700 (ไม่มี 800/900): font-extrabold/black จะถูก
+   browser จับคู่ลง 700 เท่ากับ font-bold เงียบ ๆ → ใช้ font-bold เป็นน้ำหนักหัวเรื่อง/ราคาสูงสุดของระบบ */
+@import "@fontsource/anuphan/400.css";
+@import "@fontsource/anuphan/500.css";
+@import "@fontsource/anuphan/600.css";
+@import "@fontsource/anuphan/700.css";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -11,7 +12,7 @@
 
 @theme inline {
     --font-heading: var(--font-sans);
-    --font-sans: "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif;
+    --font-sans: "Anuphan", ui-sans-serif, system-ui, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
     --color-ring: var(--ring);
     --color-input: var(--input);
@@ -159,7 +160,21 @@
     /* type stops สำหรับขนาดที่ Tailwind ไม่มี — ใช้แทน text-[Npx] กระจายใน components
        (11px = 2xs · ค่าอื่น map กลับเข้า scale เดิม: 12/12.5→xs, 13/13.5→sm เมื่อ sweep) */
     --text-2xs: 0.6875rem;
-    --text-2xs--line-height: 1.45;
+    --text-2xs--line-height: 1.5;
+
+    /* line-height ปรับตาม metric ของ Anuphan (วัดจากไฟล์ฟอนต์จริง):
+       content area = 1.31em (เทียบ Noto Sans Thai 1.24em · IBM Plex Sans Thai 1.65em)
+       วรรณยุกต์ซ้อนสระบน (เช่น "ที่" "นั้น") พ้นขอบบนเล็กน้อย และสระล่าง (ุ ู) ยื่นใต้ฐาน
+       → ข้อความที่ถูกตัดด้วย overflow (truncate / line-clamp) ต้องมี line-height ≥ 1.5
+         (1.5 / 1.31 ≈ 14% headroom — ค่าที่หน้าเว็บใช้อยู่ตอนทดลองฟอนต์) */
+    --text-xs--line-height: 1.5;
+    --text-sm--line-height: 1.5;
+    --text-2xl--line-height: 1.375;
+    --text-3xl--line-height: 1.3;
+
+    /* tracking-tight ของ Tailwind (-0.025em) บีบอักษรไทยจนสระ/วรรณยุกต์เบียดกันในหัวเรื่อง
+       ลดเหลือ -0.01em — ยังกระชับสำหรับตัวละติน/ตัวเลขแต่อักษรไทยไม่ชิดกันเกิน */
+    --tracking-tight: -0.01em;
 
     /* Motion spec "Whisper" (mockup gate 2026-10-09 · ผู้ใช้เลือกแบบ A):
        150ms · ease-out นุ่ม · entrance = fade + ยก 4px ไม่ไล่ stagger · hover เปลี่ยนสี/ขอบเท่านั้น

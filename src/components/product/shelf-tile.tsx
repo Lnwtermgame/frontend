@@ -68,16 +68,16 @@ export function ShelfTile({ product }: { product: Product }) {
         )}
         {cheapest && (
           <span
-            className="num absolute bottom-2 left-2 z-10 inline-flex max-w-[calc(100%-16px)] items-baseline gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[13px] leading-none font-extrabold text-primary shadow-[0_2px_8px_rgb(16_24_40/0.18)] backdrop-blur-sm transition-colors duration-150 group-hover:bg-primary group-hover:text-primary-foreground"
+            className="num absolute bottom-1.5 left-1.5 z-10 inline-flex max-w-[calc(100%-12px)] items-baseline gap-0.5 rounded-full bg-white/90 px-2 py-[3px] text-2xs leading-none font-bold text-primary shadow-[0_2px_8px_rgb(16_24_40/0.18)] backdrop-blur-sm transition-colors duration-150 group-hover:bg-primary group-hover:text-primary-foreground"
           >
             <span className="truncate">{THB.format(cheapest.displayPrice)}</span>
             {cheapest.originPrice &&
               Math.round(cheapest.originPrice) > Math.round(cheapest.displayPrice) && (
-                <span className="num text-2xs font-semibold line-through opacity-70">
+                <span className="num text-[10px] font-semibold line-through opacity-70">
                   {THB.format(cheapest.originPrice)}
                 </span>
               )}
-            <span className="text-2xs font-semibold opacity-75">{t("andUp")}</span>
+            <span className="text-[10px] font-semibold opacity-75">{t("andUp")}</span>
           </span>
         )}
       </div>

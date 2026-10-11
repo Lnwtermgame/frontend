@@ -40,7 +40,7 @@ export default function DashboardCreditsPage() {
             ) : balance.isError ? (
               <p className="mt-2 text-sm font-semibold text-destructive">{t("error")}</p>
             ) : (
-              <p className="num mt-2 text-3xl font-extrabold leading-tight text-primary">
+              <p className="num mt-2 text-3xl font-bold leading-tight text-primary">
                 {formatTHB(balance.data?.balance ?? 0)}
               </p>
             )}

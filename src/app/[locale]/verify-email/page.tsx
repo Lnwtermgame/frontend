@@ -79,7 +79,7 @@ function VerifyEmailInner() {
     <AuthShell>
       <div className="w-full space-y-6 text-center">
         <div>
-          <h1 className="text-xl font-extrabold tracking-tight">{t("verifyEmailTitle")}</h1>
+          <h1 className="text-xl font-bold tracking-tight">{t("verifyEmailTitle")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {isNewRegistration ? t("verifyEmailDescNew") : t("verifyEmailDescCheck")}
           </p>

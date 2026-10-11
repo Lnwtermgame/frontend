@@ -113,7 +113,7 @@ export function RechargeOrderSummary({
           </div>
           <div className="mt-2 flex items-baseline justify-between gap-3">
             <span className="text-sm font-medium">{tp("payableTotal")}</span>
-            <span className="num text-2xl leading-none font-extrabold text-primary">
+            <span className="num text-2xl leading-none font-bold text-primary">
               {formatTHB(payable)}
             </span>
           </div>
@@ -121,7 +121,7 @@ export function RechargeOrderSummary({
       ) : (
         <div className="flex items-baseline justify-between gap-3">
           <span className="text-sm text-muted-foreground">{t("total")}</span>
-          <span className="num text-2xl leading-none font-extrabold text-primary">
+          <span className="num text-2xl leading-none font-bold text-primary">
             {formatTHB(total)}
           </span>
         </div>
@@ -187,10 +187,10 @@ export function RechargeOrderSummary({
         <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
           <div className="mx-auto flex w-full max-w-6xl items-center gap-3 px-4 py-2.5">
             <div className="min-w-0 flex-1">
-              <p className="text-2xs leading-tight text-muted-foreground">
+              <p className="text-2xs text-muted-foreground">
                 {fee > 0 ? tp("payableTotal") : t("total")}
               </p>
-              <p className="num text-lg leading-tight font-extrabold text-primary">
+              <p className="num text-lg leading-tight font-bold text-primary">
                 {formatTHB(payable)}
               </p>
             </div>

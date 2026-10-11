@@ -70,7 +70,7 @@ export default function RegisterPage() {
 
   return (
     <AuthShell>
-      <h1 className="text-xl font-extrabold tracking-tight">{t("register")}</h1>
+      <h1 className="text-xl font-bold tracking-tight">{t("register")}</h1>
       <p className="mt-1 mb-5 text-sm text-muted-foreground">{t("registerSub")}</p>
 
       <OAuthSection dividerLabel={t("orWithEmail")} />
@@ -140,7 +140,7 @@ export default function RegisterPage() {
             />
             <Label
               htmlFor="terms"
-              className="cursor-pointer text-sm font-normal leading-snug text-muted-foreground"
+              className="cursor-pointer text-sm font-normal leading-normal text-muted-foreground"
             >
               {t("termsAgreePrefix")}{" "}
               <Link href="/terms" className="font-semibold text-primary hover:underline">

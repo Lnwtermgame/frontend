@@ -5,7 +5,7 @@ import { Link } from "@/i18n/routing";
 
 const COL_LABEL = "text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase";
 // py ใหญ่กว่าตัวอักษร — ยืดแถวแตะบนมือถือให้ถึง 44px (WCAG 2.5.8) โดยไม่ต้องขยับ layout
-const LINK = "-my-2 flex min-h-11 items-center py-2.5 text-sm text-muted-foreground transition-colors hover:text-primary";
+const LINK = "-my-2 flex min-h-11 items-center py-2.5 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary";
 
 /* ช่องทางชำระเงินเป็น text badge ล้วน — ไม่ใช้ไอคอนเลียนแบบโลโก้แบรนด์จริง */
 const PAYMENT_METHODS = ["PromptPay", "TrueMoney", "Visa", "Mastercard"];
@@ -27,11 +27,11 @@ export function SiteFooter() {
                 height={910}
                 className="h-8 w-auto"
               />
-              <span className="text-sm font-extrabold tracking-wide whitespace-nowrap">
+              <span className="text-sm font-bold tracking-wide whitespace-nowrap">
                 LNW<span className="text-primary">TERMGAME</span>
               </span>
             </div>
-            <p className="mt-3 max-w-[30ch] text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-3 max-w-[30ch] text-sm leading-relaxed font-medium text-muted-foreground">
               {t("tagline")}
             </p>
             <div className="mt-4 flex flex-col gap-2.5">
@@ -86,7 +86,7 @@ export function SiteFooter() {
               </span>
             ))}
           </div>
-          <p className="num text-xs text-muted-foreground-strong">
+          <p className="num text-xs font-medium text-muted-foreground-strong">
             © {year} LNWTERMGAME — {t("rights")}
           </p>
         </div>

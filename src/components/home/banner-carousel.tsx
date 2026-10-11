@@ -75,7 +75,7 @@ export function BannerCarousel() {
               <span className="inline-flex items-center rounded-full border border-white/20 bg-black/25 px-3 py-1 text-2xs font-bold tracking-wide text-white">
                 {t("eyebrow")}
               </span>
-              <h2 className="mt-3 text-2xl leading-[1.16] font-extrabold tracking-tight text-white md:text-3xl">
+              <h2 className="mt-3 text-2xl leading-snug font-bold tracking-tight text-white md:text-3xl">
                 {s.title} <span className="text-[#ffd9a3]">{s.hi}</span>
               </h2>
               <p className="mt-2 text-sm text-white/85">{s.desc}</p>

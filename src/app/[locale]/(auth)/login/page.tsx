@@ -15,7 +15,7 @@ function LoginContent() {
 
   return (
     <AuthShell>
-      <h1 className="text-xl font-extrabold tracking-tight">{t("login")}</h1>
+      <h1 className="text-xl font-bold tracking-tight">{t("login")}</h1>
       <p className="mt-1 mb-5 text-sm text-muted-foreground">{t("welcomeBack")}</p>
 
       {sessionExpired && (

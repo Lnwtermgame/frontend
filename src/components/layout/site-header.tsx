@@ -68,7 +68,7 @@ function HeaderInner() {
         priority
       />
       {/* จอแคบกว่า 360px ซ่อน wordmark กันปุ่มขวาทับตัวหนังสือ (nowrap หดไม่ได้) */}
-      <span className="hidden whitespace-nowrap text-sm font-extrabold tracking-wide min-[360px]:inline">
+      <span className="hidden whitespace-nowrap text-sm font-bold tracking-wide min-[360px]:inline">
         LNW<span className="text-primary">TERMGAME</span>
       </span>
     </Link>
@@ -160,7 +160,7 @@ function HeaderInner() {
                 )}
                 <div className="my-2 h-px bg-border/60" />
                 <div className="px-1 pb-1">
-                  <LanguageSwitcher className="w-full justify-center" />
+                  <LanguageSwitcher variant="wide" className="w-full" />
                 </div>
               </nav>
             </SheetContent>

@@ -29,7 +29,7 @@ export function ProductShelf({
   return (
     <section className="mx-auto w-full max-w-6xl px-4 pt-8">
       <div className="mb-4 flex items-baseline gap-3">
-        <h2 className="text-xl font-extrabold tracking-tight">{title}</h2>
+        <h2 className="text-xl font-bold tracking-tight">{title}</h2>
         <Link
           href={moreHref}
           className="ml-auto -my-2 flex h-11 items-center text-sm font-semibold whitespace-nowrap text-muted-foreground transition-colors hover:text-primary"

@@ -203,7 +203,7 @@ export function MobileRechargePage() {
   if (availableCountries.length === 0) {
     return (
       <div className="mx-auto w-full max-w-6xl px-4 py-8">
-        <h1 className="text-2xl font-extrabold tracking-tight">{t("heroTitle")}</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t("heroTitle")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{t("heroSubtitle")}</p>
         <div className="mt-10 flex flex-col items-center gap-3 rounded-[14px] border border-border/60 bg-card px-6 py-16 text-center">
           <PhoneOff aria-hidden className="size-10 text-muted-foreground" />
@@ -236,7 +236,7 @@ export function MobileRechargePage() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8">
-      <h1 className="text-2xl font-extrabold tracking-tight">{t("heroTitle")}</h1>
+      <h1 className="text-2xl font-bold tracking-tight">{t("heroTitle")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{t("heroSubtitle")}</p>
 
       {/* minmax(0,1fr) บน mobile track — grid auto track มีพื้น min-content เท่าการ์ดสรุป

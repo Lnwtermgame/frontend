@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/auth/password-input";
 import { FieldError, FormAlert, localizeAuthError } from "@/components/auth/form-feedback";
+import { resolveSafeRedirect } from "@/lib/auth-redirect";
 
 // หน้า login ไม่บังคับความยาวรหัสผ่าน (กฎ 8 ตัวใช้ตอนสมัคร/ตั้งใหม่เท่านั้น)
 // ให้ backend ตัดสินว่าถูกต้องหรือไม่ — กันข้อความ 2 ชุดขัดกันบนหน้าจอ
@@ -24,12 +25,6 @@ const buildLoginSchema = (t: (key: string) => string) =>
   });
 
 type LoginValues = { email: string; password: string };
-
-// โลแคลที่รองรับ — ประกาศซ้ำจาก i18n/routing.ts (ไฟล์นั้นไม่ได้ export ลิสต์โลแคล)
-// เมื่อเพิ่ม "en" ใน routing.ts ให้เติมที่นี่ด้วย แล้วการถอด prefix จะยังทำงานถูกต้อง
-const SUPPORTED_LOCALES = ["th"] as const;
-// ถอด prefix โลแคลนำหน้า (/th/... → /...) เพราะ i18n router จะใส่กลับให้เอง
-const LOCALE_PREFIX_RE = new RegExp(`^/(?:${SUPPORTED_LOCALES.join("|")})(?=/|$)`);
 
 export function LoginForm() {
   const t = useTranslations("auth");
@@ -56,14 +51,8 @@ export function LoginForm() {
     setFormError(null);
     const result = await loginWithPassword(values.email, values.password);
     if (result.ok) {
-      // Safe redirect: must start with / and not //
-      if (redirectPath && redirectPath.startsWith("/") && !redirectPath.startsWith("//")) {
-        // Strip locale prefix if present (/th/...) because i18n router handles it
-        const target = redirectPath.replace(LOCALE_PREFIX_RE, "") || "/";
-        router.replace(target as never);
-      } else {
-        router.replace("/");
-      }
+      // Safe redirect: must start with / and not // (ถอด locale prefix ให้ด้วย)
+      router.replace(resolveSafeRedirect(redirectPath) as never);
     } else {
       setFormError(localizeAuthError(result.message, t("loginFailed"), t));
     }

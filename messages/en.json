@@ -122,7 +122,8 @@
     "autoBadge": "Auto delivery 24/7",
     "menu": "Menu",
     "register": "Create account",
-    "language": "Language"
+    "language": "Language",
+    "switchTo": "Switch to {language}"
   },
   "footer": {
     "helpTitle": "Help",

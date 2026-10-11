@@ -79,7 +79,7 @@ export function GameCover({
         style={{ background: dna.c2 }}
       />
       {/* leading-snug — sub รับค่าไทยที่มีสระ/วรรณยุกต์ได้ (เช่น "บัตรเติมเงิน") ต้องไม่ตัดด้วย line-height 1 */}
-      <span className="absolute left-3 top-2.5 text-lg font-extrabold leading-snug" style={{ color: dna.ink }}>
+      <span className="absolute left-3 top-2.5 text-lg font-bold leading-snug" style={{ color: dna.ink }}>
         {dna.mono}
         <small className="mt-1.5 block text-2xs font-bold tracking-[0.14em] opacity-70">{dna.sub}</small>
       </span>

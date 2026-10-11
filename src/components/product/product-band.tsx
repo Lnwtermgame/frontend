@@ -112,7 +112,7 @@ export function ProductBand({
             />
           </div>
           <div className="min-w-0 flex-1">
-            <h1 className="text-xl font-extrabold tracking-tight sm:text-2xl">
+            <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
               {product.name}
             </h1>
             {/* ชิปบนพื้นสีเกม — แก้วขาวโปร่ง สีตัวหนังสือตาม bandInk ไม่ใช้ token เทาที่จมกับพื้นเข้ม */}

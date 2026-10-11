@@ -122,7 +122,8 @@
     "autoBadge": "ส่งอัตโนมัติ 24 ชม.",
     "menu": "เมนู",
     "register": "สมัครสมาชิก",
-    "language": "ภาษา"
+    "language": "ภาษา",
+    "switchTo": "สลับเป็น {language}"
   },
   "footer": {
     "helpTitle": "ช่วยเหลือ",

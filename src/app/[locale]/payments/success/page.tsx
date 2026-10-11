@@ -57,7 +57,7 @@ function SuccessInner() {
         </>
       ) : view === "ok" ? (
         <>
-          <h1 className="text-2xl font-extrabold text-status-success">{t("successTitle")}</h1>
+          <h1 className="text-2xl font-bold text-status-success">{t("successTitle")}</h1>
           <p className="mt-2 text-sm text-muted-foreground">{t("successDesc")}</p>
           <div className="mt-6 flex justify-center gap-2">
             <Button asChild>
@@ -70,7 +70,7 @@ function SuccessInner() {
         </>
       ) : (
         <>
-          <h1 className="text-2xl font-extrabold text-destructive">{t("failedTitle")}</h1>
+          <h1 className="text-2xl font-bold text-destructive">{t("failedTitle")}</h1>
           <p className="mt-2 text-sm text-muted-foreground">{t("failedDesc")}</p>
           {/* ตายทางเดิมมีแค่ปุ่มกลับหน้าแรก — ผู้ใช้ที่จ่ายแล้วติดตรงนี้ต้องไปไล่คำสั่งซื้อ
               หรือเปิดตั๋วกับซัพพอร์ตต่อได้ทันที */}

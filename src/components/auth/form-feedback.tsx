@@ -14,9 +14,9 @@ export function FieldError({ id, message }: { id: string; message?: string }) {
     <p
       id={id}
       role="alert"
-      className="flex items-start gap-1.5 text-xs leading-snug text-destructive animate-in fade-in slide-in-from-top-1 duration-150"
+      className="flex items-start gap-1.5 text-xs leading-normal text-destructive animate-in fade-in slide-in-from-top-1 duration-150"
     >
-      <AlertCircle className="mt-px size-3.5 shrink-0" aria-hidden />
+      <AlertCircle className="mt-0.5 size-3.5 shrink-0" aria-hidden />
       <span>{message}</span>
     </p>
   );
@@ -55,9 +55,9 @@ export function FormAlert({
   return (
     <div
       role={role}
-      className={`flex items-start gap-2.5 rounded-[10px] border px-3.5 py-3 text-sm leading-snug font-medium animate-in fade-in slide-in-from-top-1 duration-150 ${box} ${className}`}
+      className={`flex items-start gap-2.5 rounded-[10px] border px-3.5 py-3 text-sm leading-normal font-medium animate-in fade-in slide-in-from-top-1 duration-150 ${box} ${className}`}
     >
-      <Icon className="mt-px size-4 shrink-0" aria-hidden />
+      <Icon className="mt-0.5 size-4 shrink-0" aria-hidden />
       <div className="min-w-0 flex-1">{children}</div>
     </div>
   );

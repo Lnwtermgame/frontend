@@ -63,7 +63,7 @@ function ResetPasswordInner() {
     <AuthShell>
       <div className="w-full space-y-6">
         <div className="text-center">
-          <h1 className="text-xl font-extrabold tracking-tight">{t("resetPasswordTitle")}</h1>
+          <h1 className="text-xl font-bold tracking-tight">{t("resetPasswordTitle")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{t("resetPasswordDesc")}</p>
         </div>
 

@@ -63,7 +63,7 @@ function DenomCard({
           />
         </span>
       )}
-      <span className="min-w-0 flex-1 text-[13px] leading-snug font-semibold line-clamp-2">
+      <span className="min-w-0 flex-1 text-[13px] leading-normal font-semibold line-clamp-2">
         {type.name}
       </span>
       {!type.hasStock ? (

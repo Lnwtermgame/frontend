@@ -95,7 +95,7 @@ export function ConfirmOrderDialog({
             </div>
             <div className="flex items-baseline justify-between border-t border-border pt-2">
               <span className="text-sm font-medium">{t("payableTotal")}</span>
-              <span className="num text-lg font-extrabold text-primary">
+              <span className="num text-lg font-bold text-primary">
                 {formatTHB(payable)}
               </span>
             </div>

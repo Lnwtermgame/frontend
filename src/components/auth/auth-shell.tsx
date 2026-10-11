@@ -49,7 +49,7 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
             className="mb-5 h-11 w-auto lg:h-14"
             priority
           />
-          <h2 className="text-xl font-extrabold leading-snug lg:text-2xl">
+          <h2 className="text-xl font-bold leading-snug lg:text-2xl">
             {t("shellTitle1")}
             <br />
             <span className="text-primary">{t("shellTitle2")}</span>

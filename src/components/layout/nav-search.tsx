@@ -2,11 +2,12 @@
 
 import { useState, useRef, useEffect, useMemo, useId } from "react";
 import Image from "next/image";
-import { Search, X, Loader2, ArrowRight } from "lucide-react";
+import { Search, X, ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter, Link } from "@/i18n/routing";
 import { useFeatured, useProducts } from "@/lib/query/hooks";
 import { productImage } from "@/lib/product-image";
+import { SkeletonList, SearchResultSkeleton } from "@/components/skeletons";
 
 export function NavSearch({
   className = "",
@@ -33,10 +34,15 @@ export function NavSearch({
   const featured = useFeatured(6);
 
   // Live search products when typing
-  const searchResults = useProducts({
-    search: query.trim() || undefined,
-    limit: 6,
-  });
+  const searchResults = useProducts(
+    {
+      search: query.trim() || undefined,
+      limit: 6,
+    },
+    { keepPrevious: "typeahead" },
+  );
+  // พิมพ์ต่อ = ผลคำก่อนจางลงระหว่างรอผลใหม่ (ไม่กะพริบเป็น skeleton ทุกตัวอักษร)
+  const staleResults = Boolean(query.trim()) && searchResults.isPlaceholderData;
 
   const displayList = useMemo(() => {
     if (query.trim()) {
@@ -90,7 +96,7 @@ export function NavSearch({
 
   // ประกาศจำนวนผลให้ screen reader รู้ (แบบ polite)
   const announceText =
-    !query.trim() || searchResults.isLoading
+    !query.trim() || searchResults.isLoading || staleResults
       ? ""
       : displayList.length > 0
         ? t("searchResultsCount", { count: displayList.length })
@@ -190,11 +196,14 @@ export function NavSearch({
             {query.trim() ? t("searchResults") : th("popularTitle")}
           </div>
 
-          {query.trim() && searchResults.isLoading ? (
-            <div className="flex items-center justify-center py-6 text-xs text-muted-foreground">
-              <Loader2 className="size-4 animate-spin mr-2" />
-              {t("searching")}
-            </div>
+          {(query.trim() ? searchResults.isLoading : featured.isLoading) ? (
+            <SkeletonList
+              count={4}
+              label={query.trim() ? t("searching") : undefined}
+              className="p-1.5"
+            >
+              {(i) => <SearchResultSkeleton index={i} />}
+            </SkeletonList>
           ) : displayList.length === 0 ? (
             <p className="py-6 text-center text-xs text-muted-foreground">
               {t("noResultsHelp")}
@@ -204,7 +213,10 @@ export function NavSearch({
               role="listbox"
               id={listboxId}
               aria-label={query.trim() ? t("searchResults") : th("popularTitle")}
-              className="max-h-80 overflow-y-auto p-1.5"
+              aria-busy={staleResults || undefined}
+              className={`max-h-80 overflow-y-auto p-1.5 transition-opacity duration-150 ease-soft ${
+                staleResults ? "opacity-60" : ""
+              }`}
             >
               {displayList.map((product, index) => (
                 <Link

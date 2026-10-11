@@ -2,7 +2,8 @@
 
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Skeleton } from "@/components/ui/skeleton";
+import { InvoiceDetailSkeleton } from "@/components/skeletons";
+import { FADE_IN } from "@/components/ui/skeleton-region";
 import { Link } from "@/i18n/routing";
 import { useInvoice } from "@/lib/query/hooks";
 import { formatTHB } from "@/lib/pricing";
@@ -16,7 +17,7 @@ export default function DashboardInvoiceDetailPage() {
   const invoice = useInvoice(id);
 
   if (invoice.isLoading) {
-    return <Skeleton className="h-64 rounded-[14px]" />;
+    return <InvoiceDetailSkeleton />;
   }
 
   if (invoice.isError || !invoice.data) {
@@ -26,7 +27,7 @@ export default function DashboardInvoiceDetailPage() {
   const inv = invoice.data;
 
   return (
-    <div className="space-y-5">
+    <div className={`space-y-5 ${FADE_IN}`}>
       <div className="rounded-[14px] border bg-card p-4">
         <div className="flex flex-wrap items-center gap-3">
           <p className="num text-lg font-bold">{inv.invoiceNumber}</p>

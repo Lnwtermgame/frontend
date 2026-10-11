@@ -6,7 +6,8 @@ import { ArrowLeft, Eye } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Link } from "@/i18n/routing";
-import { Skeleton } from "@/components/ui/skeleton";
+import { NewsArticleSkeleton } from "@/components/skeletons";
+import { FADE_IN } from "@/components/ui/skeleton-region";
 import { Badge } from "@/components/ui/badge";
 import { useNewsArticle } from "@/lib/query/hooks";
 import { DashErrorState, formatDateTime } from "@/components/dashboard/shared";
@@ -20,12 +21,7 @@ export default function NewsArticleDetailPage() {
   const article = useNewsArticle(slug);
 
   if (article.isLoading) {
-    return (
-      <div className="mx-auto w-full max-w-4xl px-4 py-10 space-y-4">
-        <Skeleton className="h-8 w-3/4 rounded-[10px]" />
-        <Skeleton className="h-64 rounded-[14px]" />
-      </div>
-    );
+    return <NewsArticleSkeleton />;
   }
 
   if (article.isError || !article.data) {
@@ -44,7 +40,7 @@ export default function NewsArticleDetailPage() {
         {t("newsTitle")}
       </Link>
 
-      <article className="rounded-[14px] border bg-card p-6 sm:p-10 shadow-(--shadow-tile)">
+      <article className={`rounded-[14px] border bg-card p-6 sm:p-10 shadow-(--shadow-tile) ${FADE_IN}`}>
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="secondary">{item.category}</Badge>
           {item.isFeatured ? (

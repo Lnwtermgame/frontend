@@ -7,6 +7,8 @@ import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FadeIn } from "@/components/ui/skeleton-region";
+import { SkeletonList, FaqItemSkeleton } from "@/components/skeletons";
 import { useFaqCategories, useFaqArticles } from "@/lib/query/hooks";
 import { FaqAccordion } from "@/components/support/faq-accordion";
 import { DashEmptyState, DashErrorState } from "@/components/dashboard/shared";
@@ -61,7 +63,14 @@ function FaqInner() {
         </div>
       </div>
 
-      {categories.data?.length ? (
+      {categories.isLoading ? (
+        // จองแถวหมวด — กันรายการคำถามถูกดันลงตอนหมวดโหลดเสร็จ
+        <div className="mt-8 flex flex-wrap justify-center gap-2" aria-hidden>
+          {["w-24", "w-20", "w-28", "w-20"].map((w, i) => (
+            <Skeleton key={i} className={`h-11 rounded-md md:h-7 ${w}`} />
+          ))}
+        </div>
+      ) : categories.data?.length ? (
         <div className="mt-8 flex flex-wrap justify-center gap-2">
           <Button
             size="sm"
@@ -87,18 +96,47 @@ function FaqInner() {
 
       <div className="mt-8">
         {articles.isLoading ? (
-          <div className="space-y-3">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-14 rounded-[14px]" />
-            ))}
-          </div>
+          <SkeletonList count={5} className="space-y-3">
+            {(i) => <FaqItemSkeleton index={i} />}
+          </SkeletonList>
         ) : articles.isError ? (
           <DashErrorState onRetry={() => articles.refetch()} />
         ) : filtered.length === 0 ? (
           <DashEmptyState title={t("emptyFaq")} />
         ) : (
-          <FaqAccordion articles={filtered} />
+          // สลับหมวด = รายการเดิมจางลงระหว่างโหลด (keepPreviousData) แทนกลับเป็น skeleton
+          <FadeIn
+            className={`transition-opacity duration-150 ease-soft ${
+              articles.isPlaceholderData ? "pointer-events-none opacity-60" : ""
+            }`}
+          >
+            <FaqAccordion articles={filtered} />
+          </FadeIn>
         )}
+      </div>
+    </div>
+  );
+}
+
+/** Suspense fallback (useSearchParams) — หัวเรื่องจริง + ช่องค้นหา/หมวด/รายการเป็น skeleton (เดิมว่างทั้งหน้า) */
+function FaqFallback() {
+  const t = useTranslations("support");
+  return (
+    <div className="mx-auto w-full max-w-4xl px-4 py-10">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold sm:text-3xl">{t("faqTitle")}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{t("faqSubtitle")}</p>
+        <Skeleton className="mx-auto mt-6 h-9 max-w-lg rounded-md" />
+      </div>
+      <div className="mt-8 flex flex-wrap justify-center gap-2" aria-hidden>
+        {["w-24", "w-20", "w-28", "w-20"].map((w, i) => (
+          <Skeleton key={i} className={`h-11 rounded-md md:h-7 ${w}`} />
+        ))}
+      </div>
+      <div className="mt-8">
+        <SkeletonList count={5} className="space-y-3">
+          {(i) => <FaqItemSkeleton index={i} />}
+        </SkeletonList>
       </div>
     </div>
   );
@@ -106,7 +144,7 @@ function FaqInner() {
 
 export default function FaqPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<FaqFallback />}>
       <FaqInner />
     </Suspense>
   );

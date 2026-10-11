@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ShelfGridSkeleton } from "@/components/skeletons";
 import { ShelfTile } from "@/components/product/shelf-tile";
 import type { Product } from "@/lib/api/products";
 
@@ -38,19 +38,17 @@ export function ProductShelf({
         </Link>
       </div>
 
-      {/* entrance แบบ Whisper — ชั้นละครั้ง fade ยกเบา ๆ ไม่ไล่รายการ์ด */}
-      <Reveal>
-        {isLoading ? (
-          <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="flex flex-col gap-1.5">
-                <Skeleton className="aspect-square rounded-xl" />
-                <Skeleton className="h-3.5 w-3/4 rounded-md" />
-                <Skeleton className="h-3 w-1/2 rounded-md" />
-              </div>
-            ))}
-          </div>
-        ) : isError ? (
+      {/* skeleton อยู่นอก Reveal — Reveal เป็น opacity-0 จนกว่า hydrate + IntersectionObserver
+          ถ้าห่อไว้ placeholder จะไม่โผล่ตั้งแต่เฟรมแรก */}
+      {isLoading ? (
+        <ShelfGridSkeleton
+          count={6}
+          className="grid grid-cols-2 gap-x-3 gap-y-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6"
+        />
+      ) : (
+        /* entrance แบบ Whisper — ชั้นละครั้ง fade ยกเบา ๆ ไม่ไล่รายการ์ด */
+        <Reveal>
+        {isError ? (
           <div className="rounded-[14px] border bg-card p-10 text-center">
             <p className="font-semibold">{tc("error")}</p>
             <Button variant="outline" className="mt-3" onClick={onRetry}>
@@ -66,7 +64,8 @@ export function ProductShelf({
             ))}
           </div>
         )}
-      </Reveal>
+        </Reveal>
+      )}
     </section>
   );
 }

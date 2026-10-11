@@ -7,6 +7,7 @@ import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonRegion } from "@/components/ui/skeleton-region";
 import { useNotificationPreferences } from "@/lib/query/hooks";
 import { updateNotificationPreferences, type NotificationPreferences } from "@/lib/api/account";
 import { DashErrorState } from "@/components/dashboard/shared";
@@ -72,6 +73,31 @@ export default function NotificationPreferencesPage() {
     },
   ];
 
+  // หัวข้อ/คำอธิบายเป็นข้อความ static แสดงจริงตั้งแต่แรก — เฉพาะปุ่มเปิด/ปิด (ค่าจาก API) เป็น skeleton
+  const prefRows = ITEMS.map((item) => (
+    <div
+      key={item.key}
+      className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0"
+    >
+      <div>
+        <p className="text-sm font-semibold">{item.title}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
+      </div>
+      {prefs.isLoading ? (
+        <Skeleton className="h-7 w-12 shrink-0 rounded-[8px]" />
+      ) : (
+        <Button
+          type="button"
+          variant={form[item.key] ? "default" : "outline"}
+          size="sm"
+          onClick={() => handleToggle(item.key)}
+        >
+          {form[item.key] ? tc("on") : tc("off")}
+        </Button>
+      )}
+    </div>
+  ));
+
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
@@ -94,36 +120,12 @@ export default function NotificationPreferencesPage() {
       ) : null}
 
       <div className="rounded-[14px] border bg-card p-6 shadow-(--shadow-tile)">
-        {prefs.isLoading ? (
-          <div className="space-y-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-14 rounded-[10px]" />
-            ))}
-          </div>
-        ) : prefs.isError ? (
+        {prefs.isError ? (
           <DashErrorState onRetry={() => prefs.refetch()} />
+        ) : prefs.isLoading ? (
+          <SkeletonRegion className="space-y-4">{prefRows}</SkeletonRegion>
         ) : (
-          <div className="space-y-4">
-            {ITEMS.map((item) => (
-              <div
-                key={item.key}
-                className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0"
-              >
-                <div>
-                  <p className="text-sm font-semibold">{item.title}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
-                </div>
-                <Button
-                  type="button"
-                  variant={form[item.key] ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => handleToggle(item.key)}
-                >
-                  {form[item.key] ? tc("on") : tc("off")}
-                </Button>
-              </div>
-            ))}
-          </div>
+          <div className="space-y-4">{prefRows}</div>
         )}
 
         <div className="mt-6 border-t pt-4">

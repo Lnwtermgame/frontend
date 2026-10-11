@@ -3,7 +3,8 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useNews } from "@/lib/query/hooks";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonList, NewsCardSkeleton } from "@/components/skeletons";
+import { FadeIn } from "@/components/ui/skeleton-region";
 import { Badge } from "@/components/ui/badge";
 import { DashEmptyState, DashErrorState, formatDateTime } from "@/components/dashboard/shared";
 
@@ -21,17 +22,15 @@ export default function NewsListPage() {
 
       <div className="mt-10">
         {news.isLoading ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-48 rounded-[14px]" />
-            ))}
-          </div>
+          <SkeletonList count={6} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {(i) => <NewsCardSkeleton index={i} />}
+          </SkeletonList>
         ) : news.isError ? (
           <DashErrorState onRetry={() => news.refetch()} />
         ) : !news.data?.data.length ? (
           <DashEmptyState title={t("emptyNews")} />
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <FadeIn className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {news.data.data.map((item) => (
               <Link
                 key={item.id}
@@ -61,7 +60,7 @@ export default function NewsListPage() {
                 </div>
               </Link>
             ))}
-          </div>
+          </FadeIn>
         )}
       </div>
     </div>

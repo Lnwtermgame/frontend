@@ -6,6 +6,8 @@ import { Link } from "@/i18n/routing";
 import { useCreditBalance, useCreditTransactions } from "@/lib/query/hooks";
 import { formatTHB } from "@/lib/pricing";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FadeIn } from "@/components/ui/skeleton-region";
+import { SkeletonList, CreditRowSkeleton } from "@/components/skeletons";
 import { Pager, DashErrorState, DashEmptyState, DashPageHead, formatDateTime } from "@/components/dashboard/shared";
 import { cn } from "@/lib/utils";
 
@@ -36,7 +38,10 @@ export default function DashboardCreditsPage() {
               {t("creditBalance")}
             </p>
             {balance.isLoading ? (
-              <Skeleton className="mt-2 h-9 w-32" />
+              // สูงเท่า line-box ของตัวเลข text-3xl leading-tight (37.5px) — การ์ดไม่ยืดตอนยอดมา
+              <div className="mt-2 flex h-[37.5px] items-center" aria-hidden>
+                <Skeleton className="h-7 w-36 rounded-lg" />
+              </div>
             ) : balance.isError ? (
               <p className="mt-2 text-sm font-semibold text-destructive">{t("error")}</p>
             ) : (
@@ -79,17 +84,20 @@ export default function DashboardCreditsPage() {
         {/* รายการเข้า–ออก */}
         <section className="min-w-0" aria-label={t("credits")}>
           {tx.isLoading ? (
-            <div className="space-y-2.5">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-[62px] rounded-[14px]" />
-              ))}
-            </div>
+            <SkeletonList count={5} className="space-y-2.5">
+              {(i) => <CreditRowSkeleton index={i} />}
+            </SkeletonList>
           ) : tx.isError ? (
             <DashErrorState onRetry={() => tx.refetch()} />
           ) : !rows.length ? (
             <DashEmptyState title={t("emptyCredits")} description={t("emptyCreditsDesc")} />
           ) : (
-            <div className="space-y-2.5">
+            <FadeIn
+              className={cn(
+                "space-y-2.5 transition-opacity duration-150 ease-soft",
+                tx.isPlaceholderData && "pointer-events-none opacity-60",
+              )}
+            >
               {rows.map((item) => {
                 const positive =
                   item.type === "TOPUP" || item.type === "REFUND" || item.type === "BONUS";
@@ -136,7 +144,7 @@ export default function DashboardCreditsPage() {
                   </div>
                 );
               })}
-            </div>
+            </FadeIn>
           )}
 
           {!tx.isLoading && !tx.isError && tx.data?.meta ? (

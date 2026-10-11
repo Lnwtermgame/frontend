@@ -7,7 +7,8 @@ import { toast } from "sonner";
 import { useFavorites } from "@/lib/query/hooks";
 import { removeFavorite } from "@/lib/api/dashboard";
 import { ProductTile } from "@/components/product/product-tile";
-import { Skeleton } from "@/components/ui/skeleton";
+import { FadeIn } from "@/components/ui/skeleton-region";
+import { ProductTileSkeleton, SkeletonList } from "@/components/skeletons";
 import { Pager, DashErrorState, DashEmptyState, DashPageHead } from "@/components/dashboard/shared";
 
 export default function DashboardFavoritesPage() {
@@ -34,17 +35,20 @@ export default function DashboardFavoritesPage() {
 
       <div className="mt-3">
         {favorites.isLoading ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="aspect-square rounded-[14px]" />
-            ))}
-          </div>
+          <SkeletonList count={8} className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {() => <ProductTileSkeleton />}
+          </SkeletonList>
         ) : favorites.isError ? (
           <DashErrorState onRetry={() => favorites.refetch()} />
         ) : !favorites.data?.data.length ? (
           <DashEmptyState title={t("emptyFavorites")} description={t("emptyFavoritesDesc")} />
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          // เปลี่ยนหน้า = รายการเดิมจางลงระหว่างโหลด (keepPreviousData) ไม่กลับเป็น skeleton
+          <FadeIn
+            className={`grid grid-cols-2 gap-3 transition-opacity duration-150 ease-soft sm:grid-cols-3 lg:grid-cols-4 ${
+              favorites.isPlaceholderData ? "pointer-events-none opacity-60" : ""
+            }`}
+          >
             {favorites.data.data.map((fav) => (
               <div key={fav.id} className="group relative">
                 <ProductTile product={fav.product} />
@@ -59,7 +63,7 @@ export default function DashboardFavoritesPage() {
                 </button>
               </div>
             ))}
-          </div>
+          </FadeIn>
         )}
       </div>
 

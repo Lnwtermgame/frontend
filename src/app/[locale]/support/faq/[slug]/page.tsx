@@ -7,7 +7,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { FaqArticleSkeleton } from "@/components/skeletons";
+import { FADE_IN } from "@/components/ui/skeleton-region";
 import { useFaqArticleBySlug } from "@/lib/query/hooks";
 import { markFaqHelpful } from "@/lib/api/support";
 import { DashErrorState, formatDateTime } from "@/components/dashboard/shared";
@@ -22,12 +23,7 @@ export default function FaqArticlePage() {
   const [voted, setVoted] = useState(false);
 
   if (article.isLoading) {
-    return (
-      <div className="mx-auto w-full max-w-3xl px-4 py-10 space-y-4">
-        <Skeleton className="h-8 w-3/4 rounded-[10px]" />
-        <Skeleton className="h-48 rounded-[14px]" />
-      </div>
-    );
+    return <FaqArticleSkeleton />;
   }
 
   if (article.isError || !article.data) {
@@ -56,7 +52,7 @@ export default function FaqArticlePage() {
         {t("faqTitle")}
       </Link>
 
-      <article className="rounded-[14px] border bg-card p-6 shadow-(--shadow-tile)">
+      <article className={`rounded-[14px] border bg-card p-6 shadow-(--shadow-tile) ${FADE_IN}`}>
         <h1 className="text-xl font-bold sm:text-2xl">{art.title}</h1>
         <p className="num mt-2 text-xs text-muted-foreground">
           {formatDateTime(art.updatedAt, locale)}

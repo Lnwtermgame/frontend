@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FadeIn } from "@/components/ui/skeleton-region";
+import { ShelfGridSkeleton } from "@/components/skeletons";
 import { useProducts } from "@/lib/query/hooks";
 import { ShelfTile } from "@/components/product/shelf-tile";
 import { PlatformIcon } from "@/components/catalog/platform-icons";
@@ -97,12 +99,15 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
   const [sort, setSort] = useState<SortKey>("sales");
   const [priceBand, setPriceBand] = useState<PriceBand | null>(null);
 
-  const products = useProducts({
-    search: urlSearch || undefined,
-    limit: 100,
-    sortBy: SORTS[sort].sortBy,
-    sortOrder: SORTS[sort].sortOrder,
-  });
+  const products = useProducts(
+    {
+      search: urlSearch || undefined,
+      limit: 100,
+      sortBy: SORTS[sort].sortBy,
+      sortOrder: SORTS[sort].sortOrder,
+    },
+    { keepPrevious: true },
+  );
 
   /* à¸ªà¸´à¸™à¸„à¹‰à¸²à¸•à¸²à¸¡à¹‚à¸«à¸¡à¸” + à¸¡à¸µ gameType à¹€à¸—à¹ˆà¸²à¸™à¸±à¹‰à¸™ (à¸ªà¸´à¸™à¸„à¹‰à¸²à¹„à¸£à¹‰à¸›à¸£à¸°à¹€à¸ à¸—à¸¢à¸±à¸‡à¹„à¸¡à¹ˆà¸žà¸£à¹‰à¸­à¸¡à¹à¸ªà¸”à¸‡) */
   const byType = useMemo(
@@ -200,7 +205,11 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                 }`}
               >
                 {t("filterAll")}
-                <span className="num text-xs text-muted-foreground-strong">{countFor(null)}</span>
+                {products.isLoading ? (
+                  <Skeleton className="h-3 w-5 rounded-full" />
+                ) : (
+                  <span className="num text-xs text-muted-foreground-strong">{countFor(null)}</span>
+                )}
               </button>
               {platformCounts.map(({ type, count }) => (
                 <button
@@ -221,6 +230,22 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                   <span className="num text-xs text-muted-foreground-strong">{count}</span>
                 </button>
               ))}
+              {/* จองที่แถวแพลตฟอร์มระหว่างโหลด — กันกลุ่ม "เรียงตาม/ราคา" ถูกดันลงตอนข้อมูลมา */}
+              {products.isLoading
+                ? Array.from({ length: 3 }).map((_, i) => (
+                    <div
+                      key={i}
+                      aria-hidden
+                      className="flex min-h-11 w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] lg:min-h-0"
+                    >
+                      <span className="flex h-[21px] items-center gap-2">
+                        <Skeleton className="size-[15px] rounded-sm" />
+                        <Skeleton className={`h-3 rounded-full ${i % 2 ? "w-14" : "w-20"}`} />
+                      </span>
+                      <Skeleton className="h-3 w-4 rounded-full" />
+                    </div>
+                  ))
+                : null}
             </div>
 
             <div className="mb-5 flex min-w-[180px] flex-none flex-col gap-1 lg:min-w-0">
@@ -289,24 +314,22 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                 />
               </div>
             </form>
-            {products.isSuccess && (
+            {products.isSuccess ? (
               <span className="num text-xs text-muted-foreground-strong">
                 {t(FOUND_KEY_BY_MODE[mode], { count: filtered.length })}
               </span>
-            )}
+            ) : products.isLoading ? (
+              <Skeleton className="h-3 w-20 rounded-full" />
+            ) : null}
           </div>
 
           <div className="mt-6">
             {products.isLoading ? (
-              <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-5">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="flex flex-col gap-2">
-                    <Skeleton className="aspect-square rounded-xl" />
-                    <Skeleton className="h-4 w-3/4 rounded-md" />
-                    <Skeleton className="h-3.5 w-1/2 rounded-md" />
-                  </div>
-                ))}
-              </div>
+              // grid เดียวกับผลลัพธ์จริง (lg 6 คอลัมน์) · 12 ชิ้น = เต็ม 2 แถวพอดีทุก breakpoint
+              <ShelfGridSkeleton
+                count={12}
+                className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-6"
+              />
             ) : products.isError ? (
               <div className="rounded-[14px] border bg-card p-10 text-center">
                 <p className="font-semibold">{t("error")}</p>
@@ -323,12 +346,68 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                 </Button>
               </div>
             ) : (
-              <div className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-6">
+              // เปลี่ยน sort/ค้นหา = ผลเดิมจางลงระหว่างโหลดชุดใหม่ (keepPreviousData) แทนกลับไปเป็น skeleton
+              <FadeIn
+                className={`grid grid-cols-3 gap-x-3 gap-y-5 transition-opacity duration-150 ease-soft sm:grid-cols-4 lg:grid-cols-6 ${
+                  products.isPlaceholderData ? "pointer-events-none opacity-60" : ""
+                }`}
+              >
                 {filtered.map((p) => (
                   <ShelfTile key={p.id} product={p} />
                 ))}
-              </div>
+              </FadeIn>
             )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Suspense fallback (useSearchParams ยัง resolve ไม่เสร็จตอน prerender) — โครงเดียวกับ CatalogInner
+ *  หัวข้อ/หัวกลุ่มเป็นข้อความจริง เดิม fallback=null ทำให้ HTML แรกว่างทั้งหน้าจน hydrate */
+function CatalogFallback({ mode }: { mode: CatalogMode }) {
+  const t = useTranslations("catalog");
+  const copy = COPY_BY_MODE[mode];
+  const group = (title: string, rows: number) => (
+    <div className="mb-5 flex min-w-[180px] flex-none flex-col gap-1 lg:min-w-0">
+      <h2 className="mb-2 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
+        {title}
+      </h2>
+      {Array.from({ length: rows }).map((_, i) => (
+        <div
+          key={i}
+          aria-hidden
+          className="flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] lg:min-h-0"
+        >
+          <span className="flex h-[21px] items-center">
+            <Skeleton className={`h-3 rounded-full ${i % 2 ? "w-14" : "w-20"}`} />
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+  return (
+    <div className="mx-auto w-full max-w-6xl px-4 py-8">
+      <div className="grid gap-7 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <aside className="min-w-0 self-start">
+          <div className="flex gap-6 overflow-hidden pb-2 lg:block lg:pb-0">
+            {group(t("sidebarPlatform"), 4)}
+            {group(t("sidebarSort"), 2)}
+            {group(t("sidebarPrice"), 4)}
+          </div>
+        </aside>
+        <div className="min-w-0">
+          <h1 className="text-[22px] font-bold tracking-tight">{t(copy.titleKey)}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{t(copy.subKey)}</p>
+          <div className="mt-4 flex items-center gap-3">
+            <Skeleton className="h-10 max-w-[320px] flex-1 rounded-[10px]" />
+          </div>
+          <div className="mt-6">
+            <ShelfGridSkeleton
+              count={12}
+              className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-6"
+            />
           </div>
         </div>
       </div>
@@ -338,7 +417,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
 
 export function CatalogPage({ mode }: { mode: CatalogMode }) {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<CatalogFallback mode={mode} />}>
       <CatalogInner mode={mode} />
     </Suspense>
   );

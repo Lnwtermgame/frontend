@@ -17,6 +17,7 @@ import { Link, usePathname } from "@/i18n/routing";
 import { useAuthStore } from "@/stores/auth";
 import { useCreditBalance } from "@/lib/query/hooks";
 import { formatTHB } from "@/lib/pricing";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ITEMS = [
   { href: "/dashboard/orders", key: "orders", Icon: Package },
@@ -61,9 +62,16 @@ export function DashboardSidebar() {
         className="mt-3 flex items-center gap-2 rounded-[10px] border border-primary/25 bg-primary/[0.07] px-3 py-2"
       >
         <span className="text-xs font-semibold text-muted-foreground">{t("creditBalance")}</span>
-        <span className="num ml-auto text-sm font-bold text-primary">
-          {balance.isLoading ? "…" : formatTHB(balance.data?.balance ?? 0)}
-        </span>
+        {balance.isLoading ? (
+          // สูงเท่า line-box text-sm — กล่องยอดไม่ยืด/หดตอนตัวเลขมา
+          <span className="ml-auto flex h-[21px] items-center" aria-hidden>
+            <Skeleton className="h-3 w-14 rounded-full bg-primary/15" />
+          </span>
+        ) : (
+          <span className="num ml-auto text-sm font-bold text-primary">
+            {formatTHB(balance.data?.balance ?? 0)}
+          </span>
+        )}
         <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
       </Link>
 

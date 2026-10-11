@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FADE_IN } from "@/components/ui/skeleton-region";
+import { OrderDetailSkeleton, TextLine } from "@/components/skeletons";
 import {
   Dialog,
   DialogContent,
@@ -115,12 +117,7 @@ export default function DashboardOrderDetailPage() {
   const [resendingId, setResendingId] = useState<string | null>(null);
 
   if (order.isLoading) {
-    return (
-      <div className="space-y-4">
-        <Skeleton className="h-40 rounded-[14px]" />
-        <Skeleton className="h-48 rounded-[14px]" />
-      </div>
-    );
+    return <OrderDetailSkeleton />;
   }
 
   if (order.isError || !order.data) {
@@ -282,7 +279,7 @@ export default function DashboardOrderDetailPage() {
   );
 
   return (
-    <div className="rounded-[14px] border bg-card shadow-(--shadow-tile)">
+    <div className={cn("rounded-[14px] border bg-card shadow-(--shadow-tile)", FADE_IN)}>
       {/* หัวหน้า: กลับ + เลขที่ + วันที่ + สถานะ + ยอด */}
       <div className="p-4 pb-0">
         <Link
@@ -509,7 +506,17 @@ export default function DashboardOrderDetailPage() {
               ) : null}
             </div>
             {deliveryQ.isLoading ? (
-              <Skeleton className="mt-2.5 h-14 rounded-[10px]" />
+              // mirror กล่อง LeadRow (วิธีจัดส่ง / ปลายทาง / สถานะ) ไม่ให้ความสูงกระตุกตอนโหลดเสร็จ
+              <div aria-hidden className="mt-2.5 space-y-2 rounded-[10px] border bg-background/60 p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <TextLine size="sm" className="w-24" />
+                  <TextLine size="sm" className="w-28" />
+                </div>
+                <div className="flex items-center gap-2 pt-0.5">
+                  <TextLine size="sm" className="w-12" />
+                  <Skeleton className="h-6 w-[84px] rounded-full" />
+                </div>
+              </div>
             ) : d ? (
               <div className="mt-2.5 space-y-2 rounded-[10px] border bg-background/60 p-3">
                 <LeadRow

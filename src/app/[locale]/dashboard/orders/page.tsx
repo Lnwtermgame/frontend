@@ -7,7 +7,8 @@ import { Link } from "@/i18n/routing";
 import { useOrders, useOrderCounts } from "@/lib/query/hooks";
 import type { Order, OrderStatus } from "@/lib/api/orders";
 import { formatTHB } from "@/lib/pricing";
-import { Skeleton } from "@/components/ui/skeleton";
+import { FadeIn } from "@/components/ui/skeleton-region";
+import { SkeletonList, OrderRowSkeleton } from "@/components/skeletons";
 import { GameCover } from "@/components/product/game-cover";
 import { StatusBadge, Pager, DashErrorState, DashEmptyState, DashPageHead, formatDateTime } from "@/components/dashboard/shared";
 
@@ -85,11 +86,11 @@ export default function DashboardOrdersPage() {
         })}
       </div>
 
-      <div className="mt-3.5 space-y-2.5">
+      <div className="mt-3.5">
         {orders.isLoading ? (
-          Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-[78px] rounded-[14px]" />
-          ))
+          <SkeletonList count={4} className="space-y-2.5">
+            {(i) => <OrderRowSkeleton index={i} />}
+          </SkeletonList>
         ) : orders.isError ? (
           <DashErrorState onRetry={() => orders.refetch()} />
         ) : !orders.data?.data.length ? (
@@ -100,7 +101,13 @@ export default function DashboardOrdersPage() {
             actionLabel={t("emptyOrdersAction")}
           />
         ) : (
-          orders.data.data.map((order) => {
+          // เปลี่ยนตัวกรอง/หน้า = รายการเดิมจางลงระหว่างโหลด (keepPreviousData) ไม่กลับเป็น skeleton
+          <FadeIn
+            className={`space-y-2.5 transition-opacity duration-150 ease-soft ${
+              orders.isPlaceholderData ? "pointer-events-none opacity-60" : ""
+            }`}
+          >
+          {orders.data.data.map((order) => {
             const first = order.items[0];
             const extra = order.items.length - 1;
             const uid = uidLine(order);
@@ -150,7 +157,8 @@ export default function DashboardOrdersPage() {
                 </div>
               </Link>
             );
-          })
+          })}
+          </FadeIn>
         )}
       </div>
 

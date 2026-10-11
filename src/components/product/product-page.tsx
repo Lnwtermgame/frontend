@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { notFound, useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ProductPageSkeleton, ShelfGridSkeleton } from "@/components/skeletons";
+import { FadeIn } from "@/components/ui/skeleton-region";
 import { Button } from "@/components/ui/button";
 import { Link, useRouter } from "@/i18n/routing";
 import { useProductBySlug, useFavorites, useFeatured } from "@/lib/query/hooks";
@@ -152,15 +153,7 @@ export function ProductPage({ route }: { route: ProductRoute }) {
   };
 
   if (query.isLoading) {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-8">
-        <Skeleton className="h-24 w-full rounded-[14px]" />
-        <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_360px]">
-          <Skeleton className="h-64 rounded-[14px]" />
-          <Skeleton className="h-80 rounded-[14px]" />
-        </div>
-      </div>
-    );
+    return <ProductPageSkeleton />;
   }
 
   if (query.isError || !query.data) {
@@ -213,7 +206,7 @@ export function ProductPage({ route }: { route: ProductRoute }) {
     .slice(0, 5);
 
   return (
-    <div className="pb-8">
+    <FadeIn className="pb-8">
       {/* แถบสีประจำเกมเต็มความกว้าง (สีจากระบบปก — เปลี่ยนตามเกมอัตโนมัติ) */}
       <ProductBand
         product={product}
@@ -279,8 +272,18 @@ export function ProductPage({ route }: { route: ProductRoute }) {
           />
         </div>
 
-        {/* Related / Recommended Products */}
-        {relatedProducts.length > 0 ? (
+        {/* Related / Recommended Products — ระหว่างโหลดจองที่ด้วย skeleton กริดเดียวกัน */}
+        {featured.isLoading ? (
+          <section className="pt-8">
+            <h2 className="mb-4 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
+              {t("relatedTitle")}
+            </h2>
+            <ShelfGridSkeleton
+              count={5}
+              className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4 lg:grid-cols-5"
+            />
+          </section>
+        ) : relatedProducts.length > 0 ? (
           <section className="pt-8">
             <Reveal>
               <h2 className="mb-4 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
@@ -322,6 +325,6 @@ export function ProductPage({ route }: { route: ProductRoute }) {
           if (pendingPayload) void handleBuy(pendingPayload);
         }}
       />
-    </div>
+    </FadeIn>
   );
 }

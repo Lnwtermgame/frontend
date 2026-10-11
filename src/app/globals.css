@@ -38,6 +38,9 @@
     --color-status-warning: var(--status-warning);
     --color-status-danger: var(--status-danger);
     --color-status-info: var(--status-info);
+    /* skeleton loading — token แยกจาก muted (muted เกือบเท่าพื้นหลังหน้า มองไม่เห็นบนพื้นเทา) */
+    --color-skeleton: var(--skeleton);
+    --color-skeleton-highlight: var(--skeleton-highlight);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -82,6 +85,11 @@
   --status-warning: oklch(0.666 0.179 58.318);
   --status-danger: oklch(0.577 0.245 27.325);
   --status-info: oklch(0.546 0.245 262.881);
+
+  /* skeleton — เข้มกว่าพื้นหลังหน้า (0.973) และการ์ดขาวพอให้เห็นโครงชัดทั้งสองพื้น
+     highlight = แถบแสงที่วิ่งผ่าน (shimmer) โปร่งเล็กน้อยให้กลืนกับพื้นใต้ */
+  --skeleton: oklch(0.935 0.007 255);
+  --skeleton-highlight: oklch(0.99 0.002 255 / 0.9);
 
   /* scrollbar (Daylight — track โปร่งใส, thumb เทากลาง มองเห็นบนพื้นสว่าง) */
   color-scheme: light;
@@ -154,6 +162,42 @@
 
 @utility num {
   font-variant-numeric: tabular-nums;
+}
+
+/* Skeleton loading (ใช้ผ่าน <Skeleton/> — สีพื้นมาจาก bg-skeleton ที่ override ได้ด้วย bg-* อื่น)
+   - แสดงทึบเต็มที่ตั้งแต่เฟรมแรก (รวม HTML จาก SSR) — ไม่มี fade/หน่วงขาเข้า
+     placeholder ต้องจองตำแหน่ง "และมองเห็น" ทันที ไม่งั้นผู้ใช้เห็นหน้าโล่งก่อนแล้ว skeleton ค่อยโผล่
+   - shimmer: แถบแสงบน ::after วิ่งด้วย transform (GPU composited — ไม่ repaint ทุกเฟรม)
+   - reduced-motion: media query ท้ายไฟล์กด animation เหลือ 0.01ms × 1 รอบ
+     → แถบแสงกลับตำแหน่งเริ่ม (นอกกรอบ) ได้ skeleton นิ่ง ๆ */
+@utility skeleton {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      100deg,
+      transparent 20%,
+      var(--skeleton-highlight) 50%,
+      transparent 80%
+    );
+    animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  60%,
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @theme {

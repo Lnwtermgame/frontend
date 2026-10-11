@@ -6,7 +6,8 @@ import { CheckCheck, Trash2, Bell, Package, Tag, Megaphone, SlidersHorizontal } 
 import { toast } from "sonner";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { FadeIn } from "@/components/ui/skeleton-region";
+import { SkeletonList, NotificationRowSkeleton } from "@/components/skeletons";
 import { useNotifications } from "@/lib/query/hooks";
 import { markNotificationRead, markAllNotificationsRead, deleteNotification } from "@/lib/api/account";
 import type { NotificationType } from "@/lib/api/account";
@@ -85,17 +86,22 @@ export default function DashboardNotificationsPage() {
         }
       />
 
-      <div className="space-y-2">
+      <div>
         {notifs.isLoading ? (
-          Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-[64px] rounded-[14px]" />
-          ))
+          <SkeletonList count={4} className="space-y-2">
+            {(i) => <NotificationRowSkeleton index={i} />}
+          </SkeletonList>
         ) : notifs.isError ? (
           <DashErrorState onRetry={() => notifs.refetch()} />
         ) : !notifs.data?.data.length ? (
           <DashEmptyState title={t("emptyNotifications")} description={t("emptyNotificationsDesc")} />
         ) : (
-          notifs.data.data.map((item) => {
+          <FadeIn
+            className={`space-y-2 transition-opacity duration-150 ease-soft ${
+              notifs.isPlaceholderData ? "pointer-events-none opacity-60" : ""
+            }`}
+          >
+          {notifs.data.data.map((item) => {
             const Icon = TYPE_ICON[item.type] ?? Bell;
             return (
               <div
@@ -146,7 +152,8 @@ export default function DashboardNotificationsPage() {
                 </div>
               </div>
             );
-          })
+          })}
+          </FadeIn>
         )}
       </div>
 

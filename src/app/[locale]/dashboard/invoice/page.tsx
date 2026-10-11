@@ -5,7 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useInvoices } from "@/lib/query/hooks";
 import { formatTHB } from "@/lib/pricing";
-import { Skeleton } from "@/components/ui/skeleton";
+import { FadeIn } from "@/components/ui/skeleton-region";
+import { SkeletonList, InvoiceRowSkeleton } from "@/components/skeletons";
 import { Pager, DashErrorState, DashEmptyState, DashPageHead, formatDateTime } from "@/components/dashboard/shared";
 
 export default function DashboardInvoicesPage() {
@@ -18,9 +19,11 @@ export default function DashboardInvoicesPage() {
     <div>
       <DashPageHead title={t("invoices")} description={t("invoicesDesc")} />
 
-      <div className="mt-3 space-y-2">
+      <div className="mt-3">
         {invoices.isLoading ? (
-          Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-[62px] rounded-[14px]" />)
+          <SkeletonList count={4} className="space-y-2">
+            {() => <InvoiceRowSkeleton />}
+          </SkeletonList>
         ) : invoices.isError ? (
           <DashErrorState onRetry={() => invoices.refetch()} />
         ) : !invoices.data?.data.length ? (
@@ -31,7 +34,12 @@ export default function DashboardInvoicesPage() {
             actionLabel={t("viewOrders")}
           />
         ) : (
-          invoices.data.data.map((inv) => (
+          <FadeIn
+            className={`space-y-2 transition-opacity duration-150 ease-soft ${
+              invoices.isPlaceholderData ? "pointer-events-none opacity-60" : ""
+            }`}
+          >
+          {invoices.data.data.map((inv) => (
             <Link
               key={inv.id}
               href={`/dashboard/invoice/${inv.id}`}
@@ -46,7 +54,8 @@ export default function DashboardInvoicesPage() {
               </div>
               <p className="num mt-0.5 text-xs text-muted-foreground">{formatDateTime(inv.issuedAt, locale)}</p>
             </Link>
-          ))
+          ))}
+          </FadeIn>
         )}
       </div>
 

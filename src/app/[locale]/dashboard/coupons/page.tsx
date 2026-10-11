@@ -6,7 +6,9 @@ import { toast } from "sonner";
 import { useCoupons, useMyCoupons } from "@/lib/query/hooks";
 import { claimCoupon } from "@/lib/api/dashboard";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { FADE_IN } from "@/components/ui/skeleton-region";
+import { CouponCardSkeleton, SkeletonList } from "@/components/skeletons";
+import { cn } from "@/lib/utils";
 import { DashErrorState, DashEmptyState, DashPageHead, formatDateTime } from "@/components/dashboard/shared";
 
 function couponValue(c: {
@@ -47,11 +49,9 @@ export default function DashboardCouponsPage() {
 
         <div className="mt-3">
           {coupons.isLoading ? (
-            <div className="grid gap-2 sm:grid-cols-2">
-              {Array.from({ length: 2 }).map((_, i) => (
-                <Skeleton key={i} className="h-[72px] rounded-[14px]" />
-              ))}
-            </div>
+            <SkeletonList count={4} className="grid gap-2.5 sm:grid-cols-2">
+              {() => <CouponCardSkeleton />}
+            </SkeletonList>
           ) : coupons.isError ? (
             <DashErrorState onRetry={() => coupons.refetch()} />
           ) : !coupons.data?.data.length ? (
@@ -60,7 +60,7 @@ export default function DashboardCouponsPage() {
               description={t("emptyCouponsDesc")}
             />
           ) : (
-            <div className="grid gap-2.5 sm:grid-cols-2">
+            <div className={cn("grid gap-2.5 sm:grid-cols-2", FADE_IN)}>
               {coupons.data.data.map((c) => (
                 <div
                   key={c.id}

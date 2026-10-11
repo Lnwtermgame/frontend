@@ -2,17 +2,16 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "@/i18n/routing";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
+import { DashboardShellSkeleton } from "@/components/skeletons";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const tc = useTranslations("common");
   const user = useAuthStore((s) => s.user);
   const status = useAuthStore((s) => s.status);
   const router = useRouter();
@@ -25,11 +24,8 @@ export default function DashboardLayout({
   }, [status, user, router, pathname]);
 
   if (status === "bootstrapping" || !user) {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-16" role="status" aria-live="polite">
-        <p className="text-center text-sm text-muted-foreground">{tc("loading")}</p>
-      </div>
-    );
+    // โครง dashboard ทั้งหน้า (sidebar + เนื้อหา) — สลับเป็นของจริงแล้วเลย์เอาต์ไม่กระโดด
+    return <DashboardShellSkeleton />;
   }
 
   return (

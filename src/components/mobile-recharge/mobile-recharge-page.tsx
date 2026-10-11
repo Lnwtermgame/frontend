@@ -4,7 +4,7 @@ import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { PhoneOff } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { MobileRechargeSkeleton } from "@/components/skeletons";
 import { Link, useRouter } from "@/i18n/routing";
 import { usePaymentMethods, useProducts } from "@/lib/query/hooks";
 import { startBuyFlow } from "@/lib/buy-flow";
@@ -173,21 +173,7 @@ export function MobileRechargePage() {
   };
 
   if (products.isLoading) {
-    return (
-      <div className="mx-auto w-full max-w-6xl px-4 py-8">
-        <Skeleton className="h-8 w-2/3 rounded-lg" />
-        <Skeleton className="mt-2 h-4 w-1/2 rounded-md" />
-        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-          <div className="flex flex-col gap-3">
-            <Skeleton className="h-11 rounded-[10px]" />
-            <Skeleton className="h-11 rounded-[10px]" />
-            <Skeleton className="h-11 rounded-[10px]" />
-            <Skeleton className="h-24 rounded-[10px]" />
-          </div>
-          <Skeleton className="h-96 rounded-[14px]" />
-        </div>
-      </div>
-    );
+    return <MobileRechargeSkeleton />;
   }
 
   if (products.isError) {

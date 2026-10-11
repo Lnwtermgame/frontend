@@ -27,6 +27,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FADE_IN } from "@/components/ui/skeleton-region";
+import { SkeletonList, TicketRowSkeleton, TicketThreadSkeleton } from "@/components/skeletons";
 import { useTickets, useTicketDetail } from "@/lib/query/hooks";
 import { createTicket, replyTicket, closeTicket } from "@/lib/api/support";
 import type { TicketCategory } from "@/lib/api/support";
@@ -78,9 +80,19 @@ export default function SupportTicketsPage() {
   const activeTicket = useTicketDetail(activeTicketId ?? "");
 
   if (status === "bootstrapping" || !user) {
+    // รอ auth — หัวหน้าจริง + แถว ticket จำลอง (เดิมเป็นข้อความ "กำลังโหลด" กลางจอ)
     return (
-      <div className="mx-auto w-full max-w-4xl px-4 py-16 text-center">
-        <p className="text-sm text-muted-foreground">{tc("loading")}</p>
+      <div className="mx-auto w-full max-w-4xl px-4 py-8">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold">{t("ticketsTitle")}</h1>
+            <p className="mt-1 text-sm text-muted-foreground">{t("ticketsSubtitle")}</p>
+          </div>
+          <Skeleton className="h-9 w-32 rounded-md" />
+        </div>
+        <SkeletonList count={3} label={tc("loading")} className="mt-6 space-y-3">
+          {(i) => <TicketRowSkeleton index={i} />}
+        </SkeletonList>
       </div>
     );
   }
@@ -160,11 +172,11 @@ export default function SupportTicketsPage() {
         </Button>
 
         {activeTicket.isLoading ? (
-          <Skeleton className="h-64 rounded-[14px]" />
+          <TicketThreadSkeleton />
         ) : activeTicket.isError || !tkt ? (
           <DashErrorState onRetry={() => activeTicket.refetch()} />
         ) : (
-          <div className="space-y-6">
+          <div className={`space-y-6 ${FADE_IN}`}>
             <div className="flex flex-wrap items-start justify-between gap-4 rounded-[14px] border bg-card p-5 shadow-(--shadow-tile)">
               <div>
                 <div className="flex items-center gap-2">
@@ -258,17 +270,15 @@ export default function SupportTicketsPage() {
 
       <div className="mt-6">
         {tickets.isLoading ? (
-          <div className="space-y-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-20 rounded-[14px]" />
-            ))}
-          </div>
+          <SkeletonList count={3} className="space-y-3">
+            {(i) => <TicketRowSkeleton index={i} />}
+          </SkeletonList>
         ) : tickets.isError ? (
           <DashErrorState onRetry={() => tickets.refetch()} />
         ) : !tickets.data?.data.length ? (
           <DashEmptyState title={t("emptyTickets")} description={t("emptyTicketsDesc")} />
         ) : (
-          <div className="space-y-3">
+          <div className={`space-y-3 ${FADE_IN}`}>
             {tickets.data.data.map((tkt) => (
               <button
                 key={tkt.id}

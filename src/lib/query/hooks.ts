@@ -1,4 +1,4 @@
-import { useQuery, useQueries } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueries } from "@tanstack/react-query";
 import * as productsApi from "@/lib/api/products";
 import * as dashApi from "@/lib/api/dashboard";
 import * as supportApi from "@/lib/api/support";
@@ -6,11 +6,30 @@ import * as accountApi from "@/lib/api/account";
 import { getPaymentMethods } from "@/lib/api/payments";
 import { qk } from "./keys";
 
-export function useProducts(params: productsApi.ListProductsParams = {}) {
+/* รายการที่มี page/filter: เปลี่ยนหน้า/ตัวกรอง = คงข้อมูลชุดก่อนไว้ (isPlaceholderData) ให้หน้าจางลง
+   ระหว่างโหลด แทน isLoading=true ที่ทำให้กลับไปเป็น skeleton + Pager หายแล้วโผล่ทุกครั้ง
+   (ไม่ใช้กับ query รายชิ้นตาม id — จะโชว์ข้อมูลผิดชิ้นระหว่างโหลด) */
+const keepList = { placeholderData: keepPreviousData } as const;
+
+export function useProducts(
+  params: productsApi.ListProductsParams = {},
+  /** keepPrevious — true: หน้า catalog (sort/ค้นหา) · "typeahead": nav-search คงผลค้นหาคำก่อน
+   *  ระหว่างพิมพ์ต่อ แต่ไม่ยืมผลชุดไม่มีคำค้น (สินค้าทั่วไป) มาแสดงเป็น "ผลการค้นหา" */
+  options: { keepPrevious?: boolean | "typeahead" } = {},
+) {
   return useQuery({
     queryKey: qk.products(params),
     queryFn: () => productsApi.listProducts(params),
     staleTime: 5 * 60_000,
+    placeholderData:
+      options.keepPrevious === "typeahead"
+        ? (prev, prevQuery) =>
+            (prevQuery?.queryKey[1] as productsApi.ListProductsParams | undefined)?.search
+              ? prev
+              : undefined
+        : options.keepPrevious
+          ? keepPreviousData
+          : undefined,
   });
 }
 
@@ -90,6 +109,7 @@ export function useOrders(params: dashApi.ListParams = {}) {
     queryKey: qk.orders(params),
     queryFn: () => dashApi.listOrders(params),
     staleTime: 30_000,
+    ...keepList,
   });
 }
 
@@ -145,6 +165,7 @@ export function useInvoices(params: dashApi.ListParams = {}) {
     queryKey: qk.invoices(params),
     queryFn: () => dashApi.listInvoices(params),
     staleTime: 30_000,
+    ...keepList,
   });
 }
 
@@ -178,6 +199,7 @@ export function useFavorites(params: dashApi.ListParams = {}) {
     queryKey: qk.favorites(params),
     queryFn: () => dashApi.listFavorites(params),
     staleTime: 30_000,
+    ...keepList,
   });
 }
 
@@ -194,6 +216,7 @@ export function useCreditTransactions(params: dashApi.ListParams = {}) {
     queryKey: qk.creditTransactions(params),
     queryFn: () => dashApi.listCreditTransactions(params),
     staleTime: 30_000,
+    ...keepList,
   });
 }
 
@@ -212,6 +235,7 @@ export function useFaqArticles(params: { categoryId?: string; page?: number; lim
     queryKey: qk.faqArticles(params),
     queryFn: () => supportApi.getFaqArticles(params),
     staleTime: 5 * 60_000,
+    ...keepList,
   });
 }
 
@@ -265,6 +289,7 @@ export function useNotifications(params: { page?: number; limit?: number } = {})
     queryKey: qk.notifications(params),
     queryFn: () => accountApi.listNotifications(params),
     staleTime: 10_000,
+    ...keepList,
   });
 }
 

@@ -48,7 +48,7 @@ export function allDone(state: WizardState): boolean {
 
 /**
  * การเปลี่ยนค่าแต่ละขั้น — เปลี่ยนขั้นบนต้อง reset ขั้นล่างที่อ้างอิงค่านั้น
- * (เหมือน SEAGM: ประเทศใหม่ = ล้างเบอร์+ค่าย+นิยาม, ค่ายใหม่ = ล้างนิยาม)
+ * (เหมือน SEAGM: ประเทศใหม่ = ล้างเบอร์+ค่าย+แพ็กเกจ, ค่ายใหม่ = ล้างแพ็กเกจ)
  */
 export function reduceWizard(
   state: WizardState,
@@ -66,7 +66,7 @@ export function reduceWizard(
       if (state.countryCode === action.code) return state;
       return { countryCode: action.code, phone: "", operator: null, selectedType: null };
     case "setPhone": {
-      // เบอร์เคย valid แล้วกลับเป็น invalid = ค่าที่ค่าย/นิยามอ้างอิงถึงเสีย → reset ขั้นล่าง
+      // เบอร์เคย valid แล้วกลับเป็น invalid = ค่าที่ค่าย/แพ็กเกจอ้างอิงถึงเสีย → reset ขั้นล่าง
       const wasValid = isPhoneValid(state.phone);
       const next: WizardState = { ...state, phone: action.phone };
       if (wasValid && !isPhoneValid(action.phone)) {

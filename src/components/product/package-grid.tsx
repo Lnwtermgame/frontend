@@ -9,7 +9,7 @@ import { formatTHB } from "@/lib/pricing";
 import type { ProductTypePublic } from "@/lib/api/products";
 
 /**
- * แยกกลุ่มนิยามแบบ SEAGM: "เติมเงินโทรศัพท์" (credits) / "ชุดข้อมูล" (data/internet)
+ * แยกกลุ่มแพ็กเกจแบบ SEAGM: "เติมเงินโทรศัพท์" (credits) / "ชุดข้อมูล" (data/internet)
  * ชื่อที่มีคำว่า internet/data/MB/GB/Mbps/unlimited = กลุ่มข้อมูล ที่เหลือเป็น credits
  */
 function isDataPack(name: string): boolean {
@@ -88,7 +88,7 @@ function DenomCard({
 }
 
 /**
- * เลือกนิยาม (SEAGM-style) — แถวแนวนอน 2 การ์ดต่อแถว แสดงครบทุกแพ็กเกจ ไม่มีการย่อ
+ * เลือกแพ็กเกจ (SEAGM-style) — แถวแนวนอน 2 การ์ดต่อแถว แสดงครบทุกแพ็กเกจ ไม่มีการย่อ
  * รูปค่าเงินแสดงเฉพาะแพ็กเกจที่แอดมินใส่รูปไว้เท่านั้น
  */
 export function PackageGrid({

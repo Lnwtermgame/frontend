@@ -29,7 +29,7 @@ import { useAuthStore } from "@/stores/auth";
 
 /**
  * หน้าเติมเงินโทรศัพท์ — SEAGM-style (spec §5)
- * ทุกขั้นเรียงเป็น section ต่อเนื่องบนหน้าเดียว: ประเทศ → เบอร์ → ค่าย → นิยาม
+ * ทุกขั้นเรียงเป็น section ต่อเนื่องบนหน้าเดียว: ประเทศ → เบอร์ → ค่าย → แพ็กเกจ
  * ขั้นถัดไปไขได้เมื่อขั้นก่อนหน้าเสร็จ (reducer กัน reset ขั้นล่างเมื่อแก้ขั้นบน)
  */
 export function MobileRechargePage() {
@@ -94,7 +94,7 @@ export function MobileRechargePage() {
     dispatch({ type: "pickCountry", code: "TH" });
   }, [products.isSuccess, countryCode, groups, operatorParam, countryParam]);
 
-  // ค่ายแรกของประเทศ = ค่ายที่แสดงนิยาม — กดค่ายอื่นถึงจะสลับ
+  // ค่ายแรกของประเทศ = ค่ายที่แสดงแพ็กเกจ — กดค่ายอื่นถึงจะสลับ
   useEffect(() => {
     if (operator || operators.length === 0) return;
     dispatch({ type: "pickOperator", operator: operators[0] });
@@ -270,21 +270,25 @@ export function MobileRechargePage() {
             />,
           )}
 
-          {section(
-            step4Ref,
-            t("stepDenomination"),
-            activeTypes.length ? (
-              <PackageGrid
-                types={activeTypes}
-                selectedId={selectedType?.id ?? null}
-                onSelect={(ty) => dispatch({ type: "pickType", selectedType: ty })}
-              />
-            ) : (
-              <p className="py-4 text-center text-sm text-muted-foreground">
-                {t("noDenominations")}
-              </p>
-            ),
-          )}
+          {/* ยังไม่เลือกค่าย = ยังไม่มีแพ็กเกจให้ดู — ซ่อน section ไว้ก่อน (progressive disclosure)
+              ไม่งั้นหัวข้อ + ข้อความว่างเปล่าโชว์คู่กันตั้งแต่หน้าโหลด */}
+          {operator
+            ? section(
+                step4Ref,
+                t("stepDenomination"),
+                activeTypes.length ? (
+                  <PackageGrid
+                    types={activeTypes}
+                    selectedId={selectedType?.id ?? null}
+                    onSelect={(ty) => dispatch({ type: "pickType", selectedType: ty })}
+                  />
+                ) : (
+                  <p className="py-4 text-center text-sm text-muted-foreground">
+                    {t("noDenominations")}
+                  </p>
+                ),
+              )
+            : null}
         </div>
 
         <RechargeOrderSummary
@@ -299,7 +303,7 @@ export function MobileRechargePage() {
         />
       </div>
 
-      {/* กันแถบสรุปตรึงขอบล่างทับเนื้อหาท้ายหน้า (เฉพาะเมื่อเลือกนิยามแล้ว) */}
+      {/* กันแถบสรุปตรึงขอบล่างทับเนื้อหาท้ายหน้า (เฉพาะเมื่อเลือกแพ็กเกจแล้ว) */}
       {selectedType ? (
         <div aria-hidden className="h-[calc(84px+env(safe-area-inset-bottom))] lg:hidden" />
       ) : null}

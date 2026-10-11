@@ -39,7 +39,7 @@ describe("wizard unlock sequence", () => {
 
     s = reduceWizard(s, { type: "pickOperator", operator: opTH });
     expect(stepOpen(s).step4).toBe(true);
-    expect(allDone(s)).toBe(false); // ยังไม่เลือกนิยาม
+    expect(allDone(s)).toBe(false); // ยังไม่เลือกแพ็กเกจ
 
     s = reduceWizard(s, { type: "pickType", selectedType: type1 });
     expect(allDone(s)).toBe(true);

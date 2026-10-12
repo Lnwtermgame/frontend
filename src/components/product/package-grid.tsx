@@ -9,11 +9,19 @@ import { formatTHB } from "@/lib/pricing";
 import type { ProductTypePublic } from "@/lib/api/products";
 
 /**
- * แยกกลุ่มแพ็กเกจแบบ SEAGM: "เติมเงินโทรศัพท์" (credits) / "ชุดข้อมูล" (data/internet)
- * ชื่อที่มีคำว่า internet/data/MB/GB/Mbps/unlimited = กลุ่มข้อมูล ที่เหลือเป็น credits
+ * แยกกลุ่มแพ็กเกจแบบ SEAGM สำหรับเติมเงินมือถือ: "เติมเงินโทรศัพท์" (credits) /
+ * "ชุดข้อมูล" (data/internet)
+ * ชื่อที่มีคำว่า internet/data/unlimited/bundle หรือหน่วย mb/gb/mbps = กลุ่มข้อมูล
+ * ที่เหลือเป็น credits
+ *
+ * ต้องเทียบเป็นคำ/หน่วยเต็มเท่านั้น — substring เปล่า ๆ เคยทำให้แพ็กเกจเกมอย่าง
+ * "GAMG Junior Membership" โดน `mb` ใน Me**mb**ership จัดเข้ากลุ่มเน็ตโดยไม่ควร
  */
 function isDataPack(name: string): boolean {
-  return /internet|data|mb|gb|mps|unlimited|bundle/i.test(name);
+  return (
+    /\b(?:internet|data|unlimited|bundle)\b/i.test(name) ||
+    /(?:^|[^a-z])(?:mbps|gbps|mb|gb|mps)(?:$|[^a-z])/i.test(name)
+  );
 }
 
 function DenomCard({
@@ -90,15 +98,23 @@ function DenomCard({
 /**
  * เลือกแพ็กเกจ (SEAGM-style) — แถวแนวนอน 2 การ์ดต่อแถว แสดงครบทุกแพ็กเกจ ไม่มีการย่อ
  * รูปค่าเงินแสดงเฉพาะแพ็กเกจที่แอดมินใส่รูปไว้เท่านั้น
+ *
+ * grouping:
+ * - "recharge" (เฉพาะหน้าเติมมือถือ) — แยกกลุ่ม credits/data พร้อมหัวกลุ่ม
+ *   ศัพท์ของโดเมนเติมมือถือ ("เติมเงินโทรศัพท์" / "ชุดข้อมูล/อินเทอร์เน็ต") ใช้ที่นี่เท่านั้น
+ * - "none" (หน้าเกม/บัตร — ค่า default) — กริดเดียวไม่มีหัวกลุ่ม เพราะแพ็กเกจเกม
+ *   ทั้งหมดคือแพ็กเกจเดียวกัน การแยกกลุ่มด้วยคำศัพท์เติมมือถืออ่านผิดบริบท
  */
 export function PackageGrid({
   types,
   selectedId,
   onSelect,
+  grouping = "none",
 }: {
   types: ProductTypePublic[];
   selectedId: string | null;
   onSelect: (t: ProductTypePublic) => void;
+  grouping?: "recharge" | "none";
 }) {
   const t = useTranslations("mobileRecharge");
 
@@ -109,11 +125,35 @@ export function PackageGrid({
     return { credits, data };
   }, [types]);
 
+  const gridClassName = "grid grid-cols-1 gap-2.5 sm:grid-cols-2";
+
+  if (!credits.length && !data.length) {
+    return (
+      <p className="py-4 text-center text-sm text-muted-foreground">
+        {t("noDenominations")}
+      </p>
+    );
+  }
+
+  if (grouping === "none") {
+    return (
+      <div className={gridClassName} role="radiogroup">
+        {types.map((ty) => (
+          <DenomCard
+            key={ty.id}
+            type={ty}
+            selected={ty.id === selectedId}
+            onSelect={onSelect}
+          />
+        ))}
+      </div>
+    );
+  }
+
   const group = (
     items: ProductTypePublic[],
     label: string,
     // หัวกลุ่มโผล่เฉพาะเมื่อมีสองกลุ่มจริง (credits + data) — กลุ่มเดียวหัวเป็น noise
-    // และป้ายจาก namespace mobileRecharge ("เติมเงินโทรศัพท์") อ่านผิดบริบทบนหน้าเกม
     showHeader: boolean,
   ) => {
     if (!items.length) return null;
@@ -129,7 +169,7 @@ export function PackageGrid({
           </h3>
         ) : null}
         <div
-          className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2"
+          className={`mt-3 ${gridClassName}`}
           role="radiogroup"
           aria-label={showHeader ? label : undefined}
         >
@@ -145,14 +185,6 @@ export function PackageGrid({
       </section>
     );
   };
-
-  if (!credits.length && !data.length) {
-    return (
-      <p className="py-4 text-center text-sm text-muted-foreground">
-        {t("noDenominations")}
-      </p>
-    );
-  }
 
   return (
     <div className="flex flex-col gap-6">

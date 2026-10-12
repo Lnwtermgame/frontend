@@ -281,6 +281,7 @@ export function MobileRechargePage() {
                     types={activeTypes}
                     selectedId={selectedType?.id ?? null}
                     onSelect={(ty) => dispatch({ type: "pickType", selectedType: ty })}
+                    grouping="recharge"
                   />
                 ) : (
                   <p className="py-4 text-center text-sm text-muted-foreground">

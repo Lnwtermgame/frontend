@@ -235,6 +235,7 @@ export function ProductPage({ route }: { route: ProductRoute }) {
                   types={types}
                   selectedId={selected?.id ?? null}
                   onSelect={(ty) => setSelected(ty)}
+                  grouping="product"
                 />
               )}
               {buyError ? (

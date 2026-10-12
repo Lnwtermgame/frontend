@@ -24,6 +24,14 @@ function isDataPack(name: string): boolean {
   );
 }
 
+/**
+ * แพ็กเกจสมาชิก/สมาชิกวงใน (membership, subscription) — สินค้าคนละชนิดกับ
+ * สกุลเงินในเกม จึงแยกหัวกลุ่มบนหน้าเกมให้ผู้ซื้อเห็นชัดว่าไม่ใช่เพชร/UC
+ */
+function isMembershipPack(name: string): boolean {
+  return /\b(?:membership|subscription)\b/i.test(name);
+}
+
 function DenomCard({
   type,
   selected,
@@ -100,10 +108,12 @@ function DenomCard({
  * รูปค่าเงินแสดงเฉพาะแพ็กเกจที่แอดมินใส่รูปไว้เท่านั้น
  *
  * grouping:
+ * - "product" (หน้าเกม/บัตร) — แยก "สกุลเงินในเกม" ออกจาก "แพ็กเกจสมาชิก"
+ *   (membership/subscription) ให้เห็นชัดว่าเป็นสินค้าคนละชนิด; เหลือกลุ่มเดียว
+ *   = กริดเดียวไม่มีหัวกลุ่ม (หัวกลุ่มกลุ่มเดียวเป็น noise)
  * - "recharge" (เฉพาะหน้าเติมมือถือ) — แยกกลุ่ม credits/data พร้อมหัวกลุ่ม
  *   ศัพท์ของโดเมนเติมมือถือ ("เติมเงินโทรศัพท์" / "ชุดข้อมูล/อินเทอร์เน็ต") ใช้ที่นี่เท่านั้น
- * - "none" (หน้าเกม/บัตร — ค่า default) — กริดเดียวไม่มีหัวกลุ่ม เพราะแพ็กเกจเกม
- *   ทั้งหมดคือแพ็กเกจเดียวกัน การแยกกลุ่มด้วยคำศัพท์เติมมือถืออ่านผิดบริบท
+ * - "none" — กริดเดียวไม่มีหัวกลุ่ม
  */
 export function PackageGrid({
   types,
@@ -114,9 +124,10 @@ export function PackageGrid({
   types: ProductTypePublic[];
   selectedId: string | null;
   onSelect: (t: ProductTypePublic) => void;
-  grouping?: "recharge" | "none";
+  grouping?: "product" | "recharge" | "none";
 }) {
   const t = useTranslations("mobileRecharge");
+  const tp = useTranslations("product");
 
   const { credits, data } = useMemo(() => {
     const credits: ProductTypePublic[] = [];
@@ -125,9 +136,16 @@ export function PackageGrid({
     return { credits, data };
   }, [types]);
 
+  const { currency, membership } = useMemo(() => {
+    const currency: ProductTypePublic[] = [];
+    const membership: ProductTypePublic[] = [];
+    for (const ty of types) (isMembershipPack(ty.name) ? membership : currency).push(ty);
+    return { currency, membership };
+  }, [types]);
+
   const gridClassName = "grid grid-cols-1 gap-2.5 sm:grid-cols-2";
 
-  if (!credits.length && !data.length) {
+  if (!types.length) {
     return (
       <p className="py-4 text-center text-sm text-muted-foreground">
         {t("noDenominations")}
@@ -135,25 +153,10 @@ export function PackageGrid({
     );
   }
 
-  if (grouping === "none") {
-    return (
-      <div className={gridClassName} role="radiogroup">
-        {types.map((ty) => (
-          <DenomCard
-            key={ty.id}
-            type={ty}
-            selected={ty.id === selectedId}
-            onSelect={onSelect}
-          />
-        ))}
-      </div>
-    );
-  }
-
   const group = (
     items: ProductTypePublic[],
     label: string,
-    // หัวกลุ่มโผล่เฉพาะเมื่อมีสองกลุ่มจริง (credits + data) — กลุ่มเดียวหัวเป็น noise
+    // หัวกลุ่มโผล่เฉพาะเมื่อมีสองกลุ่มจริง — กลุ่มเดียวหัวเป็น noise
     showHeader: boolean,
   ) => {
     if (!items.length) return null;
@@ -185,6 +188,31 @@ export function PackageGrid({
       </section>
     );
   };
+
+  if (grouping === "none") {
+    return (
+      <div className={gridClassName} role="radiogroup">
+        {types.map((ty) => (
+          <DenomCard
+            key={ty.id}
+            type={ty}
+            selected={ty.id === selectedId}
+            onSelect={onSelect}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (grouping === "product" && membership.length > 0 && currency.length > 0) {
+    // สองกลุ่มจริง — สกุลเงินในเกมก่อน (สินค้าหลัก) สมาชิกตามหลัง
+    return (
+      <div className="flex flex-col gap-6">
+        {group(currency, tp("groupGameCurrency"), true)}
+        {group(membership, tp("groupMembership"), true)}
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">

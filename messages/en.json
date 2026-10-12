@@ -243,6 +243,8 @@
     "retry": "Try again",
     "verifyPendingHint": "Fill in your account details, then tap “Verify” to confirm before ordering",
     "loginGateDesc": "Sign in to enter your player ID, verify your account, and place your order",
+    "groupGameCurrency": "In-game currency",
+    "groupMembership": "Membership",
     "loginToOrder": "Sign in to order"
   },
   "payments": {

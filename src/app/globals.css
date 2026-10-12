@@ -1,10 +1,4 @@
 @import "tailwindcss";
-/* Anuphan — ชุดนี้มีน้ำหนักสูงสุด 700 (ไม่มี 800/900): font-extrabold/black จะถูก
-   browser จับคู่ลง 700 เท่ากับ font-bold เงียบ ๆ → ใช้ font-bold เป็นน้ำหนักหัวเรื่อง/ราคาสูงสุดของระบบ */
-@import "@fontsource/anuphan/400.css";
-@import "@fontsource/anuphan/500.css";
-@import "@fontsource/anuphan/600.css";
-@import "@fontsource/anuphan/700.css";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -12,7 +6,7 @@
 
 @theme inline {
     --font-heading: var(--font-sans);
-    --font-sans: "Anuphan", ui-sans-serif, system-ui, sans-serif;
+    --font-sans: var(--font-anuphan), "Anuphan", ui-sans-serif, system-ui, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
     --color-ring: var(--ring);
     --color-input: var(--input);

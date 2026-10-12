@@ -4,7 +4,15 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { SessionProvider } from "next-auth/react";
+import { Anuphan } from "next/font/google";
 import { routing } from "@/i18n/routing";
+
+const anuphan = Anuphan({
+  subsets: ["thai", "latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-anuphan",
+  display: "swap",
+});
 import { QueryProvider } from "@/components/providers/query-provider";
 import { NextAuthSessionSync } from "@/components/providers/next-auth-session-sync";
 import { AuthBootstrap } from "@/components/providers/auth-bootstrap";
@@ -51,8 +59,8 @@ export default async function LocaleLayout({
   const tCommon = await getTranslations("common");
 
     return (
-      <html lang={locale}>
-        <body className="antialiased">
+      <html lang={locale} className={anuphan.variable}>
+        <body className={`${anuphan.variable} font-sans antialiased`}>
           {/* skip-to-content — WCAG 2.4.1 ต้องเป็น focus target แรกของ body */}
           <a
             href="#main"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Cookie, X } from "lucide-react";
+import { Cookie } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "cn";
 import { Link } from "@/i18n/routing";
@@ -76,10 +76,10 @@ export function CookieNotice() {
       role="region"
       aria-label={t("regionLabel")}
       className={cn(
-        // มือถือ: การ์ดเต็มความกว้าง เว้นที่เหนือแถบสรุปตรึงล่าง (z-30)
+        // มือถือ: แถบแนบล่างเหนือแถบสรุปตรึง (z-30) — ต้องบางพอไม่กินพื้นที่เนื้อหา
         // เดสก์ท็อป: จอดซ้ายล่าง — ขวาล่างปล่อยว่างให้ widget ที่จะมาทีหลัง
         "fixed inset-x-3 bottom-[calc(88px+env(safe-area-inset-bottom))] z-40",
-        "sm:inset-x-4 lg:inset-x-auto lg:bottom-6 lg:left-6 lg:w-[26rem]",
+        "sm:inset-x-4 lg:inset-x-auto lg:bottom-6 lg:left-6 lg:w-[24rem]",
         "overflow-hidden rounded-lg border border-border/80 bg-card",
         "shadow-[0_2px_4px_-2px_rgb(16_24_40/0.06),0_16px_32px_-12px_rgb(16_24_40/0.18),0_32px_64px_-24px_rgb(16_24_40/0.28)]",
         "duration-200 ease-soft",
@@ -88,59 +88,43 @@ export function CookieNotice() {
           : "animate-in fade-in-0 slide-in-from-bottom-2",
       )}
     >
-      <div className="flex items-start gap-3 p-4 pb-3.5">
+      {/* ย่อเป็นย่อหน้าเดียว — การ์ดใหญ่พร้อมปุ่ม X ซ้ำซ้อนกับ "จำเป็นเท่านั้น"
+          กินครึ่งจอมือถือและบังเนื้อหาที่ผู้ใช้กำลังอ่าน */}
+      <div className="flex items-start gap-2.5 p-3.5 pb-3">
         <div
           aria-hidden
-          className="inline-flex size-9 shrink-0 items-center justify-center rounded-[10px] bg-primary/10 text-primary ring-1 ring-primary/15 ring-inset"
+          className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/15 ring-inset"
         >
-          <Cookie className="size-[18px]" strokeWidth={1.75} />
+          <Cookie className="size-3.5" strokeWidth={1.75} />
         </div>
 
-        <div className="min-w-0 flex-1">
-          <h2 className="text-sm leading-snug font-bold text-foreground">
-            {t("title")}
-          </h2>
-          <p className="mt-1 text-xs leading-[1.55] text-muted-foreground-strong">
-            {t("body")}{" "}
-            <Link
-              href="/privacy"
-              className="font-semibold text-primary underline decoration-primary/35 underline-offset-2 transition-colors ease-soft hover:decoration-primary"
-            >
-              {t("privacyLink")}
-            </Link>
-          </p>
-        </div>
-
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          onClick={() => handleChoice("rejected")}
-          aria-label={t("closeAria")}
-          className="-mt-1.5 -me-1.5 shrink-0 text-muted-foreground hover:bg-muted hover:text-foreground"
-        >
-          <X className="size-4" strokeWidth={1.75} />
-        </Button>
+        <p className="min-w-0 flex-1 text-xs leading-[1.55] text-muted-foreground-strong">
+          <span className="font-bold text-foreground">{t("title")}</span>{" "}
+          {t("body")}{" "}
+          <Link
+            href="/privacy"
+            className="font-semibold text-primary underline decoration-primary/35 underline-offset-2 transition-colors ease-soft hover:decoration-primary"
+          >
+            {t("privacyLink")}
+          </Link>
+        </p>
       </div>
 
-      {/* ทางเลือกสองปุ่มขนานกันจริง ๆ — "ใช้ที่จำเป็นเท่านั้น" ต้องอ่านเป็น
-          ทางเลือกที่ใช้ได้ ไม่ใช่ปุ่มหลอกให้กดยอมรับเพียงอย่างเดียว
-          (ปุ่มปฏิเสธวางซ้ายตามลำดับความสำคัญ แต่บนมือถือปุ่มหลักอยู่ล่างสุด = นิ้วโป้งถึงก่อน) */}
-      <div className="flex flex-col-reverse gap-2 border-t border-border/70 bg-muted/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-end">
+      {/* สองทางเลือกขนานกัน — "ใช้ที่จำเป็นเท่านั้น" ต้องอ่านเป็นทางเลือกที่ใช้ได้
+          ไม่ใช่ปุ่มหลอกให้กดยอมรับเพียงอย่างเดียว (Esc = ปฏิเสธเช่นกัน) */}
+      <div className="flex gap-2 border-t border-border/70 bg-muted/40 px-3.5 py-2.5">
         <Button
           type="button"
-          size="lg"
           variant="outline"
           onClick={() => handleChoice("rejected")}
-          className="w-full px-4 text-sm font-semibold sm:w-auto"
+          className="h-8 flex-1 px-3 text-xs font-semibold lg:flex-none"
         >
           {t("essentialOnly")}
         </Button>
         <Button
           type="button"
-          size="lg"
           onClick={() => handleChoice("accepted")}
-          className="w-full px-4 text-sm font-semibold sm:w-auto"
+          className="h-8 flex-1 px-3 text-xs font-semibold lg:flex-none"
         >
           {t("acceptAll")}
         </Button>

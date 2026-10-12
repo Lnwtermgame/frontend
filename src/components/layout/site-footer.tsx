@@ -12,13 +12,18 @@ const PAYMENT_METHODS = ["PromptPay", "TrueMoney", "Visa", "Mastercard"];
 
 export function SiteFooter() {
   const t = useTranslations("footer");
+  // ปีที่เริ่มให้บริการ — แสดงเป็นช่วงปี "ก่อตั้ง–ปัจจุบัน"
+  const ESTABLISHED_YEAR = 2025;
   const year = new Date().getFullYear();
+  const yearRange = year > ESTABLISHED_YEAR ? `${ESTABLISHED_YEAR}-${year}` : `${ESTABLISHED_YEAR}`;
 
   return (
     <footer className="mt-12 border-t border-border/60">
       <div className="mx-auto w-full max-w-6xl px-4 py-8">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
-          <div className="sm:col-span-2 lg:col-span-1">
+        {/* มือถือ: nav 3 ก้อนเรียง 2 คอลัมน์ — ถ้า stack เดี่ยว footer จะยาวเป็นวาง
+            ลิงก์แถวเดียว 13 แถวอ่านเป็นข้อความกระจัดกระจาย */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
+          <div className="col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2">
               <Image
                 src="/brand/logo-mark.png"
@@ -87,7 +92,7 @@ export function SiteFooter() {
             ))}
           </div>
           <p className="num text-xs font-medium text-muted-foreground-strong">
-            © {year} LNWTERMGAME · {t("rights")}
+            © {yearRange} LNWTERMGAME · {t("rights")}
           </p>
         </div>
       </div>

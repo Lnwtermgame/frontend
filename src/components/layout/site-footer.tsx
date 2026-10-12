@@ -87,7 +87,7 @@ export function SiteFooter() {
             ))}
           </div>
           <p className="num text-xs font-medium text-muted-foreground-strong">
-            © {year} LNWTERMGAME — {t("rights")}
+            © {year} LNWTERMGAME · {t("rights")}
           </p>
         </div>
       </div>

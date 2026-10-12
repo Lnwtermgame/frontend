@@ -68,7 +68,7 @@ export function ShelfTile({ product }: { product: Product }) {
         )}
         {cheapest && (
           <span
-            className="num absolute bottom-1.5 left-1.5 z-10 inline-flex max-w-[calc(100%-12px)] items-baseline gap-0.5 rounded-full bg-white/90 px-2 py-[3px] text-2xs leading-none font-bold text-primary shadow-[0_2px_8px_rgb(16_24_40/0.18)] backdrop-blur-sm transition-colors duration-150 group-hover:bg-primary group-hover:text-primary-foreground"
+            className="num absolute bottom-1.5 left-1.5 z-10 inline-flex max-w-[calc(100%-12px)] items-baseline gap-0.5 rounded-full bg-white px-2 py-[3px] text-2xs leading-none font-bold text-primary shadow-[0_2px_8px_rgb(16_24_40/0.18)] transition-colors duration-150 group-hover:bg-primary group-hover:text-primary-foreground"
           >
             <span className="truncate">{THB.format(cheapest.displayPrice)}</span>
             {cheapest.originPrice &&

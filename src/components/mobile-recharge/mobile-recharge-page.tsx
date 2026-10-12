@@ -115,8 +115,8 @@ export function MobileRechargePage() {
   const handleBuyAttempt = () => {
     setBuyError(null);
     if (!isAuthenticated) {
-      const current = window.location.pathname;
-      window.location.href = `/login?redirect=${encodeURIComponent(current)}`;
+      // next-intl router = locale prefix อัตโนมัติ (window.location.href ดิบไม่มี prefix)
+      router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
       return;
     }
     setConfirmOpen(true);

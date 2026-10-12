@@ -57,7 +57,7 @@ export default function DashboardFavoritesPage() {
                   aria-label={t("removeFavorite")}
                   disabled={removingId === fav.id}
                   onClick={() => handleRemove(fav.id)}
-                  className="absolute right-1.5 top-1.5 grid size-7 place-items-center rounded-full bg-black/60 text-white/90 opacity-0 backdrop-blur-sm transition-opacity hover:bg-black/80 hover:text-white focus-visible:opacity-100 group-hover:opacity-100 disabled:opacity-50"
+                  className="absolute right-1.5 top-1.5 grid size-7 place-items-center rounded-full bg-black/70 text-white/90 opacity-0 transition-opacity hover:bg-black/80 hover:text-white focus-visible:opacity-100 group-hover:opacity-100 disabled:opacity-50"
                 >
                   <X className="size-3.5" aria-hidden />
                 </button>

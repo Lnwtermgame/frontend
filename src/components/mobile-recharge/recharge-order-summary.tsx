@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, Lock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -75,7 +75,10 @@ export function RechargeOrderSummary({
         ? t("payLabelPickOperator")
         : !selectedType
           ? t("payLabelPickDenom")
-          : t("payLabelPay", { total: formatTHB(payable) });
+          : // ครบทุกขั้นแล้วแต่ยังไม่ล็อกอิน = สิ่งถัดไปคือเข้าสู่ระบบ ไม่ใช่หน้ายืนยัน
+            !isAuthenticated
+            ? tp("loginToOrder")
+            : t("payLabelPay", { total: formatTHB(payable) });
 
   const summaryRows = (
     <>
@@ -137,7 +140,10 @@ export function RechargeOrderSummary({
         {buyLabel}
       </Button>
       {!isAuthenticated ? (
-        <p className="mt-2 text-center text-xs text-muted-foreground">{ta("loginRequired")}</p>
+        <p className="mt-2 flex items-start justify-center gap-1.5 text-center text-xs text-muted-foreground">
+          <Lock className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden />
+          {ta("loginRequired")}
+        </p>
       ) : null}
     </>
   );
@@ -184,7 +190,7 @@ export function RechargeOrderSummary({
 
       {/* มือถือ: แถบสรุปตรึงล่างเมื่อเลือกนิยามแล้ว */}
       {selectedType ? (
-        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] lg:hidden">
           <div className="mx-auto flex w-full max-w-6xl items-center gap-3 px-4 py-2.5">
             <div className="min-w-0 flex-1">
               <p className="text-2xs text-muted-foreground">

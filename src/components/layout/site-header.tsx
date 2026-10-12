@@ -83,7 +83,7 @@ function HeaderInner() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b bg-background">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-3.5 px-4">
           {/* mobile: hamburger drawer */}
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>

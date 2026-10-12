@@ -80,7 +80,7 @@ export function CookieNotice() {
         // เดสก์ท็อป: จอดซ้ายล่าง — ขวาล่างปล่อยว่างให้ widget ที่จะมาทีหลัง
         "fixed inset-x-3 bottom-[calc(88px+env(safe-area-inset-bottom))] z-40",
         "sm:inset-x-4 lg:inset-x-auto lg:bottom-6 lg:left-6 lg:w-[26rem]",
-        "overflow-hidden rounded-lg border border-border/80 bg-card/95 backdrop-blur-xl",
+        "overflow-hidden rounded-lg border border-border/80 bg-card",
         "shadow-[0_2px_4px_-2px_rgb(16_24_40/0.06),0_16px_32px_-12px_rgb(16_24_40/0.18),0_32px_64px_-24px_rgb(16_24_40/0.28)]",
         "duration-200 ease-soft",
         closing

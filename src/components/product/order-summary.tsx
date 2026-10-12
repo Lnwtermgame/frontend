@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Check, CircleAlert, CircleCheck, Info, Loader2, Minus, Plus } from "lucide-react";
+import { Check, CircleAlert, CircleCheck, Info, Loader2, Lock, Minus, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ export interface BuyPayload {
 /* หัวข้อย่อยแบบเดียวกับ "วิธีเติม" ของหน้าแรก — ชิปเลขสี่เหลี่ยมมน ไม่ใช่วงกลม+เส้นเชื่อม
    relative ให้วาดทับเส้นนำสายตา (absolute วาดทับ static เสมอ) + ชั้นพื้นทึบ bg-card รองใต้ tint
    ไม่งั้นเส้นพาดหลังตัวเลขและซึมผ่านพื้นโปร่ง 15% */
-function StepChip({ n, done, active }: { n: number; done?: boolean; active?: boolean }) {
+function StepChip({ n, done, active, locked }: { n: number; done?: boolean; active?: boolean; locked?: boolean }) {
   return (
     <span
       className={`num relative grid size-[22px] shrink-0 place-items-center overflow-hidden rounded-[7px] bg-card text-2xs font-bold`}
@@ -42,7 +42,9 @@ function StepChip({ n, done, active }: { n: number; done?: boolean; active?: boo
         className={`absolute inset-0 ${done ? "bg-status-success/15" : active ? "bg-primary/15" : ""}`}
       />
       <span className={`relative ${done ? "text-status-success" : active ? "text-primary" : "text-muted-foreground"}`}>
-        {done ? <Check className="size-3.5" aria-hidden /> : n}
+        {/* ผู้ใช้ที่ยังไม่ล็อกอิน: ขั้นนี้ยังไม่เปิดใช้ — แม่กุญแจแทนเลขลำดับ ให้ไปป์ไลน์
+            สื่อเองว่าขั้นถัดไปถูกล็อก ไม่ต้องพึ่งสีเตือน */}
+        {locked ? <Lock className="size-3.5" aria-hidden /> : done ? <Check className="size-3.5" aria-hidden /> : n}
       </span>
     </span>
   );
@@ -105,6 +107,11 @@ export function OrderSummary({
   const methods = usePaymentMethods(isAuthenticated);
   const selectedOption = methods.data?.find((m) => m.code === optionCode) ?? methods.data?.[0];
 
+  // แขกที่ยังไม่ล็อกอิน: ทุก action เชิงธุรกรรม (กรอกไอดี ตรวจสอบ สั่งซื้อ) วิ่งมาที่ประตูเดียว
+  // คือหน้า login พร้อม redirect กลับหน้าสินค้านี้ — next-intl router ให้ locale prefix อัตโนมัติ
+  const goLogin = () =>
+    router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+
   /* reset เมื่อเปลี่ยนแพ็กเกจทำผ่าน key ที่ parent (product-page) — remount = state
      ภายในเริ่มใหม่ทั้งชุด ไม่ต้องมี effect รีเซ็ต (กัน cascade render) */
 
@@ -129,6 +136,11 @@ export function OrderSummary({
   const mustVerify = isAuthenticated && requiresVerifyInputs && !verified;
   const showBuyHint = mustVerify && !revealVerify;
   const handleBuyAttempt = () => {
+    if (!isAuthenticated) {
+      // ยังไม่ล็อกอิน = ปุ่มนี้เป็น CTA "เข้าสู่ระบบเพื่อสั่งซื้อ" — ไป login ก่อนตรวจฟอร์มใด ๆ
+      goLogin();
+      return;
+    }
     if (showBuyHint) {
       setRevealVerify(true);
       // เดิมกดแล้วปุ่มเปลี่ยนข้อความเฉย ๆ ไม่มีอะไรบอกว่าต้องไปกรอกอะไร —
@@ -159,7 +171,7 @@ export function OrderSummary({
   }, []);
 
   const handleVerify = async () => {
-    if (!selectedType) return;
+    if (!selectedType || !isAuthenticated) return;
     const errs = validateRequired(fields, values, (f) =>
       f.type === "select"
         ? t("fieldSelectRequired", { field: f.label })
@@ -233,8 +245,8 @@ export function OrderSummary({
     setErrors(errs);
     if (Object.keys(errs).length) return;
     if (!isAuthenticated) {
-      // next-intl router = ได้ locale prefix อัตโนมัติ (window.location.href ดิบไม่มี prefix)
-      router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      // ป้องกันซ้ำชั้น: handleBuyAttempt ควรพาไป login ก่อนถึงตรงนี้แล้ว
+      goLogin();
       return;
     }
     onBuy({
@@ -254,9 +266,11 @@ export function OrderSummary({
     ? t("buying")
     : !selectedType
       ? t("pickFirst") // ปุ่มถูก disable เพราะยังไม่เลือกแพ็กเกจ — ต้องบอกเหตุ ไม่ใช่ "ซื้อเลย"
-      : showBuyHint
-        ? t("needVerify")
-        : t("buy");
+      : !isAuthenticated
+        ? t("loginToOrder") // แขกเลือกแพ็กเกจแล้ว = สิ่งถัดไปคือเข้าสู่ระบบ ไม่ใช่กรอกฟอร์ม
+        : showBuyHint
+          ? t("needVerify")
+          : t("buy");
 
   const stepRow = "flex items-center gap-2.5";
   const stepBody = "pl-[32px]";
@@ -300,7 +314,12 @@ export function OrderSummary({
           {requiresVerifyInputs ? (
             <>
               <div className={`${stepRow} mt-5`}>
-                <StepChip n={2} done={verified} active={!verified} />
+                <StepChip
+                  n={2}
+                  locked={!isAuthenticated}
+                  done={verified}
+                  active={isAuthenticated && !verified}
+                />
                 <span className="text-sm font-bold">{t("accountInfo")}</span>
                 {verified ? (
                   <Button
@@ -314,10 +333,31 @@ export function OrderSummary({
                   </Button>
                 ) : null}
               </div>
-              <div
-                ref={accountRef}
-                className={`mt-3 ${stepBody} ${accountLocked ? "opacity-80" : ""}`}
-              >
+              {!isAuthenticated ? (
+                /* แขก: ฟิลด์ไอดีและปุ่มตรวจสอบยังไม่เปิดใช้ — แทนด้วยประตูเข้าสู่ระบบ
+                   หนึ่ง action เดียว (โทน neutral ไม่ใช่ error) เพราะการเลือกดูราคา
+                   เป็นพฤติกรรมปกติของผู้ใช้ใหม่ ไม่ใช่ความผิด */
+                <div className={`mt-3 ${stepBody}`}>
+                  <div className="rounded-[10px] border border-primary/25 bg-primary/5 p-3">
+                    <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
+                      <Lock className="mt-0.5 size-3.5 shrink-0 text-primary" aria-hidden />
+                      {t("loginGateDesc")}
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="mt-2.5 h-11 w-full lg:h-9"
+                      onClick={goLogin}
+                    >
+                      {ta("login")}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  ref={accountRef}
+                  className={`mt-3 ${stepBody} ${accountLocked ? "opacity-80" : ""}`}
+                >
                 {/* ยืนยันผ่านแล้ว = ข้อความยืนยันต้องอยู่บนสุดของขั้นนี้ (อ่านเจอทันที)
                     ไม่ใช่ต่อท้ายฟิลด์ที่เพิ่งปิดการแก้ไข */}
                 {verified && verifyMessage ? (
@@ -375,7 +415,8 @@ export function OrderSummary({
                     </p>
                   )
                 ) : null}
-              </div>
+                </div>
+              )}
             </>
           ) : null}
 
@@ -523,17 +564,12 @@ export function OrderSummary({
               {t("buyAnywayHint")}
             </p>
           ) : null}
-          {!isAuthenticated ? (
-            <p className="mt-2 text-center text-xs text-muted-foreground">
-              {ta("loginRequired")}
-            </p>
-          ) : null}
         </div>
       </aside>
 
       {/* ── มือถือ: แถบสรุปตรึงขอบล่าง — ยอดกับปุ่มซื้อต้องเอื้อมถึงทันทีหลังเลือกแพ็กเกจ ── */}
       {selectedType ? (
-        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card pb-[env(safe-area-inset-bottom)] lg:hidden">
           <div className="mx-auto flex w-full max-w-6xl items-center gap-3 px-4 py-2.5">
             <div className="min-w-0 flex-1">
               <p className="text-2xs text-muted-foreground">

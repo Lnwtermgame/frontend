@@ -230,3 +230,11 @@
   }
 }
 
+/* แถบสรุปตรึงล่างของหน้าสินค้า/เติมมือถือ (order-summary · recharge-order-summary toggle
+   class บน <html> ตอนแถบแสดง) — จองที่ท้าย footer ให้แถวล่างสุดพ้นแถบเมื่อเลื่อนสุด
+   (spacer ก่อน footer ช่วยไม่ได้ — ท้ายเอกสารยังจบใต้แถบ fixed) */
+@media (max-width: 1023px) {
+  html.gtp-buy-bar-visible footer {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  }
+}

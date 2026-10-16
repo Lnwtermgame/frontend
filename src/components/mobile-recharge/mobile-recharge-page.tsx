@@ -304,11 +304,6 @@ export function MobileRechargePage() {
         />
       </div>
 
-      {/* กันแถบสรุปตรึงขอบล่างทับเนื้อหาท้ายหน้า (เฉพาะเมื่อเลือกแพ็กเกจแล้ว) */}
-      {selectedType ? (
-        <div aria-hidden className="h-[calc(84px+env(safe-area-inset-bottom))] lg:hidden" />
-      ) : null}
-
       <ConfirmOrderDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}

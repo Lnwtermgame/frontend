@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Loader2, Lock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,16 @@ export function RechargeOrderSummary({
     methods.data?.find((m) => m.code === paymentOptionCode) ?? methods.data?.[0];
 
   const { country, phone, operator, selectedType } = state;
+
+  // แถบสรุปตรึงล่างแสดง = toggle class บน <html> ให้ footer จองที่ท้ายหน้า (ดู globals.css)
+  const buyBarVisible = Boolean(selectedType);
+  useEffect(() => {
+    if (!buyBarVisible) return;
+    const root = document.documentElement;
+    root.classList.add("gtp-buy-bar-visible");
+    return () => root.classList.remove("gtp-buy-bar-visible");
+  }, [buyBarVisible]);
+
   const phoneOk = /^\d{8,12}$/.test(phone);
   const total = selectedType?.displayPrice ?? 0;
   // ค่าธรรมเนียมช่องทาง (% ของยอด + ค่าคงที่) — ยอดที่ต้องชำระจริงคือ total + fee

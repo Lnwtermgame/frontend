@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Check, CircleAlert, CircleCheck, Info, Loader2, Lock, Minus, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
@@ -275,6 +275,17 @@ export function OrderSummary({
   const stepRow = "flex items-center gap-2.5";
   const stepBody = "pl-[32px]";
   const showLedger = Boolean(selectedType && qty > 1);
+
+  // แถบสรุปตรึงล่างแสดง = toggle class บน <html> ให้ footer จองที่ท้ายหน้า
+  // (spacer ในลำดับเอกสารช่วยไม่ได้ — ท้ายเอกสารยังจบใต้แถบเมื่อเลื่อนสุด; ดู globals.css)
+  const buyBarVisible = Boolean(selectedType);
+  useEffect(() => {
+    if (!buyBarVisible) return;
+    const root = document.documentElement;
+    root.classList.add("gtp-buy-bar-visible");
+    return () => root.classList.remove("gtp-buy-bar-visible");
+  }, [buyBarVisible]);
+
   const buyingSpinner = buying ? (
     <Loader2 className="size-4 animate-spin" aria-hidden />
   ) : null;

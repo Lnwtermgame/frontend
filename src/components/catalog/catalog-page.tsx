@@ -173,10 +173,10 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
       type="button"
       onClick={() => setSort(key)}
       aria-pressed={sort === key}
-      className={`flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] text-left text-sm font-semibold transition-colors lg:min-h-0 ${
+      className={`inline-flex min-h-11 items-center rounded-full border px-3.5 text-left text-sm font-semibold transition-colors lg:w-full lg:rounded-[8px] lg:border-transparent lg:px-2.5 lg:py-[7px] ${
         sort === key
-          ? "bg-primary/10 text-primary"
-          : "text-muted-foreground hover:bg-card hover:text-foreground"
+          ? "border-primary/40 bg-primary/10 text-primary lg:border-transparent"
+          : "border-border/60 text-muted-foreground hover:text-foreground lg:border-transparent lg:hover:bg-card"
       }`}
     >
       {label}
@@ -188,20 +188,20 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
       <div className="grid gap-7 lg:grid-cols-[220px_minmax(0,1fr)]">
         {/* sidebar â€” sticky à¸šà¸™à¹€à¸”à¸ªà¸à¹Œà¸—à¹‡à¸­à¸›, à¹à¸–à¸šà¹€à¸¥à¸·à¹ˆà¸­à¸™à¹à¸™à¸§à¸™à¸­à¸™à¸šà¸™à¸¡à¸·à¸­à¸–à¸·à¸­ */}
         <aside className="min-w-0 self-start lg:sticky lg:top-[76px]">
-          <div className="flex gap-6 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:block lg:overflow-visible lg:pb-0">
+          <div className="flex flex-col gap-4 lg:block">
             {/* flex-col gap-1 — ปุ่มแนบกันแล้วพื้น active/hover ชนขอบมุมโค้งกันเป็นก้อนเดียว */}
-            <div className="mb-5 flex min-w-[180px] flex-none flex-col gap-1 lg:min-w-0">
-              <h2 className="mb-2 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
+            <div className="flex flex-wrap gap-2 lg:mb-5 lg:min-w-0 lg:flex-col lg:gap-1">
+              <h2 className="w-full text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase lg:mb-2">
                 {t("sidebarPlatform")}
               </h2>
               <button
                 type="button"
                 onClick={() => selectPlatform(null)}
                 aria-pressed={gameTypeFilter === null}
-                className={`flex min-h-11 w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] text-sm font-semibold transition-colors lg:min-h-0 ${
+                className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-3.5 text-sm font-semibold transition-colors lg:w-full lg:justify-between lg:rounded-[8px] lg:border-transparent lg:px-2.5 lg:py-[7px] ${
                   gameTypeFilter === null
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-card hover:text-foreground"
+                    ? "border-primary/40 bg-primary/10 text-primary lg:border-transparent"
+                    : "border-border/60 text-muted-foreground hover:text-foreground lg:border-transparent lg:hover:bg-card"
                 }`}
               >
                 {t("filterAll")}
@@ -217,7 +217,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                   type="button"
                   onClick={() => selectPlatform(type)}
                   aria-pressed={gameTypeFilter === type}
-                  className={`flex min-h-11 w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] text-sm font-semibold transition-colors lg:min-h-0 ${
+                  className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-3.5 text-sm font-semibold transition-colors lg:w-full lg:justify-between lg:rounded-[8px] lg:border-transparent lg:px-2.5 lg:py-[7px] ${
                     gameTypeFilter === type
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:bg-card hover:text-foreground"
@@ -236,38 +236,38 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                     <div
                       key={i}
                       aria-hidden
-                      className="flex min-h-11 w-full items-center justify-between rounded-[8px] px-2.5 py-[7px] lg:min-h-0"
+                      className="flex h-11 items-center justify-between gap-2 rounded-full border border-border/60 px-3.5 lg:w-full lg:rounded-[8px] lg:border-transparent lg:px-2.5 lg:py-[7px]"
                     >
                       <span className="flex h-[21px] items-center gap-2">
                         <Skeleton className="size-[15px] rounded-sm" />
                         <Skeleton className={`h-3 rounded-full ${i % 2 ? "w-14" : "w-20"}`} />
                       </span>
-                      <Skeleton className="h-3 w-4 rounded-full" />
+                      <Skeleton className="hidden h-3 w-4 rounded-full lg:block" />
                     </div>
                   ))
                 : null}
             </div>
 
-            <div className="mb-5 flex min-w-[180px] flex-none flex-col gap-1 lg:min-w-0">
-              <h2 className="mb-2 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
+            <div className="flex flex-wrap gap-2 lg:mb-5 lg:min-w-0 lg:flex-col lg:gap-1">
+              <h2 className="w-full text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase lg:mb-2">
                 {t("sidebarSort")}
               </h2>
               {sortItem("sales", t("sortSales"))}
               {sortItem("newest", t("sortNewest"))}
             </div>
 
-            <div className="flex min-w-[180px] flex-none flex-col gap-1 lg:min-w-0">
-              <h2 className="mb-2 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
+            <div className="flex flex-wrap gap-2 lg:mb-5 lg:min-w-0 lg:flex-col lg:gap-1">
+              <h2 className="w-full text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase lg:mb-2">
                 {t("sidebarPrice")}
               </h2>
               <button
                 type="button"
                 onClick={() => setPriceBand(null)}
                 aria-pressed={priceBand === null}
-                className={`flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] text-left text-sm font-semibold transition-colors lg:min-h-0 ${
+                className={`inline-flex min-h-11 items-center rounded-full border px-3.5 text-left text-sm font-semibold transition-colors lg:w-full lg:rounded-[8px] lg:border-transparent lg:px-2.5 lg:py-[7px] ${
                   priceBand === null
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-card hover:text-foreground"
+                    ? "border-primary/40 bg-primary/10 text-primary lg:border-transparent"
+                    : "border-border/60 text-muted-foreground hover:text-foreground lg:border-transparent lg:hover:bg-card"
                 }`}
               >
                 {t("filterAll")}
@@ -284,7 +284,7 @@ function CatalogInner({ mode }: { mode: CatalogMode }) {
                   type="button"
                   onClick={() => setPriceBand(band)}
                   aria-pressed={priceBand === band}
-                  className={`flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] text-left text-sm font-semibold transition-colors lg:min-h-0 ${
+                  className={`inline-flex min-h-11 items-center rounded-full border px-3.5 text-left text-sm font-semibold transition-colors lg:w-full lg:rounded-[8px] lg:border-transparent lg:px-2.5 lg:py-[7px] ${
                     priceBand === band
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:bg-card hover:text-foreground"
@@ -370,15 +370,15 @@ function CatalogFallback({ mode }: { mode: CatalogMode }) {
   const t = useTranslations("catalog");
   const copy = COPY_BY_MODE[mode];
   const group = (title: string, rows: number) => (
-    <div className="mb-5 flex min-w-[180px] flex-none flex-col gap-1 lg:min-w-0">
-      <h2 className="mb-2 text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase">
+    <div className="flex flex-wrap gap-2 lg:mb-5 lg:min-w-0 lg:flex-col lg:gap-1">
+      <h2 className="w-full text-2xs font-bold tracking-wider text-muted-foreground-strong uppercase lg:mb-2">
         {title}
       </h2>
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
           aria-hidden
-          className="flex min-h-11 w-full items-center rounded-[8px] px-2.5 py-[7px] lg:min-h-0"
+          className="flex h-11 w-24 items-center rounded-full border border-border/60 px-3.5 lg:w-full lg:rounded-[8px] lg:border-transparent lg:px-2.5 lg:py-[7px]"
         >
           <span className="flex h-[21px] items-center">
             <Skeleton className={`h-3 rounded-full ${i % 2 ? "w-14" : "w-20"}`} />
@@ -391,7 +391,7 @@ function CatalogFallback({ mode }: { mode: CatalogMode }) {
     <div className="mx-auto w-full max-w-6xl px-4 py-8">
       <div className="grid gap-7 lg:grid-cols-[220px_minmax(0,1fr)]">
         <aside className="min-w-0 self-start">
-          <div className="flex gap-6 overflow-hidden pb-2 lg:block lg:pb-0">
+          <div className="flex flex-col gap-4 lg:block">
             {group(t("sidebarPlatform"), 4)}
             {group(t("sidebarSort"), 2)}
             {group(t("sidebarPrice"), 4)}

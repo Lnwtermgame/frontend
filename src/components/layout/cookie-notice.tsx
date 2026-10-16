@@ -117,14 +117,14 @@ export function CookieNotice() {
           type="button"
           variant="outline"
           onClick={() => handleChoice("rejected")}
-          className="h-8 flex-1 px-3 text-xs font-semibold lg:flex-none"
+          className="h-11 flex-1 px-3 text-xs font-semibold lg:h-8 lg:flex-none"
         >
           {t("essentialOnly")}
         </Button>
         <Button
           type="button"
           onClick={() => handleChoice("accepted")}
-          className="h-8 flex-1 px-3 text-xs font-semibold lg:flex-none"
+          className="h-11 flex-1 px-3 text-xs font-semibold lg:h-8 lg:flex-none"
         >
           {t("acceptAll")}
         </Button>
